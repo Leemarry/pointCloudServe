@@ -38,7 +38,7 @@
     <select id="queryAllByLimit" resultMap="EfTaskKmzMap">
         select
           id, kmz_name, kmz_path, kmz_type, kmz_version, kmz_size, kmz_distance, kmz_duration, kmz_create_time, kmz_create_by_user_id, kmz_update_time, kmz_update_by_user_id, kmz_company_id, kmz_des
-        from ef_task_kmz
+        from ef_task_kmz  order by kmz_update_time desc
         limit #{offset}, #{limit}
     </select>
 
@@ -48,7 +48,7 @@
           *
         from ef_task_kmz
          where kmz_company_id = #{cid}
-         order by kmz_update_time desc
+
     </select>
 
     <!--检测航线任务是否已经存在 -->
