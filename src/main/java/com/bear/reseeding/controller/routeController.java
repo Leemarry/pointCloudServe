@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -73,7 +74,11 @@ public Result getPhotoList(@RequestParam(value = "offset", defaultValue = "0") i
                 return ResultUtil.error("请选择文件");
             }
             Integer ucId = currentUser.getId();
+            Integer userId = currentUser.getId();
+            String userName = currentUser.getUName();
+            List<EfTaskKmz> efTaskKmzList = new ArrayList<>();
             for(MultipartFile file : files){
+                //#region 文件信息
               // 文件名
               String fileName = file.getOriginalFilename();
               // 文件大小
@@ -83,11 +88,10 @@ public Result getPhotoList(@RequestParam(value = "offset", defaultValue = "0") i
               // 文件流
               byte[] fileBytes = file.getBytes();
               InputStream inputStream = file.getInputStream();
+              //#endregion
               // 通过文件名fileName 在 efTaskKmzs中找到对应的EfTaskKmz对象
               for(EfTaskKmz efTaskKmz : efTaskKmzs){
                   if(fileName.equals(efTaskKmz.getKmzName())) {
-                      efTaskKmz.setKmzSize(fileSize);
-                      efTaskKmz.setKmzType(fileType);
                       // 上传minion
                       String url = applicationName + "/kmzTasks/" + ucId + "/" + fileName;
                       if (!minioService.uploadfile("kmz", url, "kmz",inputStream)) {
@@ -98,14 +102,21 @@ public Result getPhotoList(@RequestParam(value = "offset", defaultValue = "0") i
                           return ResultUtil.error("保存巡检航线失败(错误码 4)！");
                       }
                       efTaskKmz.setKmzPath(url);
+                      efTaskKmz.setKmzSize(fileSize);
+                      efTaskKmz.setKmzType(fileType);
+                      efTaskKmz.setKmzName(fileName);
+                      efTaskKmz.setKmzCompanyId(ucId);
+                      efTaskKmz.setKmzUpdateByUserId(userId);
+                      efTaskKmz.setKmzCreateByUserId(userId);
                   }
-                      routeService.saveKmz(efTaskKmz);
+                    EfTaskKmz kmz =   routeService.saveKmz(efTaskKmz);
+                  efTaskKmzList.add(kmz);
                   // 将 efTaskKmz 从数组移除 防止重复上传
                   efTaskKmzs.remove(efTaskKmz);
                       break;
               }
             }
-            return ResultUtil.success("上传成功");
+            return ResultUtil.success("上传成功",efTaskKmzList);
         }catch (Exception e) {
             return ResultUtil.error(e.getMessage());
         }

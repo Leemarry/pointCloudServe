@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bear.reseeding.dao.EfMediaDao">
+
+    <resultMap type="com.bear.reseeding.entity.EfPhoto" id="EfPhotoMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="mark" column="mark" jdbcType="VARCHAR"/>
+        <result property="path" column="path" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="pathScale" column="path_scale" jdbcType="VARBINARY"/>
+        <result property="size" column="size" jdbcType="DOUBLE"/>
+        <result property="sizeScale" column="size_scale" jdbcType="DOUBLE"/>
+        <result property="imageTag" column="image_tag" jdbcType="VARBINARY"/>
+        <result property="deviceId" column="deviceId" jdbcType="VARBINARY"/>
+        <result property="type" column="type" jdbcType="INTEGER"/>
+        <result property="towerId" column="tower_id" jdbcType="INTEGER"/>
+    </resultMap>
+
+
+    <select id="getPhotosByTowerId" resultMap="EfPhotoMap">
+        SELECT * FROM ef_photo WHERE tower_id = #{towerId}
+    </select>
+    <select id="getPhotolist" resultMap="EfPhotoMap">
+        select * from ef_photo
+        <where>
+            <if test="mark!=null">
+                mark = #{mark}
+            </if>
+            <if test="1==1">
+                AND create_time BETWEEN #{startDate} AND #{endDate}
+            </if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+
+
+</mapper>
+

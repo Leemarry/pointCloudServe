@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bear.reseeding.dao.EfBusinessDao">
+
+<resultMap type="com.bear.reseeding.entity.EfTower" id="EfTowerMap">
+    <result property="id" column="id" jdbcType="INTEGER"/>
+    <result property="name" column="name" jdbcType="VARCHAR"/>
+    <result property="mark" column="mark" jdbcType="VARCHAR"/>
+    <result property="lat" column="lat" jdbcType="DOUBLE"/>
+    <result property="lon" column="lng" jdbcType="DOUBLE"/>
+    <result property="absalt" column="absalt" jdbcType="DOUBLE"/>
+    <result property="alt" column="alt" jdbcType="DOUBLE"/>
+    <result property="verticalLineArc" column="vertical_line_arc" jdbcType="DOUBLE"/>
+    <result property="lineLineDis" column="line_line_dis" jdbcType="DOUBLE"/>
+    <result property="lineTowerDis" column="line_tower_dis" jdbcType="DOUBLE"/>
+    <result property="towerRotationAngle" column="tower_rotation_angle" jdbcType="DOUBLE"/>
+    <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+</resultMap>
+
+    <resultMap type="com.bear.reseeding.entity.EfTower" id="EfTowerAndPhotoMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="mark" column="mark" jdbcType="VARCHAR"/>
+        <result property="lat" column="lat" jdbcType="DOUBLE"/>
+        <result property="lon" column="lng" jdbcType="DOUBLE"/>
+        <result property="absalt" column="absalt" jdbcType="DOUBLE"/>
+        <result property="alt" column="alt" jdbcType="DOUBLE"/>
+        <result property="verticalLineArc" column="vertical_line_arc" jdbcType="DOUBLE"/>
+        <result property="lineLineDis" column="line_line_dis" jdbcType="DOUBLE"/>
+        <result property="lineTowerDis" column="line_tower_dis" jdbcType="DOUBLE"/>
+        <result property="towerRotationAngle" column="tower_rotation_angle" jdbcType="DOUBLE"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="des" column="des" jdbcType="VARCHAR"/>
+        <!--  photos 的  tower_id 与 EfTower 的tower_id相等     -->
+        <collection property="photos" column="id"
+                    select="com.bear.reseeding.dao.EfMediaDao.getPhotosByTowerId"
+                    ofType="com.bear.reseeding.entity.EfPhoto"/>
+    </resultMap>
+
+    <select id="getTowerList" resultMap="EfTowerAndPhotoMap">
+        select * from ef_tower
+        <where>
+            <if test="mark!=null">
+                mark = #{mark}
+            </if>
+            <if test="1==1">
+                AND create_time BETWEEN #{startDate} AND #{endDate}
+            </if>
+        </where>
+        ORDER BY update_time DESC
+    </select>
+
+
+
+</mapper>
+

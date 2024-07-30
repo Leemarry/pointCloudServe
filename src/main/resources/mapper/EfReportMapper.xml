@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bear.reseeding.dao.EfMediaDao">
+
+    <resultMap type="com.bear.reseeding.entity.EfReport" id="EfReportMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="mark" column="mark" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="path" column="path" jdbcType="VARCHAR"/>
+        <result property="size" column="size" jdbcType="DOUBLE"/>
+        <result property="type" column="type" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <select id="getReportlist" resultMap="EfReportMap">
+        select * from ef_report
+        <where>
+            <if test="mark!=null">
+                mark = #{mark}
+            </if>
+            <if test="1==1">
+                AND create_time BETWEEN #{startDate} AND #{endDate}
+            </if>
+            <if test="type!=null">
+                AND type = #{type}
+            </if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+
+
+
+
+
+
+
+
+</mapper>

@@ -20,5 +20,13 @@ public class RouteServiceImpl implements RouteService {
   public List<EfTaskKmz> queryAllByLimit( int offset,  int limit){
       return efTaskKmzDao.queryAllByLimit(offset,  limit);
   }
+    public EfTaskKmz saveKmz(EfTaskKmz kmz){
+        int num =   efTaskKmzDao.insert(kmz);
+      if(num>0){
+          return kmz;
+      }
+        return  null;
+    }
+
 
 }

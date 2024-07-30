@@ -74,14 +74,22 @@ app:
   version: '@project.version@'
   buildtime: '@timestamp@'
   #  OC78Y2c0hd6xhMhQRQADJ84c6Hj358NmF6vqSRuQ  nLZDkWEnA5ZYZg3BqBy5 minioadmine http://127.0.0.1:9000
+#minio:
+#  AccessKey: efuav
+#  SecretKey: efuavminio~xz222y!1dsd6
+#  BucketName: efuav
+#  BucketNameKmz: efuavkmz
+#  BucketNameWord: efuavword
+#  BucketNameModel: efuavmodel
+#  Endpoint: http://8.148.10.90:9000
 minio:
-  AccessKey: efuav
-  SecretKey: efuavminio~xz222y!1dsd6
+  AccessKey: minioadmin
+  SecretKey: minioadmin
   BucketName: efuav
   BucketNameKmz: efuavkmz
   BucketNameWord: efuavword
   BucketNameModel: efuavmodel
-  Endpoint: http://8.148.10.90:9000
+  Endpoint: http://127.0.0.1:9090
 TxyTrtc:
   TxyTrtcSdkAppId: 1400739024
   TxyTrtcExpireTime: 604800

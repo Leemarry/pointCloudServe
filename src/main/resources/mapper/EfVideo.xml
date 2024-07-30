@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bear.reseeding.dao.EfMediaDao">
+
+    <resultMap type="com.bear.reseeding.entity.EfVideo" id="EfVideoMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="mark" column="mark" jdbcType="VARCHAR"/>
+        <result property="path" column="path" jdbcType="VARCHAR"/>
+        <result property="size" column="size" jdbcType="BIGINT"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="type" column="type" jdbcType="INTEGER"/>
+        <result property="deviceName" column="device_name" jdbcType="DOUBLE"/>
+        <result property="deviceId" column="deviceId" jdbcType="VARBINARY"/>
+        <result property="towerId" column="tower_id" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <select id="getVideolist" resultMap="EfVideoMap">
+        select * from ef_video
+        <where>
+            <if test="mark!=null">
+                mark = #{mark}
+            </if>
+            <if test="1==1">
+                AND create_time BETWEEN #{startDate} AND #{endDate}
+            </if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+
+
+</mapper>
+
+
+
+
+
