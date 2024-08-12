@@ -12,8 +12,35 @@ public class EfPointCloud {
     private String amendType;
     private String amendCloudUrl;
     private double amendSize;
+    private String webUrl;
+    private double webSize;
+    private String formats;
     private Date createTime;
     private Date updateTime;
+
+    public String getWebUrl() {
+        return webUrl;
+    }
+
+    public void setWebUrl(String webUrl) {
+        this.webUrl = webUrl;
+    }
+
+    public double getWebSize() {
+        return webSize;
+    }
+
+    public void setWebSize(double webSize) {
+        this.webSize = webSize;
+    }
+
+    public String getFormats() {
+        return formats;
+    }
+
+    public void setFormats(String formats) {
+        this.formats = formats;
+    }
 
     public int getId() {
         return id;

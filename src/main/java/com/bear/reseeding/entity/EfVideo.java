@@ -12,6 +12,15 @@ private String deviceId;
 private String deviceName;
 private Integer towerId;
 private Date createTime;
+private String formats;
+
+    public String getFormats() {
+        return formats;
+    }
+
+    public void setFormats(String formats) {
+        this.formats = formats;
+    }
 
     public double getSize() {
         return size;

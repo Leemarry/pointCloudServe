@@ -14,6 +14,15 @@ public class EfPhoto {
     private String deviceId;
     private Integer type;
     private Integer towerId;
+    private String formats;
+
+    public String getFormats() {
+        return formats;
+    }
+
+    public void setFormats(String formats) {
+        this.formats = formats;
+    }
 
     public int getId() {
         return id;

@@ -8,13 +8,16 @@
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="path" column="path" jdbcType="VARCHAR"/>
         <result property="size" column="size" jdbcType="DOUBLE"/>
+        <result property="scalePath" column="scale_path" jdbcType="VARCHAR"/>
+        <result property="scaleSize" column="scale_size" jdbcType="DOUBLE"/>
+        <result property="formats" column="formats" jdbcType="VARCHAR"/>
         <result property="des" column="des" jdbcType="VARCHAR"/>
     </resultMap>
     <select id="getOrthoImglist" resultMap="EfOrthoImgMap">
         select * from ef_orthoimg
         <where>
             <if test="mark!=null">
-                mark = #{mark}
+                mark LIKE CONCAT('%', #{mark}, '%')
             </if>
             <if test="1==1">
                 AND create_time BETWEEN #{startDate} AND #{endDate}
@@ -23,6 +26,10 @@
         ORDER BY create_time DESC
     </select>
 
+    <insert id="insertOrthoImg" keyProperty="id" parameterType="com.bear.reseeding.entity.EfOrthoImg">
+        insert into ef_orthoimg( mark,create_time,path,size,scale_path,scale_size,formats,des)
+        values(#{mark},#{createTime},#{path},#{size},#{scalePath},#{scaleSize},#{formats},#{des})
+    </insert>
 
 
 

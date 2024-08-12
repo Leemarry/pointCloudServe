@@ -12,7 +12,11 @@ public interface EfBusinessDao {
 
     List<EfPerilPoint> getDangerPointList(@Param("startDate") String startDate, @Param("endDate") String endDate, @Param("mark") String mark) ;
 
+    int insertOrUpdateTower(EfTower tower);
 
+    int batchInsertTower(@Param("towerList") List<EfTower> towerList);
+
+    int insertOrUpdatePerilPoint(EfPerilPoint perilPoint);
 }
 
 

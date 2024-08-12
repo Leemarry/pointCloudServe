@@ -69,27 +69,20 @@ spring:
     multipart:
       max-file-size: 3072MB # 单个文件大小
       max-request-size: 3072MB # 设置总上传的数据大小
-      enabled: true #开启
 app:
   version: '@project.version@'
   buildtime: '@timestamp@'
   #  OC78Y2c0hd6xhMhQRQADJ84c6Hj358NmF6vqSRuQ  nLZDkWEnA5ZYZg3BqBy5 minioadmine http://127.0.0.1:9000
-#minio:
-#  AccessKey: efuav
-#  SecretKey: efuavminio~xz222y!1dsd6
-#  BucketName: efuav
-#  BucketNameKmz: efuavkmz
-#  BucketNameWord: efuavword
-#  BucketNameModel: efuavmodel
-#  Endpoint: http://8.148.10.90:9000
 minio:
-  AccessKey: minioadmin
-  SecretKey: minioadmin
+  AccessKey: efuav
+  SecretKey: efuavminio~xz222y!1dsd6
   BucketName: efuav
   BucketNameKmz: efuavkmz
   BucketNameWord: efuavword
+  BucketNameImage: efuavimage
   BucketNameModel: efuavmodel
-  Endpoint: http://127.0.0.1:9090
+  Endpoint: http://8.148.10.90:9000
+  EndpointExt: http://8.148.10.90:9000
 TxyTrtc:
   TxyTrtcSdkAppId: 1400739024
   TxyTrtcExpireTime: 604800

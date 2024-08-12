@@ -13,6 +13,9 @@
         <result property="amendType" column="amend_type" jdbcType="VARBINARY"/>
         <result property="amendCloudUrl" column="amend_cloud_url" jdbcType="VARBINARY"/>
         <result property="amendSize" column="amend_size" jdbcType="DOUBLE"/>
+        <result property="formats" column="formats" jdbcType="VARCHAR"/>
+        <result property="webSize" column="web_size" jdbcType="DOUBLE"/>
+        <result property="webUrl" column="web_url" jdbcType="VARCHAR"/>
         <result property="towerId" column="tower_id" jdbcType="INTEGER"/>
     </resultMap>
 
@@ -21,7 +24,7 @@
         select * from ef_cloud
         <where>
             <if test="mark!=null">
-                mark = #{mark}
+                mark LIKE CONCAT('%', #{mark}, '%')
             </if>
             <if test="1==1">
                 AND create_time BETWEEN #{startDate} AND #{endDate}
@@ -30,6 +33,32 @@
         ORDER BY update_time DESC
     </select>
 
+<!--    insertOrUpdatePointCloud-->
+    <insert id="insertOrUpdatePointCloud"  keyProperty="id" useGeneratedKeys="true">
+        insert into ef_cloud(id, mark, update_time, create_time, origin_type, origin_size, origin_cloud_url, amend_type, amend_cloud_url, amend_size, formats, web_size, web_url, tower_id)
+        values(#{id}, #{mark}, #{updateTime}, #{createTime}, #{originType}, #{originSize}, #{originCloudUrl}, #{amendType}, #{amendCloudUrl}, #{amendSize}, #{formats}, #{webSize}, #{webUrl}, #{towerId})
+        on duplicate key update
+        mark = #{mark},
+        update_time = #{updateTime},
+        create_time = #{createTime},
+        origin_type = #{originType},
+        origin_size = #{originSize},
+        origin_cloud_url = #{originCloudUrl},
+        amend_type = #{amendType},
+        amend_cloud_url = #{amendCloudUrl},
+        amend_size = #{amendSize},
+        formats = #{formats},
+        web_size = #{webSize},
+        web_url = #{webUrl},
+        tower_id = #{towerId}
+    </insert>
+
+
+
+    <insert id="insertPointCloud" keyProperty="id" useGeneratedKeys="true">
+        insert into ef_cloud(mark, update_time, create_time, origin_type, origin_size, origin_cloud_url, amend_type, amend_cloud_url, amend_size, tower_id)
+        values(#{mark}, #{updateTime}, #{createTime}, #{originType}, #{originSize}, #{originCloudUrl}, #{amendType}, #{amendCloudUrl}, #{amendSize}, #{towerId})
+    </insert>
 
 
 </mapper>

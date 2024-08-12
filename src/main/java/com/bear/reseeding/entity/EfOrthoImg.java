@@ -6,15 +6,42 @@ public class EfOrthoImg {
     private Integer id;
     private String mark;
     private String path;
-    private Double size;
+    private double size;
     private String des;
     private Date createTime;
+    private double scaleSize;
+    private String scalePath;
+    private String formats;
 
-    public Double getSize() {
+    public double getScaleSize() {
+        return scaleSize;
+    }
+
+    public void setScaleSize(double scaleSize) {
+        this.scaleSize = scaleSize;
+    }
+
+    public String getScalePath() {
+        return scalePath;
+    }
+
+    public void setScalePath(String scalePath) {
+        this.scalePath = scalePath;
+    }
+
+    public String getFormats() {
+        return formats;
+    }
+
+    public void setFormats(String formats) {
+        this.formats = formats;
+    }
+
+    public double getSize() {
         return size;
     }
 
-    public void setSize(Double size) {
+    public void setSize(double size) {
         this.size = size;
     }
 

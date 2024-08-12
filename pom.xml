@@ -3,14 +3,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.bear</groupId>
-    <artifactId>UavReseedingServer</artifactId>
+    <artifactId>UavPointCloudServer</artifactId>
     <version>1.0.0</version>
-    <name>UavReseedingServer</name>
+    <name>UavPointCloudServer</name>
     <description>无人机智能补种</description>
     <packaging>jar</packaging>
 
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>11</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring-boot.version>2.3.7.RELEASE</spring-boot.version>
@@ -258,7 +258,7 @@
     </dependencyManagement>
 
     <build>
-        <finalName>UavReseedingServer</finalName>
+        <finalName>UavPointCloudServer</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>

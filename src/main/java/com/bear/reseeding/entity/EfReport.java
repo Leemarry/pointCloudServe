@@ -6,9 +6,18 @@ public class EfReport {
     private Integer id;
     private String mark;
     private String path;
-    private Double size;
+    private double size;
     private  int type;
     private Date createTime;
+    private String formats;
+
+    public String getFormats() {
+        return formats;
+    }
+
+    public void setFormats(String formats) {
+        this.formats = formats;
+    }
 
     public Integer getId() {
         return id;
@@ -34,11 +43,11 @@ public class EfReport {
         this.path = path;
     }
 
-    public Double getSize() {
+    public double getSize() {
         return size;
     }
 
-    public void setSize(Double size) {
+    public void setSize(double size) {
         this.size = size;
     }
 

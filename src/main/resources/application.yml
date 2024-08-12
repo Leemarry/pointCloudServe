@@ -16,7 +16,7 @@ spring:
     secretKey: efsdfe124587jshqcgszmghstcw54735 #AES加密私钥 32字节
     secretIv: 553456qwdscfrtgb #AES密钥向量 16字节
     encryptMd5Soft: efuav201603 #账户密码MD5加盐
-    videoStreamStorage: false #流媒体服务器，true:自定义,false:云服务器
+    videoStreamStorage: false #流媒体服务器，true:自定义,false:云服务器f
     singleOn: false  #true 开启单点 false 关闭单点
     # 光伏项目公钥，私钥
     publishGuangfu: false #是否自动推送光伏检测数据
@@ -55,14 +55,14 @@ jasypt:
   encryptor:
     password: efuav1603pvi
     algorithm: PBEWithMD5AndDES
-minio:
-  AccessKey: efuav
-  SecretKey: efuavminio~xz222y!1dsd6
-  BucketName: efuav
-  BucketNameKmz: efuavkmz
-  BucketNameWord: efuavword
-  Endpoint: http://8.148.10.90:9000
-  EndpointExt: http://8.148.10.90:9000
+#minio:
+#  AccessKey: efuav
+#  SecretKey: efuavminio~xz222y!1dsd6
+#  BucketName: efuav
+#  BucketNameKmz: efuavkmz
+#  BucketNameWord: efuavword
+#  Endpoint: http://8.148.10.90:9000
+#  EndpointExt: http://8.148.10.90:9000
 TxyTrtc:
   TxyTrtcSdkAppId: 1400739024 # 腾讯云服务器 ,音视频通话SDK
   TxyTrtcExpireTime: 604800 # 过期时间，7天

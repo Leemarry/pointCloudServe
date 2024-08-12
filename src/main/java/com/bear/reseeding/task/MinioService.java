@@ -8,6 +8,7 @@ import io.minio.http.Method;
 import io.minio.messages.Item;
 import net.lingala.zip4j.ZipFile;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -65,7 +66,8 @@ public class MinioService {
     private String BucketNameModel;
 
     private MinioClient minioClient;
-
+//@Autowired
+//private MinioClient minioClient;
 
     /**
      * 上传文件到Mino储存桶
@@ -346,11 +348,42 @@ public class MinioService {
      * @param bucketName 桶名
      * @throws Exception 抛出异常
      */
-    public void conneCtMinioClient(String bucketName) throws Exception {
-        minioClient = MinioClient.builder()
+    public void createClient(String bucketName) throws Exception {
+        this.minioClient = MinioClient.builder()
                 .endpoint(Endpoint)
                 .credentials(AccessKey, SecretKey)
                 .build();
+    }
+
+    /**
+     * 上传文件到Mino储存桶
+     *
+     * @param bucketName  桶类型 kmz/word/其它
+     * @param path        储存路径含完整名称： photo/image/123.jpg
+     * @param contentType 文件类型：image/jpg
+     * @param stream      文件流
+     * @return boolean result是否上传成功
+     */
+    public boolean putObject(String bucketName, String path,InputStream stream,String contentType) {
+        boolean result = false;
+        try {
+            // 先判断是否连接 minioClient 是否存在
+                 minioClient = MinioClient.builder()
+                        .endpoint(Endpoint)
+                        .credentials(AccessKey, SecretKey)
+                        .build();
+                checkBucketExistsTOmakeBucket(bucketName);
+                ObjectWriteResponse response = minioClient.putObject(
+                        PutObjectArgs.builder().bucket(bucketName).object(path).stream(stream, stream.available(), -1).contentType(contentType).build());
+                LogUtil.logInfo("上传成功：{}"+response.etag());
+                result = true;
+
+            return result;
+        } catch (Exception e) {
+            LogUtil.logError("上传文件 " + path + " 到Minio异常：" + e.toString());
+            return result;
+        }
+
     }
 
     /**
@@ -378,15 +411,33 @@ public class MinioService {
     public boolean checkBucketExistsTOmakeBucket(String bucketName) {
         boolean flog = false;
         try {
-            minioClient = MinioClient.builder()
-                    .endpoint(Endpoint)
-                    .credentials(AccessKey, SecretKey)
-                    .build();
+            BucketExistsArgs exist = BucketExistsArgs.builder().bucket(bucketName).build();
+            boolean isExist = minioClient.bucketExists(exist);
+            if (!isExist) {
+                MakeBucketArgs create = MakeBucketArgs.builder().bucket(bucketName).build();
+                minioClient.makeBucket(create);
+                /**
+                 * bucket权限-只读
+                 */
+             String WRITE_ONLY = "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":[\"*\"]},\"Action\":[\"s3:GetBucketLocation\",\"s3:ListBucketMultipartUploads\"],\"Resource\":[\"arn:aws:s3:::" + bucketName + "\"]},{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":[\"*\"]},\"Action\":[\"s3:AbortMultipartUpload\",\"s3:DeleteObject\",\"s3:ListMultipartUploadParts\",\"s3:PutObject\"],\"Resource\":[\"arn:aws:s3:::" + bucketName + "/*\"]}]}";
 
-            if (!minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build())) {
-                minioClient.makeBucket(MakeBucketArgs.builder().bucket("cheshi").build());
+                // 设置存储桶为公开
+                String policy = "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"PublicRead\",\"Effect\":\"Allow\",\"Principal\": {\"AWS\":\"*\"},\"Action\":[\"s3:GetObject\"],\"Resource\":[\"arn:aws:s3:::"+bucketName+"/*\"]}]}";
+                SetBucketPolicyArgs set = SetBucketPolicyArgs.builder()
+                        .bucket(bucketName)
+                        .config(policy)
+                        .build();
+                minioClient.setBucketPolicy(set);
+
+                System.out.println("Bucket policy set successfully.");
+//                minioClient.setBucketPolicy(bucketName, "public-read");
+//                System.out.println("存储桶已设置为公开！");
+                flog = true;
+                LogUtil.logMessage("正在上传文件到Minio，创建储存桶 " + bucketName + "成功。");
             }
-            flog = true;
+//            if (!minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build())) {
+//                minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
+//            }
         } catch (Exception e) {
             LogUtil.logError((e).toString());
         }

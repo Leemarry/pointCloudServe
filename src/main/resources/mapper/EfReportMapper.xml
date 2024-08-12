@@ -9,13 +9,14 @@
         <result property="path" column="path" jdbcType="VARCHAR"/>
         <result property="size" column="size" jdbcType="DOUBLE"/>
         <result property="type" column="type" jdbcType="INTEGER"/>
+        <result property="formats" column="formats" jdbcType="VARCHAR"/>
     </resultMap>
 
     <select id="getReportlist" resultMap="EfReportMap">
         select * from ef_report
         <where>
             <if test="mark!=null">
-                mark = #{mark}
+                mark LIKE CONCAT('%', #{mark}, '%')
             </if>
             <if test="1==1">
                 AND create_time BETWEEN #{startDate} AND #{endDate}
@@ -26,6 +27,14 @@
         </where>
         ORDER BY create_time DESC
     </select>
+
+
+    <insert id="insertReport" keyProperty="id" useGeneratedKeys="true">
+        insert into ef_report (mark, create_time, path, size, type, formats)
+        values (#{mark}, #{createTime}, #{path}, #{size}, #{type}, #{formats})
+    </insert>
+
+<!--    insertReport-->
 
 
 

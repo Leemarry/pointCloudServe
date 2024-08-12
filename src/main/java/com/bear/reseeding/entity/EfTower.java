@@ -13,6 +13,9 @@ public class EfTower implements Serializable {
     private Integer id;
     private String name;
     private String mark;
+    private String type;
+    private double span;
+    private String terrain;
     private double lat;
     private double lon;
     private double alt;
@@ -25,6 +28,30 @@ public class EfTower implements Serializable {
     private Date updateTime;
     private String des;
     private List<EfPhoto> photos;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public double getSpan() {
+        return span;
+    }
+
+    public void setSpan(double span) {
+        this.span = span;
+    }
+
+    public String getTerrain() {
+        return terrain;
+    }
+
+    public void setTerrain(String terrain) {
+        this.terrain = terrain;
+    }
 
     public Integer getId() {
         return id;

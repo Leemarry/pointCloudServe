@@ -169,7 +169,7 @@ public class HandleMqttMessageEf {
 //                    tag = packet[Index] & 0xFF;  //标记
                     EFLINK_MSG_19015 eflink_msg_19015 = new EFLINK_MSG_19015();
                     eflink_msg_19015.InitPacket(packet,Index);
-                    System.out.println("控制指令回复:19015");
+//                    System.out.println("控制指令回复:19015");
                     int WpIndex =eflink_msg_19015.getWpIndex(); // 假设索引4
                     sseClient.updateFCavity(WpIndex);
 

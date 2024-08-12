@@ -33,6 +33,9 @@
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
         <result property="des" column="des" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="VARCHAR"/>
+        <result property="span" column="span" jdbcType="DOUBLE"/>
+        <result property="terrain" column="terrain" jdbcType="VARCHAR"/>
         <!--  photos 的  tower_id 与 EfTower 的tower_id相等     -->
         <collection property="photos" column="id"
                     select="com.bear.reseeding.dao.EfMediaDao.getPhotosByTowerId"
@@ -52,6 +55,34 @@
         ORDER BY update_time DESC
     </select>
 
+    <insert id="insertOrUpdateTower" keyProperty="id" useGeneratedKeys="true">
+        insert into ef_tower (id, name, mark, lat, lng, absalt, alt, vertical_line_arc, line_line_dis, line_tower_dis, tower_rotation_angle, create_time, update_time)
+        values ( #{id}, #{name}, #{mark}, #{lat}, #{lon}, #{absalt}, #{alt}, #{verticalLineArc}, #{lineLineDis}, #{lineTowerDis}, #{towerRotationAngle}, #{createTime}, #{updateTime})
+        on duplicate key update name = #{name}, mark = #{mark}, lat = #{lat}, lng = #{lon}, absalt = #{absalt}, alt = #{alt}, vertical_line_arc = #{verticalLineArc}, line_line_dis = #{lineLineDis}, line_tower_dis = #{lineTowerDis}, tower_rotation_angle = #{towerRotationAngle}, update_time = #{updateTime}
+    </insert>
+
+<!--    <insert id="batchInsertTower" keyProperty="id" useGeneratedKeys="true">-->
+<!--        insert into ef_tower (id, name, mark, lat, lng, absalt, alt, vertical_line_arc, line_line_dis, line_tower_dis, tower_rotation_angle, create_time, update_time)-->
+<!--        values-->
+<!--        <foreach collection="towerList" item="tower" separator=",">-->
+<!--            (#{tower.id}, #{tower.name}, #{tower.mark}, #{tower.lat}, #{tower.lon}, #{tower.absalt}, #{tower.alt}, #{tower.verticalLineArc}, #{tower.lineLineDis}, #{tower.lineTowerDis}, #{tower.towerRotationAngle}, #{tower.createTime}, #{tower.updateTime})-->
+<!--        </foreach>-->
+<!--    </insert>-->
+    <insert id="batchInsertTower" keyProperty="id" useGeneratedKeys="true">
+        insert into ef_tower (id, name, mark, lat, lng, absalt, alt, vertical_line_arc, line_line_dis, line_tower_dis, tower_rotation_angle, create_time, update_time, des, type, span, terrain)
+        values
+        <foreach collection="towerList" item="entity" separator=",">
+            (#{entity.id}, #{entity.name}, #{entity.mark}, #{entity.lat}, #{entity.lon}, #{entity.absalt}, #{entity.alt}, #{entity.verticalLineArc}, #{entity.lineLineDis}, #{entity.lineTowerDis}, #{entity.towerRotationAngle}, #{entity.createTime}, #{entity.updateTime}, #{entity.des}, #{entity.type}, #{entity.span}, #{entity.terrain})
+        </foreach>
+    </insert>
+
+    <insert id="insertBatchByList" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO ef_handle_waypoint (id,lat,lng,alt,seed_num,handle_id,fly_times) VALUES
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.id},#{entity.lat},#{entity.lng},#{entity.alt},#{entity.seedNum},#{entity.handleId},#{entity.flyTimes})
+        </foreach>
+
+    </insert>
 
 
 </mapper>

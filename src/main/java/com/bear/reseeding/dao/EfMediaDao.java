@@ -20,5 +20,15 @@ public interface EfMediaDao {
 
     List<EfReport> getReportlist(@Param("startDate") String startDate, @Param("endDate") String endDate, @Param("mark") String mark,@Param("type") Integer type);
 
+    int insertOrthoImg(EfOrthoImg orthoImg);
 
+    int insertPhoto(EfPhoto photo);
+
+    int insertVideo(EfVideo video);
+
+    int insertReport(EfReport report);
+
+    int insertPointCloud(EfPointCloud pointcloud);
+
+    int insertOrUpdatePointCloud (EfPointCloud pointcloud);
 }

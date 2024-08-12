@@ -14,6 +14,7 @@
         <result property="deviceId" column="deviceId" jdbcType="VARBINARY"/>
         <result property="type" column="type" jdbcType="INTEGER"/>
         <result property="towerId" column="tower_id" jdbcType="INTEGER"/>
+        <result property="formats" column="formats" jdbcType="VARCHAR"/>
     </resultMap>
 
 
@@ -24,7 +25,7 @@
         select * from ef_photo
         <where>
             <if test="mark!=null">
-                mark = #{mark}
+                 mark LIKE CONCAT('%', #{mark}, '%')
             </if>
             <if test="1==1">
                 AND create_time BETWEEN #{startDate} AND #{endDate}
@@ -33,6 +34,11 @@
         ORDER BY create_time DESC
     </select>
 
+    <!--新增所有列 返回的通常是新插入数据行的主键值，并将其赋值给在 keyProperty 中指定的属性-->
+    <insert id="insertPhoto" keyProperty="id" useGeneratedKeys="true">
+        insert into ef_photo(mark, path, create_time, path_scale, size, size_scale, image_tag, device_id, type, tower_id, formats)
+        values (#{mark}, #{path}, #{createTime}, #{pathScale}, #{size}, #{sizeScale}, #{imageTag}, #{deviceId}, #{type}, #{towerId}, #{formats})
+    </insert>
 
 
 </mapper>
