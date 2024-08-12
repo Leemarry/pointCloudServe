@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bear.reseeding.dao.EfBusinessDao">
+
+    <resultMap type="com.bear.reseeding.entity.EfPerilPoint" id="EfPerilPointMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="mark" column="mark" jdbcType="VARCHAR"/>
+        <result property="lng" column="lng" jdbcType="DOUBLE"/>
+        <result property="lat" column="lat" jdbcType="DOUBLE"/>
+        <result property="clearDis" column="clear_dis" jdbcType="DOUBLE"/>
+        <result property="verticalDis" column="vertical_dis" jdbcType="DOUBLE"/>
+        <result property="levelDis" column="level_dis" jdbcType="DOUBLE"/>
+        <result property="verticalViewImg" column="vertical_view_img" jdbcType="VARCHAR"/>
+        <result property="drawingImg" column="sectional_drawing_img" jdbcType="VARCHAR"/>
+        <result property="reportId" column="report_id" javaType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="des" column="des" jdbcType="VARCHAR"/>
+    </resultMap>
+    <select id="getDangerPointList" resultMap="EfPerilPointMap">
+        select * from ef_peril_point
+        <where>
+            <if test="mark!=null">
+                mark = #{mark}
+            </if>
+            <if test="1==1">
+                AND create_time BETWEEN #{startDate} AND #{endDate}
+            </if>
+        </where>
+        ORDER BY update_time DESC
+    </select>
+
+    <insert id="insertOrUpdatePerilPoint" >
+        insert into ef_peril_point (id, mark, lng, lat, clear_dis, vertical_dis, level_dis, vertical_view_img, sectional_drawing_img, report_id, create_time, update_time, des)
+        values (#{id}, #{mark}, #{lng}, #{lat}, #{clearDis}, #{verticalDis}, #{levelDis}, #{verticalViewImg}, #{drawingImg}, #{reportId}, #{createTime}, #{updateTime}, #{des})
+        on duplicate key update
+        mark = #{mark}, lng = #{lng}, lat = #{lat}, clear_dis = #{clearDis}, vertical_dis = #{verticalDis}, level_dis = #{levelDis}, vertical_view_img = #{verticalViewImg}, sectional_drawing_img = #{drawingImg}, report_id = #{reportId}, update_time = #{updateTime}, des = #{des}
+    </insert>
+
+
+
+</mapper>
