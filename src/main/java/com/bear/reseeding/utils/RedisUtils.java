@@ -202,6 +202,17 @@ public class RedisUtils {
         return result;
     }
 
+    public Long getHashKeySize(String key) {
+        Long result = null;
+        try {
+            HashOperations<String, Object, Object> hash = redisTemplate.opsForHash();
+            result = hash.size(key);
+        } catch (Exception e) {
+            LogUtil.logError(e.toString());
+        }
+        return result;
+    }
+  //Long size = redisTemplate.opsForHash().size(key);
     /**
      *
      * @param key
@@ -229,6 +240,7 @@ public class RedisUtils {
         return result;
     }
 
+
     // 获取所有Hash数据
     public HashMap<Object, Object> GetAllHash(String key) {
         HashOperations<String, Object, Object> hashOps = redisTemplate.opsForHash();
@@ -245,11 +257,16 @@ public class RedisUtils {
     }
 
     // 判断哈希表是否存在并删除
-    public void deleteHashIfExists(String hashKey) {
-//        HashOperations<String, String, User> hashOps = redisTemplate.opsForHash();
-//        if (redisTemplate.hasKey(hashKey)) {
-//            redisTemplate.delete(hashKey);
-//        }
+    public void deleteHashIfExists(String key,String hashKey) {
+        try {
+            HashOperations<String, Object, Object> hash = redisTemplate.opsForHash();
+            if (redisTemplate.hasKey(key) && hash.hasKey(key, hashKey)) {
+                // 删除Hash中的指定字段
+                hash.delete(key, hashKey);
+            }
+        } catch (Exception e) {
+            LogUtil.logError(e.toString());
+        }
     }
     /**
      * 哈希获取数据

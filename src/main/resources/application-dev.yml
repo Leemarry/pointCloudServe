@@ -10,7 +10,7 @@ spring:
     password: 123456
 #    url: jdbc:mysql://8.134.196.47:3306/pointcloud?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
 #    url: jdbc:mysql://8.148.10.90:3306/pointcloud?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
-    url: jdbc:mysql://localhost:3306/pointcloud?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
+    url: jdbc:mysql://localhost:3307/pointcloud?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
 #    driver-class-name: com.mysql.jdbc.Driver
     #druid连接池配置
     type: com.alibaba.druid.pool.DruidDataSource
@@ -74,15 +74,15 @@ app:
   buildtime: '@timestamp@'
   #  OC78Y2c0hd6xhMhQRQADJ84c6Hj358NmF6vqSRuQ  nLZDkWEnA5ZYZg3BqBy5 minioadmine http://127.0.0.1:9000
 minio:
-  AccessKey: efuav
-  SecretKey: efuavminio~xz222y!1dsd6
+  AccessKey: minioadmin #efuav
+  SecretKey: minioadmin #efuavminio~xz222y!1dsd6
   BucketName: efuav
   BucketNameKmz: efuavkmz
   BucketNameWord: efuavword
   BucketNameImage: efuavimage
   BucketNameModel: efuavmodel
-  Endpoint: http://8.148.10.90:9000
-  EndpointExt: http://8.148.10.90:9000
+  Endpoint:  http://localhost:9090 # http://8.148.10.90:9000
+  EndpointExt: http://localhost:9090 #http://8.148.10.90:9000
 TxyTrtc:
   TxyTrtcSdkAppId: 1400739024
   TxyTrtcExpireTime: 604800

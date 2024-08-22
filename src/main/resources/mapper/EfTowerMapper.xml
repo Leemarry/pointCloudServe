@@ -37,8 +37,8 @@
         <result property="span" column="span" jdbcType="DOUBLE"/>
         <result property="terrain" column="terrain" jdbcType="VARCHAR"/>
         <!--  photos 的  tower_id 与 EfTower 的tower_id相等     -->
-        <collection property="photos" column="id"
-                    select="com.bear.reseeding.dao.EfMediaDao.getPhotosByTowerId"
+        <collection property="photos" column="mark"
+                    select="com.bear.reseeding.dao.EfMediaDao.getPhotosByTowerMark"
                     ofType="com.bear.reseeding.entity.EfPhoto"/>
     </resultMap>
 
@@ -54,6 +54,10 @@
         </where>
         ORDER BY update_time DESC
     </select>
+
+    <delete id="delectTower">
+        delete from ef_tower where id = #{id}
+    </delete>
 
     <insert id="insertOrUpdateTower" keyProperty="id" useGeneratedKeys="true">
         insert into ef_tower (id, name, mark, lat, lng, absalt, alt, vertical_line_arc, line_line_dis, line_tower_dis, tower_rotation_angle, create_time, update_time)

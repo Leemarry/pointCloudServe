@@ -75,6 +75,21 @@ public class EfMediaServiceImpl implements EfMediaService {
 //            return ResultUtil.error("保存文件失败(错误码 3)！");
 //        }
 //    }
+
+    public EfOrthoImg uploadOrthoImgMap(String md5, double lat , double lng,String towermark,Date createTime, String url ,String mark){
+        EfOrthoImg orthoImg = new EfOrthoImg();
+        orthoImg.setMapPath(url);
+        orthoImg.setCreateTime(createTime);
+        orthoImg.setLat(lat);
+        orthoImg.setLon(lng);
+        orthoImg.setTowerMark(towermark);
+        orthoImg.setMapMd5(md5);
+        orthoImg.setFormats("正射图级");
+        orthoImg.setMark(mark);
+        efMediaDao.insertOrthoImg(orthoImg);
+        return orthoImg;
+    }
+
     public EfOrthoImg uploadOrthoImgFile(MultipartFile multipartFile, EfUser user, Integer type, Date createTime, String url) {
         // 获取文件名
         String fileName = multipartFile.getOriginalFilename();
@@ -128,7 +143,14 @@ public class EfMediaServiceImpl implements EfMediaService {
         EfPhoto photo = new EfPhoto();
         photo.setCreateTime(createTime);
         photo.setMark(name);
-        photo.setPath(url);
+        photo.setPath(url); //  http://localhost:9090/efuav-image/pointcloud/2/202408160833_001_B001/DJI_20231223122844_0059_D.JPG
+        // 截取 url 中的B001
+        int index = url.lastIndexOf("/");
+        String towerMark = null;
+        if (index > 0) {
+            towerMark = url.substring(url.lastIndexOf("_", index)+1 ,index);
+        }
+        photo.setTowerMark(towerMark);
         photo.setSize(fileSize);
         photo.setImageTag(fileName);
         photo.setFormats("image");
@@ -136,6 +158,40 @@ public class EfMediaServiceImpl implements EfMediaService {
 
         return photo;
     }
+
+
+    public EfPhoto uploadExifPhotoFile(MultipartFile multipartFile, EfUser user , Integer type, Date createTime,String url , double lat, double lng , String towermark) {
+        // 获取文件名
+        String fileName = multipartFile.getOriginalFilename();
+        // 获取文件后缀
+        String suffix = fileName.substring(fileName.lastIndexOf("."));
+        // 获取文件名除去后缀
+        String name = fileName.substring(0, fileName.lastIndexOf("."));
+        // 文件路径
+        //文件大小
+        long fileSize = multipartFile.getSize();
+        EfPhoto photo = new EfPhoto();
+        photo.setCreateTime(createTime);
+        photo.setMark(name);
+        photo.setPath(url); //  http://localhost:9090/efuav-image/pointcloud/2/202408160833_001_B001/DJI_20231223122844_0059_D.JPG
+        // 截取 url 中的B001
+//        int index = url.lastIndexOf("/");
+//        String towerMark = null;
+//        if (index > 0) {
+//            towerMark = url.substring(url.lastIndexOf("_", index)+1 ,index);
+//        }
+        photo.setTowerMark(towermark);
+        photo.setSize(fileSize);
+        photo.setImageTag(fileName);
+        photo.setFormats("image");
+        photo.setLat(lat);
+        photo.setLng(lng);
+        efMediaDao.insertPhoto(photo);
+
+        return photo;
+    }
+
+
 
     public EfVideo uploadVideoFile(MultipartFile multipartFile, EfUser user, Integer type, Date createTime, String url) {
         // 获取文件名

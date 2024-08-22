@@ -13,14 +13,21 @@
         <result property="imageTag" column="image_tag" jdbcType="VARBINARY"/>
         <result property="deviceId" column="deviceId" jdbcType="VARBINARY"/>
         <result property="type" column="type" jdbcType="INTEGER"/>
-        <result property="towerId" column="tower_id" jdbcType="INTEGER"/>
+        <result property="towerMark" column="tower_mark" jdbcType="VARCHAR"/>
         <result property="formats" column="formats" jdbcType="VARCHAR"/>
+        <result property="lat" column="lat" jdbcType="DOUBLE"/>
+        <result property="lng" column="lng" jdbcType="DOUBLE"/>
     </resultMap>
 
 
     <select id="getPhotosByTowerId" resultMap="EfPhotoMap">
         SELECT * FROM ef_photo WHERE tower_id = #{towerId}
     </select>
+
+    <select id="getPhotosByTowerMark" resultMap="EfPhotoMap">
+        SELECT * FROM ef_photo WHERE tower_mark = #{towerMark}
+    </select>
+
     <select id="getPhotolist" resultMap="EfPhotoMap">
         select * from ef_photo
         <where>
@@ -36,8 +43,9 @@
 
     <!--新增所有列 返回的通常是新插入数据行的主键值，并将其赋值给在 keyProperty 中指定的属性-->
     <insert id="insertPhoto" keyProperty="id" useGeneratedKeys="true">
-        insert into ef_photo(mark, path, create_time, path_scale, size, size_scale, image_tag, device_id, type, tower_id, formats)
-        values (#{mark}, #{path}, #{createTime}, #{pathScale}, #{size}, #{sizeScale}, #{imageTag}, #{deviceId}, #{type}, #{towerId}, #{formats})
+        INSERT INTO ef_photo (mark, path, create_time, path_scale, size, size_scale, image_tag, device_id, type, tower_mark, formats, lat, lng)
+        VALUES (#{mark}, #{path}, #{createTime}, #{pathScale}, #{size}, #{sizeScale}, #{imageTag}, #{deviceId}, #{type}, #{towerMark}, #{formats}, #{lat}, #{lng})
+
     </insert>
 
 

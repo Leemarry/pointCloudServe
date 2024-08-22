@@ -11,8 +11,17 @@ private int type;
 private String deviceId;
 private String deviceName;
 private Integer towerId;
+private String towerMark;
 private Date createTime;
 private String formats;
+
+    public String getTowerMark() {
+        return towerMark;
+    }
+
+    public void setTowerMark(String towerMark) {
+        this.towerMark = towerMark;
+    }
 
     public String getFormats() {
         return formats;

@@ -65,9 +65,14 @@ public class MinioService {
     @Value("${minio.BucketNameModel}")
     private String BucketNameModel;
 
-    private MinioClient minioClient;
-//@Autowired
-//private MinioClient minioClient;
+    private final MinioClient minioClient;
+
+    @Autowired
+    public MinioService(MinioClient minioClient) {
+        this.minioClient = minioClient;
+    }
+
+
 
     /**
      * 上传文件到Mino储存桶
@@ -349,7 +354,7 @@ public class MinioService {
      * @throws Exception 抛出异常
      */
     public void createClient(String bucketName) throws Exception {
-        this.minioClient = MinioClient.builder()
+        minioClient.builder()
                 .endpoint(Endpoint)
                 .credentials(AccessKey, SecretKey)
                 .build();
@@ -368,10 +373,6 @@ public class MinioService {
         boolean result = false;
         try {
             // 先判断是否连接 minioClient 是否存在
-                 minioClient = MinioClient.builder()
-                        .endpoint(Endpoint)
-                        .credentials(AccessKey, SecretKey)
-                        .build();
                 checkBucketExistsTOmakeBucket(bucketName);
                 ObjectWriteResponse response = minioClient.putObject(
                         PutObjectArgs.builder().bucket(bucketName).object(path).stream(stream, stream.available(), -1).contentType(contentType).build());
@@ -394,10 +395,6 @@ public class MinioService {
      * @throws Exception 抛出异常
      */
     public boolean checkBucketExists(String bucketName) throws Exception {
-        minioClient = MinioClient.builder()
-                .endpoint(Endpoint)
-                .credentials(AccessKey, SecretKey)
-                .build();
         return minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
     }
 
@@ -455,11 +452,6 @@ public class MinioService {
      */
     public boolean checkStatObjectExists(String bucketName, String objectName) {
         try {
-            minioClient = MinioClient.builder()
-                    .endpoint(Endpoint)
-                    .credentials(AccessKey, SecretKey)
-                    .build();
-
             boolean bucketExists = minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
             if (!bucketExists) {
                 return false;
@@ -485,10 +477,6 @@ public class MinioService {
      */
     public boolean doesFileExist(String bucketName, String objectName) {
         try {
-            minioClient = MinioClient.builder()
-                    .endpoint(Endpoint)
-                    .credentials(AccessKey, SecretKey)
-                    .build();
             // 使用 minioClient.statObject() 方法来获取文件的信息
             minioClient.statObject(StatObjectArgs.builder().bucket(bucketName).object(objectName).build());
             return true; // 如果文件存在，没有抛出异常，则返回 true
@@ -509,10 +497,6 @@ public class MinioService {
     public boolean removeObject(String bucketName, String objectName) {
         boolean gold = false;
         try {
-            minioClient = MinioClient.builder()
-                    .endpoint(Endpoint)
-                    .credentials(AccessKey, SecretKey)
-                    .build();
             minioClient.removeObject(
                     RemoveObjectArgs.builder()
                             .bucket(bucketName)
@@ -598,10 +582,6 @@ public class MinioService {
     public boolean removeObjects(String bucketName, String objectName) {
         boolean gold = false;
         try {
-            minioClient = MinioClient.builder()
-                    .endpoint(Endpoint)
-                    .credentials(AccessKey, SecretKey)
-                    .build();
             Iterable<io.minio.Result<Item>> objects = minioClient.listObjects(
                     ListObjectsArgs.builder()
                             .bucket(bucketName)
@@ -635,11 +615,6 @@ public class MinioService {
             int numThreads = 100; // 设置100个线程
             List<String> objectNames = new ArrayList<>(); // 存储删除对象类型
             //获取文件 minio 路径
-            minioClient = MinioClient.builder()
-                    .endpoint(Endpoint)
-                    .credentials(AccessKey, SecretKey)
-                    .build();
-
             Iterable<io.minio.Result<Item>> objects = minioClient.listObjects(
                     ListObjectsArgs.builder()
                             .bucket(bucketName)
@@ -877,10 +852,6 @@ public class MinioService {
             throw new IllegalArgumentException("Invalid parameters");
         }
         try {
-            minioClient = MinioClient.builder()
-                    .endpoint(Endpoint)
-                    .credentials(AccessKey, SecretKey)
-                    .build();            // 检查文件索引是否都上传完毕
             Iterable<io.minio.Result<Item>> results = minioClient.listObjects(
                     io.minio.ListObjectsArgs.builder()
                             .bucket(bucketName)
@@ -963,10 +934,6 @@ public class MinioService {
     public List<String> generateFileUrls(String bucketName, String folderName, String fileExtension, int maxDepth) {
         List<String> fileUrls = new ArrayList<>();
         try {
-            minioClient = MinioClient.builder()
-                    .endpoint(Endpoint)
-                    .credentials(AccessKey, SecretKey)
-                    .build();
             generateFileUrlsRecursive(bucketName, folderName, fileExtension, maxDepth, 0, fileUrls);
         } catch (Exception e) {
             e.printStackTrace();

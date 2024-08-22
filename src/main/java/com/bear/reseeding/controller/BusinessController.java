@@ -3,6 +3,7 @@ package com.bear.reseeding.controller;
 import com.bear.reseeding.common.ResultUtil;
 import com.bear.reseeding.entity.EfPerilPoint;
 import com.bear.reseeding.entity.EfTower;
+import com.bear.reseeding.entity.EfTowerLine;
 import com.bear.reseeding.entity.EfUser;
 import com.bear.reseeding.model.CurrentUser;
 import com.bear.reseeding.model.Result;
@@ -23,10 +24,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("/business")
@@ -83,6 +81,60 @@ public class BusinessController {
         } catch (Exception e) {
             e.printStackTrace();
             return ResultUtil.error("获取杆塔列表失败！");
+        }
+    }
+
+    @RequestMapping(value = "/line/querylist", method = RequestMethod.POST)
+    public Result getLineData(@RequestParam(value = "startTime", required = false) Long startTime, @RequestParam(value = "endTime", required = false) Long endTime, @RequestParam(value = "mark", required = false) String mark) throws ParseException {
+        // mark 为空字符串 或者 null 或者“” 或者 undefined 或 字符串null 则 设置成 null
+        if (mark == null || mark.isEmpty() || mark.equals("undefined") || mark.equals("null")) {
+            mark = null;
+        }
+        // 如果endTime未提供或为0（作为特殊标记），则设置为当前时间的时间戳
+        if (endTime == null || endTime == 0) {
+            endTime = Instant.now().toEpochMilli();
+        }
+        // 如果startTime未提供，则计算为当前时间前三个月的时间戳
+        if (startTime == null) {
+            startTime = Instant.now().minus(3, ChronoUnit.MONTHS).toEpochMilli();
+        }
+        if (startTime > endTime) {
+            return ResultUtil.error("开始时间不能大于结束时间！");
+        }
+        try {
+            Date startTimeDate = new Date(startTime);
+            Date endTimeDate = new Date(endTime);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String startTimeStr = sdf.format(startTimeDate);
+            String endTimeStr = sdf.format(endTimeDate);
+            List<EfTowerLine> towerList = efBusinessService.getTowerLineList(startTimeStr, endTimeStr, mark);
+            // 返回结果
+            return ResultUtil.success("success", towerList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultUtil.error("获取杆塔列表失败！");
+        }
+    }
+
+
+    @RequestMapping(value = "/{Type}/delect", method = RequestMethod.POST)
+    public Result delectBusiness(@PathVariable("Type") String uploadTypeStr, @RequestParam("id") int id) {
+        try {
+            // tower i
+            int result = 0;
+            if (uploadTypeStr.equals("tower")) {
+                 result = efBusinessService.delectTower(id);
+            }
+            if(uploadTypeStr.equals("line")) {
+                 result = efBusinessService.delectTowerLine(id);
+            }
+            if(result>0){
+                return ResultUtil.success("删除数据成功！");
+            }
+            return ResultUtil.error("删除数据失败！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultUtil.error("删除数据失败！");
         }
     }
 
@@ -156,6 +208,27 @@ public class BusinessController {
         }
     }
 
+    /**
+     *
+     * @param operationTypeStr
+     * @return
+     */
+    @ResponseBody
+    @PostMapping(value = "/{operationType}/addOrupdateLine")
+    public Result addOrupdateLine(@PathVariable("operationType") String operationTypeStr, @RequestBody EfTowerLine efTowerLine){
+        try {
+            if (operationTypeStr.equals("hand")) {
+                efTowerLine.setCreateTime(new Date());
+                efTowerLine= efBusinessService.addOrupdateLine(efTowerLine);
+                return ResultUtil.success("success",efTowerLine);
+            }else {
+                return ResultUtil.error("操作类型错误！");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultUtil.error("上传媒体失败！");
+        }
+    }
     /**
      *
      * @return

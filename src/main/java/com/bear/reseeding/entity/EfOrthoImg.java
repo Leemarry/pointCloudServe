@@ -12,6 +12,51 @@ public class EfOrthoImg {
     private double scaleSize;
     private String scalePath;
     private String formats;
+    private String mapPath;
+    private String mapMd5;
+    private double lat;
+    private double lon;
+    private String towerMark;
+
+    public String getTowerMark() {
+        return towerMark;
+    }
+
+    public void setTowerMark(String towerMark) {
+        this.towerMark = towerMark;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLon() {
+        return lon;
+    }
+
+    public void setLon(double lon) {
+        this.lon = lon;
+    }
+
+    public String getMapPath() {
+        return mapPath;
+    }
+
+    public void setMapPath(String mapPath) {
+        this.mapPath = mapPath;
+    }
+
+    public String getMapMd5() {
+        return mapMd5;
+    }
+
+    public void setMapMd5(String mapMd5) {
+        this.mapMd5 = mapMd5;
+    }
 
     public double getScaleSize() {
         return scaleSize;

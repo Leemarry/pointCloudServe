@@ -11,7 +11,7 @@
         <result property="type" column="type" jdbcType="INTEGER"/>
         <result property="deviceName" column="device_name" jdbcType="DOUBLE"/>
         <result property="deviceId" column="deviceId" jdbcType="VARBINARY"/>
-        <result property="towerId" column="tower_id" jdbcType="INTEGER"/>
+        <result property="towerMark" column="tower_mark" jdbcType="VARCHAR"/>
         <result property="formats" column="formats" jdbcType="VARCHAR"/>
     </resultMap>
 
@@ -34,8 +34,8 @@
 <!--                values (#{mark}, #{path}, #{size}, #{createTime}, #{type}, #{deviceName}, #{deviceId}, #{towerId})-->
 <!--    </insert>-->
     <insert id="insertVideo" keyProperty="id" useGeneratedKeys="true">
-        insert into ef_video(mark, path, size, create_time, type, device_name, device_id, tower_id, formats)
-        values (#{mark}, #{path}, #{size}, #{createTime}, #{type}, #{deviceName}, #{deviceId}, #{towerId}, #{formats})
+        insert into ef_video(mark, path, size, create_time, type, device_name, device_id, tower_mark, formats)
+        values (#{mark}, #{path}, #{size}, #{createTime}, #{type}, #{deviceName}, #{deviceId}, #{towerMark}, #{formats})
     </insert>
 
 

@@ -14,7 +14,34 @@ public class EfPhoto {
     private String deviceId;
     private Integer type;
     private Integer towerId;
+    private String towerMark;
     private String formats;
+    private double lat;
+    private double lng;
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLng() {
+        return lng;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
+    }
+
+    public String getTowerMark() {
+        return towerMark;
+    }
+
+    public void setTowerMark(String towerMark) {
+        this.towerMark = towerMark;
+    }
 
     public String getFormats() {
         return formats;

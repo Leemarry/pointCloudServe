@@ -6,9 +6,9 @@ spring:
   main:
     allow-bean-definition-overriding: true
   datasource:
-    username: reseeding
-    password: zjMMPsFajDsrtTMk
-    url: jdbc:mysql://8.148.10.90:3306/pointcloud?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
+    username: root
+    password: 123456
+    url: jdbc:mysql://192.168.10.5:3307/pointcloud?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
 #    driver-class-name: com.mysql.jdbc.Driver
     #druid连接池配置
     type: com.alibaba.druid.pool.DruidDataSource

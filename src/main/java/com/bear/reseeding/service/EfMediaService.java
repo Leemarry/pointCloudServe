@@ -21,10 +21,13 @@ public interface EfMediaService {
     List<EfReport> getReportlistByType(String startDate, String endDate, String mark,Integer type);
 
     EfPhoto uploadPhotoFile(MultipartFile file, EfUser user , Integer type, Date createTime,String url);
+    EfPhoto uploadExifPhotoFile(MultipartFile file, EfUser user , Integer type, Date createTime,String url , double lat, double lng , String towermark);
 
     EfVideo uploadVideoFile(MultipartFile file, EfUser user , Integer type, Date createTime,String url);
 
     EfOrthoImg uploadOrthoImgFile(MultipartFile file, EfUser user, Integer type, Date createTime, String url);
+
+    EfOrthoImg uploadOrthoImgMap(String md5,double lat,double lng,String towermark,Date createTime,String url ,String mark);
 
     EfPointCloud uploadPointCloudFile(MultipartFile file, EfUser user, Integer type, Date createTime, String url);
 

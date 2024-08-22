@@ -17,6 +17,15 @@ public class EfPointCloud {
     private String formats;
     private Date createTime;
     private Date updateTime;
+    private String towerMark;
+
+    public String getTowerMark() {
+        return towerMark;
+    }
+
+    public void setTowerMark(String towerMark) {
+        this.towerMark = towerMark;
+    }
 
     public String getWebUrl() {
         return webUrl;
