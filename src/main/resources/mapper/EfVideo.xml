@@ -15,6 +15,14 @@
         <result property="formats" column="formats" jdbcType="VARCHAR"/>
     </resultMap>
 
+    <delete id="deleteVideoById">
+        delete from ef_video where id = #{id}
+    </delete>
+
+    <delete id="deleteVideoBytowermark">
+        delete from ef_video where tower_mark = #{towerMark}
+    </delete>
+
     <select id="getVideolist" resultMap="EfVideoMap">
         select * from ef_video
         <where>
@@ -29,10 +37,7 @@
     </select>
 
 
-<!--    <insert id="insertVideo" keyProperty="id" parameterType="com.bear.reseeding.entity.EfVideo">-->
-<!--                insert into ef_video(mark, path, size, create_time, type, device_name, device_id, tower_id)-->
-<!--                values (#{mark}, #{path}, #{size}, #{createTime}, #{type}, #{deviceName}, #{deviceId}, #{towerId})-->
-<!--    </insert>-->
+
     <insert id="insertVideo" keyProperty="id" useGeneratedKeys="true">
         insert into ef_video(mark, path, size, create_time, type, device_name, device_id, tower_mark, formats)
         values (#{mark}, #{path}, #{size}, #{createTime}, #{type}, #{deviceName}, #{deviceId}, #{towerMark}, #{formats})

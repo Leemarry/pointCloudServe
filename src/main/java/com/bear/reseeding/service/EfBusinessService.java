@@ -8,7 +8,11 @@ import java.util.List;
 
 public interface EfBusinessService {
 
+    int gettowerCount();
+
     List<EfTower> getTowerList(String startDate, String endDate, String mark);
+
+    List<EfTower> getTowerAllInfoList(String startDate, String endDate, String mark);
 
     int delectTower(int id);
     int delectTowerLine(int id);
@@ -22,6 +26,8 @@ public interface EfBusinessService {
     EfTowerLine addOrupdateLine(EfTowerLine towerLine);
 
     List<EfTower> batchInsertTower(List<EfTower> towerList);
+
+    List<EfTowerLine> batchInsertTowerLine(List<EfTowerLine> towerLineList);
 
     EfPerilPoint insertOrUpdate (EfPerilPoint perilPoint);
 }

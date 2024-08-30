@@ -28,6 +28,51 @@ public class EfTower implements Serializable {
     private Date updateTime;
     private String des;
     private List<EfPhoto> photos;
+    private List<EfTowerLine> towerLines;
+    private EfPointCloud pointCloud;
+    private EfOrthoImg orthoImg;
+    private EfVideo video;
+    private String geo;
+
+    public String getGeo() {
+        return geo;
+    }
+
+    public void setGeo(String geo) {
+        this.geo = geo;
+    }
+
+    public EfVideo getVideo() {
+        return video;
+    }
+
+    public void setVideo(EfVideo video) {
+        this.video = video;
+    }
+
+    public List<EfTowerLine> getTowerLines() {
+        return towerLines;
+    }
+
+    public void setTowerLines(List<EfTowerLine> towerLines) {
+        this.towerLines = towerLines;
+    }
+
+    public EfPointCloud getPointCloud() {
+        return pointCloud;
+    }
+
+    public void setPointCloud(EfPointCloud pointCloud) {
+        this.pointCloud = pointCloud;
+    }
+
+    public EfOrthoImg getOrthoImg() {
+        return orthoImg;
+    }
+
+    public void setOrthoImg(EfOrthoImg orthoImg) {
+        this.orthoImg = orthoImg;
+    }
 
     public String getType() {
         return type;
@@ -179,6 +224,9 @@ public class EfTower implements Serializable {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", mark='" + mark + '\'' +
+                ", type='" + type + '\'' +
+                ", span=" + span +
+                ", terrain='" + terrain + '\'' +
                 ", lat=" + lat +
                 ", lon=" + lon +
                 ", alt=" + alt +
@@ -191,6 +239,12 @@ public class EfTower implements Serializable {
                 ", updateTime=" + updateTime +
                 ", des='" + des + '\'' +
                 ", photos=" + photos +
+                ", towerLines=" + towerLines +
+                ", pointCloud=" + pointCloud +
+                ", orthoImg=" + orthoImg +
+                ", video=" + video +
+                ", geo='" + geo + '\'' +
                 '}';
     }
+
 }

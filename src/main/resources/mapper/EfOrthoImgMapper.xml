@@ -18,6 +18,20 @@
         <result property="mapMd5" column="map_md5" jdbcType="VARCHAR"/>
         <result property="mapPath" column="map_path" jdbcType="VARCHAR"/>
     </resultMap>
+
+    <delete id="deleteOrthoImgById">
+        delete from ef_orthoimg where id = #{id}
+    </delete>
+
+    <delete id="deleteOrthoImgBytowermark">
+        delete from ef_orthoimg where tower_mark = #{towerMark}
+    </delete>
+
+    <select id="getOrthoImgByTowerMark" resultMap="EfOrthoImgMap">
+        select * from ef_orthoimg
+        where tower_mark = #{towerMark} order by create_time desc limit 1
+    </select>
+
     <select id="getOrthoImglist" resultMap="EfOrthoImgMap">
         select * from ef_orthoimg
         <where>

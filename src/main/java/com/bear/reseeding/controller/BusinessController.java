@@ -8,6 +8,7 @@ import com.bear.reseeding.entity.EfUser;
 import com.bear.reseeding.model.CurrentUser;
 import com.bear.reseeding.model.Result;
 import com.bear.reseeding.service.EfBusinessService;
+import com.bear.reseeding.service.EfMediaService;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -33,6 +34,9 @@ public class BusinessController {
     //#region 注解
     @Resource
     private EfBusinessService efBusinessService;
+    @Resource
+    private EfMediaService efMediaService;
+
 
     //#endregion
 
@@ -51,6 +55,44 @@ public class BusinessController {
         calendar.add(Calendar.MONTH, -3);
         return calendar.getTimeInMillis();
     }
+    // 分页朝向
+    @RequestMapping(value = "/tower/queryAlllist", method = RequestMethod.POST)
+    public Result getTowerAllData(@RequestParam(value = "startTime", required = false) Long startTime, @RequestParam(value = "endTime", required = false) Long endTime, @RequestParam(value = "mark", required = false) String mark) throws ParseException {
+        // mark 为空字符串 或者 null 或者“” 或者 undefined 或 字符串null 则 设置成 null
+        if (mark == null || mark.isEmpty() || mark.equals("undefined") || mark.equals("null")) {
+            mark = null;
+        }
+        // 如果endTime未提供或为0（作为特殊标记），则设置为当前时间的时间戳
+        if (endTime == null || endTime == 0) {
+            endTime = Instant.now().toEpochMilli();
+        }
+        // 如果startTime未提供，则计算为当前时间前三个月的时间戳
+        if (startTime == null) {
+            startTime = Instant.now().minus(3, ChronoUnit.MONTHS).toEpochMilli();
+        }
+        if (startTime > endTime) {
+            return ResultUtil.error("开始时间不能大于结束时间！");
+        }
+        try {
+            Date startTimeDate = new Date(startTime);
+            Date endTimeDate = new Date(endTime);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String startTimeStr = sdf.format(startTimeDate);
+            String endTimeStr = sdf.format(endTimeDate);
+            int totalCount = efBusinessService.gettowerCount();
+            if(totalCount>0){
+                List<EfTower> towerList = efBusinessService.getTowerAllInfoList(startTimeStr, endTimeStr, mark);
+                return ResultUtil.success("success", towerList,totalCount);
+            }
+            // 返回结果
+            return ResultUtil.success("success", null,0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultUtil.error("获取杆塔列表失败！");
+        }
+    }
+
+
 
     @RequestMapping(value = "/tower/querylist", method = RequestMethod.POST)
     public Result getBusinessData(@RequestParam(value = "startTime", required = false) Long startTime, @RequestParam(value = "endTime", required = false) Long endTime, @RequestParam(value = "mark", required = false) String mark) throws ParseException {
@@ -83,6 +125,8 @@ public class BusinessController {
             return ResultUtil.error("获取杆塔列表失败！");
         }
     }
+
+
 
     @RequestMapping(value = "/line/querylist", method = RequestMethod.POST)
     public Result getLineData(@RequestParam(value = "startTime", required = false) Long startTime, @RequestParam(value = "endTime", required = false) Long endTime, @RequestParam(value = "mark", required = false) String mark) throws ParseException {
@@ -118,11 +162,17 @@ public class BusinessController {
 
 
     @RequestMapping(value = "/{Type}/delect", method = RequestMethod.POST)
-    public Result delectBusiness(@PathVariable("Type") String uploadTypeStr, @RequestParam("id") int id) {
+    public Result delectBusiness(@PathVariable("Type") String uploadTypeStr, @RequestParam("id") int id, @RequestParam(value = "mark", required = false) String mark,@RequestParam(value = "delectAll", required = false) boolean delectAll) {
         try {
             // tower i
             int result = 0;
             if (uploadTypeStr.equals("tower")) {
+                if(delectAll&&mark!=null&&!mark.isEmpty() && !mark.equals("undefined")){
+                    efMediaService.deletepointCloudBytowermark(mark); //
+                    efMediaService.deleteVideoBytowermark(mark); //
+                    efMediaService.deleteOrthoImgBytowermark(mark); //
+                }
+                efMediaService.deletePhotoBytowermark(mark); //
                  result = efBusinessService.delectTower(id);
             }
             if(uploadTypeStr.equals("line")) {
@@ -264,27 +314,28 @@ public class BusinessController {
                                     }else if (columnIndex == 1) {
                                         efTower.setName(cell.getStringCellValue());
                                     }else if (columnIndex == 2) {
-                                        efTower.setLat(cell.getNumericCellValue());
+                                        efTower.setType(cell.getStringCellValue()); // 塔型
                                     }else if (columnIndex == 3) {
-                                        efTower.setLon(cell.getNumericCellValue());
+                                        efTower.setSpan(Double.parseDouble(cell.getStringCellValue())); // 档距
                                     }else if (columnIndex == 4) {
-                                        efTower.setAlt(cell.getNumericCellValue());
+                                        efTower.setTerrain(cell.getStringCellValue()); // 地形
                                     }else if (columnIndex == 5) {
-                                        efTower.setAbsalt(cell.getNumericCellValue());
+                                        efTower.setAbsalt(Double.parseDouble(cell.getStringCellValue())); // 海拔
                                     }else if (columnIndex == 6) {
-                                        efTower.setVerticalLineArc(cell.getNumericCellValue());
+                                        efTower.setLon(cell.getNumericCellValue()); //
                                     }else if (columnIndex == 7) {
-                                        efTower.setLineLineDis(cell.getNumericCellValue());
+                                        efTower.setLat(cell.getNumericCellValue()); // 7 纬度
                                     }else if (columnIndex == 8) {
-                                        efTower.setLineTowerDis(cell.getNumericCellValue());
+                                        efTower.setGeo(cell.getStringCellValue()); // dix
                                     }else if (columnIndex == 9) {
-                                        efTower.setTowerRotationAngle(cell.getNumericCellValue());
+                                        efTower.setVerticalLineArc(cell.getNumericCellValue()); // daoxxi
                                     }else if (columnIndex == 10) {
-                                        efTower.setSpan(cell.getNumericCellValue());
+                                        efTower.setLineLineDis(cell.getNumericCellValue()); // xian
                                     }else if (columnIndex == 11) {
-                                        efTower.setTerrain(String.valueOf(cell.getStringCellValue()));
-                                    }
-                                    else if (columnIndex == 12) {
+                                        efTower.setLineTowerDis(Double.parseDouble(cell.getStringCellValue())); // xianta
+                                    }else if (columnIndex == 12) {
+                                        efTower.setTowerRotationAngle(Double.parseDouble(cell.getStringCellValue()));
+                                    }else if (columnIndex == 13) {
                                         efTower.setDes(cell.getStringCellValue());
                                     }
                                     break;
@@ -295,27 +346,28 @@ public class BusinessController {
                                     }else if (columnIndex == 1) {
                                         efTower.setName(cell.getStringCellValue());
                                     }else if (columnIndex == 2) {
-                                        efTower.setLat(cell.getNumericCellValue());
+                                        efTower.setType(cell.getStringCellValue()); // 塔型
                                     }else if (columnIndex == 3) {
-                                        efTower.setLon(cell.getNumericCellValue());
+                                        efTower.setSpan(cell.getNumericCellValue()); // 档距
                                     }else if (columnIndex == 4) {
-                                        efTower.setAlt(cell.getNumericCellValue());
+                                        efTower.setTerrain(String.valueOf(cell.getNumericCellValue())); // 地形
                                     }else if (columnIndex == 5) {
-                                        efTower.setAbsalt(cell.getNumericCellValue());
+                                        efTower.setAbsalt(cell.getNumericCellValue()); // 海拔
                                     }else if (columnIndex == 6) {
-                                        efTower.setVerticalLineArc(cell.getNumericCellValue());
+                                        efTower.setLon(cell.getNumericCellValue()); //
                                     }else if (columnIndex == 7) {
-                                        efTower.setLineLineDis(cell.getNumericCellValue());
+                                        efTower.setLat(cell.getNumericCellValue());  // 7 纬度
                                     }else if (columnIndex == 8) {
-                                        efTower.setLineTowerDis(cell.getNumericCellValue());
+                                        efTower.setGeo(String.valueOf(cell.getNumericCellValue()));
                                     }else if (columnIndex == 9) {
-                                        efTower.setTowerRotationAngle(cell.getNumericCellValue());
+                                        efTower.setVerticalLineArc(cell.getNumericCellValue()); // daoxxi
                                     }else if (columnIndex == 10) {
-                                        efTower.setSpan(cell.getNumericCellValue());
+                                        efTower.setLineLineDis(cell.getNumericCellValue()); // xian
                                     }else if (columnIndex == 11) {
-                                        efTower.setTerrain(String.valueOf(cell.getStringCellValue()));
-                                    }
-                                    else if (columnIndex == 12) {
+                                        efTower.setLineTowerDis(cell.getNumericCellValue()); // xianta
+                                    } else if (columnIndex == 12) {
+                                        efTower.setTowerRotationAngle(cell.getNumericCellValue());
+                                    }else if (columnIndex == 13) {
                                         efTower.setDes(String.valueOf(cell.getNumericCellValue()));
                                     }
                                     break;
@@ -350,7 +402,7 @@ public class BusinessController {
      * @return
      */
     @ResponseBody
-    @PostMapping(value = "/{operationType}/batchInsertTower2")
+    @PostMapping(value = "/{operationType}/batchInsertToweLine")
     public Result batchInsertTower2( @RequestParam("file") MultipartFile file){
         try {
             // 读取文件内容
@@ -359,94 +411,54 @@ public class BusinessController {
 
                 Sheet sheet = workbook.getSheetAt(0);
                 // 在此处添加对文件数据的处理逻辑，例如遍历行和列获取数据
-                                // 获取第一行的第一列
                 Cell cell1 = sheet.getRow(0).getCell(0);
-                System.out.println("第一行第一列的值: " + cell1.getStringCellValue());
-                List<EfTower> efTowerList = new ArrayList<>();
+                List<EfTowerLine> efTowerLines = new ArrayList<>();
                 // 遍历所有行，从第二行开始（索引为1，因为索引是从0开始的）
                 for (int rowNum = 1; rowNum <= sheet.getLastRowNum(); rowNum++) {
                     Row row = sheet.getRow(rowNum);
                     if (row != null) { // 确保行不为空
                         // 遍历每一行的所有单元格
-                        EfTower efTower = new EfTower();
+                        EfTowerLine efTowerLine = new EfTowerLine();
                         for (Cell cell : row) {
-                            // 根据单元格的类型来获取数据
-                            // 当索引为0时，
                             Integer columnIndex = cell.getColumnIndex();
                             switch (cell.getCellType()) {
                                 case STRING:
                                     if (columnIndex == 0) {
-                                        efTower.setMark(cell.getStringCellValue());
+                                        efTowerLine.setMark(cell.getStringCellValue());
                                     }else if (columnIndex == 1) {
-                                        efTower.setName(cell.getStringCellValue());
+                                        efTowerLine.setStartTowerMark(cell.getStringCellValue());
                                     }else if (columnIndex == 2) {
-                                        efTower.setLat(cell.getNumericCellValue());
+                                        efTowerLine.setEndTowerMark(cell.getStringCellValue());
                                     }else if (columnIndex == 3) {
-                                        efTower.setLon(cell.getNumericCellValue());
+                                        efTowerLine.setLineLength(Double.parseDouble(cell.getStringCellValue()));
                                             }else if (columnIndex == 4) {
-                                            efTower.setAlt(cell.getNumericCellValue());
-                                    }else if (columnIndex == 5) {
-                                        efTower.setAbsalt(cell.getNumericCellValue());
-                                    }else if (columnIndex == 6) {
-                                        efTower.setVerticalLineArc(cell.getNumericCellValue());
-                                    }else if (columnIndex == 7) {
-                                        efTower.setLineLineDis(cell.getNumericCellValue());
-                                    }else if (columnIndex == 8) {
-                                        efTower.setLineTowerDis(cell.getNumericCellValue());
-                                    }else if (columnIndex == 9) {
-                                        efTower.setTowerRotationAngle(cell.getNumericCellValue());
-                                    }else if (columnIndex == 10) {
-                                        efTower.setSpan(cell.getNumericCellValue());
-                                    }else if (columnIndex == 11) {
-                                        efTower.setTerrain(String.valueOf(cell.getStringCellValue()));
-                                    }
-                                    else if (columnIndex == 12) {
-                                         efTower.setDes(cell.getStringCellValue());
+                                        efTowerLine.setDes(cell.getStringCellValue());
                                     }
                                     break;
                                 case NUMERIC:
                                     if(columnIndex == 0){}
                                     if (columnIndex == 0) {
-                                        efTower.setMark(cell.getStringCellValue());
+                                        efTowerLine.setMark(String.valueOf(cell.getNumericCellValue()));
                                     }else if (columnIndex == 1) {
-                                        efTower.setName(cell.getStringCellValue());
+                                        efTowerLine.setStartTowerMark(String.valueOf(cell.getNumericCellValue()));
                                     }else if (columnIndex == 2) {
-                                        efTower.setLat(cell.getNumericCellValue());
+                                        efTowerLine.setEndTowerMark(String.valueOf(cell.getNumericCellValue()));
                                     }else if (columnIndex == 3) {
-                                        efTower.setLon(cell.getNumericCellValue());
+                                        efTowerLine.setLineLength(cell.getNumericCellValue());
                                     }else if (columnIndex == 4) {
-                                        efTower.setAlt(cell.getNumericCellValue());
-                                    }else if (columnIndex == 5) {
-                                        efTower.setAbsalt(cell.getNumericCellValue());
-                                    }else if (columnIndex == 6) {
-                                        efTower.setVerticalLineArc(cell.getNumericCellValue());
-                                    }else if (columnIndex == 7) {
-                                        efTower.setLineLineDis(cell.getNumericCellValue());
-                                    }else if (columnIndex == 8) {
-                                        efTower.setLineTowerDis(cell.getNumericCellValue());
-                                    }else if (columnIndex == 9) {
-                                        efTower.setTowerRotationAngle(cell.getNumericCellValue());
-                                    }else if (columnIndex == 10) {
-                                        efTower.setSpan(cell.getNumericCellValue());
-                                    }else if (columnIndex == 11) {
-                                        efTower.setTerrain(String.valueOf(cell.getStringCellValue()));
-                                    }
-                                    else if (columnIndex == 12) {
-                                        efTower.setDes(String.valueOf(cell.getNumericCellValue()));
+                                        efTowerLine.setDes(String.valueOf(cell.getNumericCellValue()));
                                     }
                                     break;
                                 default:
                                     System.out.print("Unknown cell type\t");
                             }
                         }
-                        efTower.setCreateTime(new Date());
-                        efTower.setUpdateTime(new Date());
-                        efTowerList.add(efTower);
-                        System.out.println(); // 换行
+                        efTowerLine.setCreateTime(new Date());
+                        efTowerLines.add(efTowerLine);
                     }
                 }
-                efBusinessService.batchInsertTower(efTowerList);
-                return ResultUtil.success("文件数据读取成功",efTowerList);
+                efBusinessService.batchInsertTowerLine(efTowerLines);
+                return ResultUtil.success("文件数据读取成功",efTowerLines);
             } catch (IOException e) {
                 e.printStackTrace();
                 return ResultUtil.error("文件读取失败");

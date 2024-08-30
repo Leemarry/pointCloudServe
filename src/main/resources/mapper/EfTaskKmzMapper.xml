@@ -42,6 +42,10 @@
         limit #{offset}, #{limit}
     </select>
 
+    <select id="queryAllByTime" resultMap="EfTaskKmzMap">
+        select * from ef_task_kmz where kmz_update_time BETWEEN #{startTime} AND #{endTime} order by kmz_update_time desc
+    </select>
+
     <!--根据公司编号查询 -->
     <select id="queryAllByCid" resultMap="EfTaskKmzMap">
         select

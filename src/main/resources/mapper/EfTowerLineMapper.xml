@@ -22,12 +22,20 @@
         <result property="des" column="des" jdbcType="VARCHAR"/>
         <!--  photos 的  tower_id 与 EfTower 的tower_id相等     -->
         <collection property="startphotos" column="start_tower_mark"
-                    select="com.bear.reseeding.dao.EfMediaDao.getPhotosByTowerMark"
+                    select="com.bear.reseeding.dao.EfMediaDao.getPhotosByTowerMark2"
                     ofType="com.bear.reseeding.entity.EfPhoto"/>
         <collection property="endphotos" column="end_tower_mark"
-                    select="com.bear.reseeding.dao.EfMediaDao.getPhotosByTowerMark"
+                    select="com.bear.reseeding.dao.EfMediaDao.getPhotosByTowerMark2"
+                    ofType="com.bear.reseeding.entity.EfPhoto"/>
+        <collection property="photos" column="mark"
+                    select="com.bear.reseeding.dao.EfMediaDao.getPhotosByTowerMark2"
                     ofType="com.bear.reseeding.entity.EfPhoto"/>
     </resultMap>
+
+
+    <select id="getTowerLinesByTowerMark" resultMap="EfTowerLineMap">
+        select * from tower_line where start_tower_mark = #{towerMark} or end_tower_mark = #{towerMark}
+    </select>
 
     <select id="getTowerLineList" resultMap="EfTowerLineAndPhotoMap">
         select * from tower_line
@@ -55,6 +63,22 @@
         line_length = #{lineLength},
         create_time = #{createTime},
         des = #{des}
+    </insert>
+
+<!--    <insert id="batchInsertTower" keyProperty="id" useGeneratedKeys="true">-->
+<!--        insert into ef_tower (id, name, mark, lat, lng, absalt, alt, vertical_line_arc, line_line_dis, line_tower_dis, tower_rotation_angle, create_time, update_time, des, type, span, terrain)-->
+<!--        values-->
+<!--        <foreach collection="towerList" item="entity" separator=",">-->
+<!--            (#{entity.id}, #{entity.name}, #{entity.mark}, #{entity.lat}, #{entity.lon}, #{entity.absalt}, #{entity.alt}, #{entity.verticalLineArc}, #{entity.lineLineDis}, #{entity.lineTowerDis}, #{entity.towerRotationAngle}, #{entity.createTime}, #{entity.updateTime}, #{entity.des}, #{entity.type}, #{entity.span}, #{entity.terrain})-->
+<!--        </foreach>-->
+<!--    </insert>-->
+
+    <insert id="batchInsertLine" keyProperty="id" useGeneratedKeys="true">
+        insert into tower_line (id, mark, start_tower_mark, end_tower_mark, line_length, create_time, des)
+        values
+        <foreach collection="lineList" item="entity" separator=",">
+            (#{entity.id}, #{entity.mark}, #{entity.startTowerMark}, #{entity.endTowerMark}, #{entity.lineLength}, #{entity.createTime}, #{entity.des})
+        </foreach>
     </insert>
 
 

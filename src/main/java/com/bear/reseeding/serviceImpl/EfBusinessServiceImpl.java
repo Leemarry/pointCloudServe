@@ -16,7 +16,17 @@ public class EfBusinessServiceImpl implements EfBusinessService {
     @Resource
     private EfBusinessDao efBusinessDao;
 
+    @Override
+    public int gettowerCount(){
+        return efBusinessDao.gettowerCount();
+    }
 
+
+    @Override
+    public List<EfTower> getTowerAllInfoList(String startDate, String endDate, String mark) {
+        List<EfTower> efTowers=  efBusinessDao.getTowerAllInfoList(startDate, endDate, mark);
+        return efTowers;
+    }
 
     @Override
     public List<EfTower> getTowerList(String startDate, String endDate, String mark) {
@@ -60,6 +70,12 @@ public class EfBusinessServiceImpl implements EfBusinessService {
     public List<EfTower> batchInsertTower(List<EfTower> efTowerList) {
         efBusinessDao.batchInsertTower(efTowerList);
         return efTowerList;
+    }
+
+    @Override
+    public List<EfTowerLine> batchInsertTowerLine(List<EfTowerLine> efTowerLineList) {
+        int res =  efBusinessDao.batchInsertLine(efTowerLineList);
+        return efTowerLineList;
     }
 
     @Override

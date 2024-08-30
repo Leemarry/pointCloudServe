@@ -41,6 +41,57 @@
                     select="com.bear.reseeding.dao.EfMediaDao.getPhotosByTowerMark"
                     ofType="com.bear.reseeding.entity.EfPhoto"/>
     </resultMap>
+    <resultMap type="com.bear.reseeding.entity.EfTower" id="EfTowerAndAllMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="mark" column="mark" jdbcType="VARCHAR"/>
+        <result property="lat" column="lat" jdbcType="DOUBLE"/>
+        <result property="lon" column="lng" jdbcType="DOUBLE"/>
+        <result property="absalt" column="absalt" jdbcType="DOUBLE"/>
+        <result property="alt" column="alt" jdbcType="DOUBLE"/>
+        <result property="verticalLineArc" column="vertical_line_arc" jdbcType="DOUBLE"/>
+        <result property="lineLineDis" column="line_line_dis" jdbcType="DOUBLE"/>
+        <result property="lineTowerDis" column="line_tower_dis" jdbcType="DOUBLE"/>
+        <result property="towerRotationAngle" column="tower_rotation_angle" jdbcType="DOUBLE"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="des" column="des" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="VARCHAR"/>
+        <result property="span" column="span" jdbcType="DOUBLE"/>
+        <result property="terrain" column="terrain" jdbcType="VARCHAR"/>
+        <result property="geo" column="geo" jdbcType="VARCHAR"/>
+        <!--  photos 的  tower_id 与 EfTower 的tower_id相等     -->
+        <collection property="photos" column="mark"
+                    select="com.bear.reseeding.dao.EfMediaDao.getPhotosByTowerMark"
+                    ofType="com.bear.reseeding.entity.EfPhoto"/>
+        <collection property="towerLines" column="mark"
+                    select="com.bear.reseeding.dao.EfBusinessDao.getTowerLinesByTowerMark"
+                    ofType="com.bear.reseeding.entity.EfPhoto"/>
+        <collection property="pointCloud" column="mark"
+                    select="com.bear.reseeding.dao.EfMediaDao.getPointCloudByTowerMark"
+                    ofType="com.bear.reseeding.entity.EfPhoto"/>
+        <collection property="orthoImg" column="mark"
+                    select="com.bear.reseeding.dao.EfMediaDao.getOrthoImgByTowerMark"
+                    ofType="com.bear.reseeding.entity.EfPhoto"/>
+    </resultMap>
+
+    <select id="gettowerCount" resultType="int">
+        select count(*) from ef_tower
+    </select>
+
+
+    <select id="getTowerAllInfoList" resultMap="EfTowerAndAllMap">
+        select * from ef_tower
+        <where>
+            <if test="mark!=null">
+                mark = #{mark}
+            </if>
+            <if test="1==1">
+                AND create_time BETWEEN #{startDate} AND #{endDate}
+            </if>
+        </where>
+        ORDER BY update_time DESC
+    </select>
 
     <select id="getTowerList" resultMap="EfTowerAndPhotoMap">
         select * from ef_tower
@@ -60,23 +111,17 @@
     </delete>
 
     <insert id="insertOrUpdateTower" keyProperty="id" useGeneratedKeys="true">
-        insert into ef_tower (id, name, mark, lat, lng, absalt, alt, vertical_line_arc, line_line_dis, line_tower_dis, tower_rotation_angle, create_time, update_time)
-        values ( #{id}, #{name}, #{mark}, #{lat}, #{lon}, #{absalt}, #{alt}, #{verticalLineArc}, #{lineLineDis}, #{lineTowerDis}, #{towerRotationAngle}, #{createTime}, #{updateTime})
-        on duplicate key update name = #{name}, mark = #{mark}, lat = #{lat}, lng = #{lon}, absalt = #{absalt}, alt = #{alt}, vertical_line_arc = #{verticalLineArc}, line_line_dis = #{lineLineDis}, line_tower_dis = #{lineTowerDis}, tower_rotation_angle = #{towerRotationAngle}, update_time = #{updateTime}
+    insert into ef_tower (id, name, mark, lat, lng, absalt, alt, vertical_line_arc, line_line_dis, line_tower_dis, tower_rotation_angle, create_time, update_time, des, type, span, terrain,geo)
+        values (#{id}, #{name}, #{mark}, #{lat}, #{lon}, #{absalt}, #{alt}, #{verticalLineArc}, #{lineLineDis}, #{lineTowerDis}, #{towerRotationAngle}, #{createTime}, #{updateTime}, #{des}, #{type}, #{span}, #{terrain},#{geo})
+        ON DUPLICATE KEY UPDATE name = #{name}, mark = #{mark}, lat = #{lat}, lng = #{lon}, absalt = #{absalt}, alt = #{alt}, vertical_line_arc = #{verticalLineArc}, line_line_dis = #{lineLineDis}, line_tower_dis = #{lineTowerDis}, tower_rotation_angle = #{towerRotationAngle}, create_time = #{createTime}, update_time = #{updateTime}, des = #{des}, type = #{type}, span = #{span}, terrain = #{terrain},geo = #{geo}
     </insert>
 
-<!--    <insert id="batchInsertTower" keyProperty="id" useGeneratedKeys="true">-->
-<!--        insert into ef_tower (id, name, mark, lat, lng, absalt, alt, vertical_line_arc, line_line_dis, line_tower_dis, tower_rotation_angle, create_time, update_time)-->
-<!--        values-->
-<!--        <foreach collection="towerList" item="tower" separator=",">-->
-<!--            (#{tower.id}, #{tower.name}, #{tower.mark}, #{tower.lat}, #{tower.lon}, #{tower.absalt}, #{tower.alt}, #{tower.verticalLineArc}, #{tower.lineLineDis}, #{tower.lineTowerDis}, #{tower.towerRotationAngle}, #{tower.createTime}, #{tower.updateTime})-->
-<!--        </foreach>-->
-<!--    </insert>-->
+
     <insert id="batchInsertTower" keyProperty="id" useGeneratedKeys="true">
-        insert into ef_tower (id, name, mark, lat, lng, absalt, alt, vertical_line_arc, line_line_dis, line_tower_dis, tower_rotation_angle, create_time, update_time, des, type, span, terrain)
+        insert into ef_tower (id, name, mark, lat, lng, absalt, alt, vertical_line_arc, line_line_dis, line_tower_dis, tower_rotation_angle, create_time, update_time, des, type, span, terrain,geo)
         values
         <foreach collection="towerList" item="entity" separator=",">
-            (#{entity.id}, #{entity.name}, #{entity.mark}, #{entity.lat}, #{entity.lon}, #{entity.absalt}, #{entity.alt}, #{entity.verticalLineArc}, #{entity.lineLineDis}, #{entity.lineTowerDis}, #{entity.towerRotationAngle}, #{entity.createTime}, #{entity.updateTime}, #{entity.des}, #{entity.type}, #{entity.span}, #{entity.terrain})
+            (#{entity.id}, #{entity.name}, #{entity.mark}, #{entity.lat}, #{entity.lon}, #{entity.absalt}, #{entity.alt}, #{entity.verticalLineArc}, #{entity.lineLineDis}, #{entity.lineTowerDis}, #{entity.towerRotationAngle}, #{entity.createTime}, #{entity.updateTime}, #{entity.des}, #{entity.type}, #{entity.span}, #{entity.terrain},#{entity.geo})
         </foreach>
     </insert>
 

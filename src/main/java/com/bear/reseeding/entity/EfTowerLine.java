@@ -13,6 +13,16 @@ public class EfTowerLine {
     private String des;
     private List<EfPhoto> startphotos;
     private List<EfPhoto> endphotos;
+    private List<EfPhoto> photos;
+
+
+    public List<EfPhoto> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(List<EfPhoto> photos) {
+        this.photos = photos;
+    }
 
     public List<EfPhoto> getStartphotos() {
         return startphotos;
@@ -84,5 +94,21 @@ public class EfTowerLine {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    @Override
+    public String toString() {
+        return "EfTowerLine{" +
+                "id=" + id +
+                ", mark='" + mark + '\'' +
+                ", startTowerMark='" + startTowerMark + '\'' +
+                ", endTowerMark='" + endTowerMark + '\'' +
+                ", lineLength=" + lineLength +
+                ", createTime=" + createTime +
+                ", des='" + des + '\'' +
+                ", startphotos=" + startphotos +
+                ", endphotos=" + endphotos +
+                ", photos=" + photos +
+                '}';
     }
 }

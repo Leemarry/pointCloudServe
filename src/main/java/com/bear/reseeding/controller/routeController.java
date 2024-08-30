@@ -18,7 +18,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -48,6 +50,26 @@ public class routeController {
 //        return ResultUtil.success();
 //    }
 
+    @ResponseBody
+    @PostMapping(value = "/kmz/querylistByTime")
+    public Result getPhotoListbyTime(   @RequestParam(value = "startTime", required = false) Date startTime,
+                                        @RequestParam(value = "endTime", required = false) Date endTime){
+        try{
+//            if (endTime <= startTime) {
+//                return ResultUtil.error("查询时间段异常");
+//            }
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String startTimeStr = sdf.format(startTime);
+            String endTimeStr = sdf.format(endTime);
+            List<EfTaskKmz> list = routeService.queryAllByTime( startTimeStr,  endTimeStr); //获取所有kmz数据
+            if(list.size() > 0){
+                return ResultUtil.success("获取成功",list);
+            }
+            return ResultUtil.success("获取成功",list);
+        }catch (Exception e){
+            return ResultUtil.error(e.getMessage());
+        }
+    }
 
     /**
      *  获取kmz航线数据信息
@@ -57,7 +79,7 @@ public class routeController {
      */
     @ResponseBody
     @PostMapping(value = "/kmz/querylist")
-public Result getPhotoList(@RequestParam(value = "offset", defaultValue = "0") int offset,@RequestParam(value = "limit", defaultValue = "10") int limit){
+   public Result getPhotoList(@RequestParam(value = "offset", defaultValue = "0") int offset,@RequestParam(value = "limit", defaultValue = "10") int limit){
         try{
             List<EfTaskKmz> list = routeService.queryAllByLimit( offset,  limit); //获取所有kmz数据
             return ResultUtil.success("获取成功",list);
@@ -97,7 +119,7 @@ public Result getPhotoList(@RequestParam(value = "offset", defaultValue = "0") i
                       if (!minioService.uploadfile("kmz", url, "kmz",inputStream)) {
                           return ResultUtil.error("保存巡检航线失败(/生成kmzminio有误)！"); //生成kmzminio有误
                       }
-                      url = minioService.getPresignedObjectUrl(BucketNameKmz, url);
+                      url = minioService.getProxyObjectUrl(BucketNameKmz, url);
                       if ("".equals(url)) {
                           return ResultUtil.error("保存巡检航线失败(错误码 4)！");
                       }

@@ -8,6 +8,27 @@ import java.util.List;
 
 public interface EfMediaService {
 
+    Integer deletepointCloudBytowermark(String towermark);
+
+   Integer deletePhotoBytowermark(String towermark);
+
+    Integer deleteVideoBytowermark(String towermark);
+
+    Integer deleteOrthoImgBytowermark(String towermark);
+
+    Integer delectphotoById(Integer id);
+
+    Integer deleteVideoById(Integer id);
+
+    Integer deleteOrthoImgById(Integer id);
+
+    Integer deletePointCloudById(Integer id);
+
+    Integer deleteReportById(Integer id);
+
+    EfPhoto queryDistance( double lat, double lng);
+
+    EfPhoto queryDistanceWithDis( double lat, double lng, double distance);
 
     List<EfPhoto> getPhotolist(String startDate, String endDate, String mark);
     List<EfVideo> getVideolist(String startDate, String endDate, String mark);
@@ -23,7 +44,7 @@ public interface EfMediaService {
     EfPhoto uploadPhotoFile(MultipartFile file, EfUser user , Integer type, Date createTime,String url);
     EfPhoto uploadExifPhotoFile(MultipartFile file, EfUser user , Integer type, Date createTime,String url , double lat, double lng , String towermark);
 
-    EfVideo uploadVideoFile(MultipartFile file, EfUser user , Integer type, Date createTime,String url);
+    EfVideo uploadVideoFile(MultipartFile file, EfUser user , String towermark, Date createTime,String url);
 
     EfOrthoImg uploadOrthoImgFile(MultipartFile file, EfUser user, Integer type, Date createTime, String url);
 
@@ -31,9 +52,11 @@ public interface EfMediaService {
 
     EfPointCloud uploadPointCloudFile(MultipartFile file, EfUser user, Integer type, Date createTime, String url);
 
-    EfReport uploadReportFile(MultipartFile file, EfUser user, Integer type, Date createTime, String url);
+    EfReport uploadReportFile(MultipartFile file, EfUser user, Integer type, Date createTime, String url,String towerMark);
 
     EfPointCloud insertPointCloud (EfPointCloud pointCloud);
-
     EfPointCloud insertOrUpdatePointCloud (EfPointCloud pointCloud);
+
+    EfPointCloud queryCloudByMark(String towermark);
+
     }

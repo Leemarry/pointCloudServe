@@ -5,7 +5,6 @@ import java.util.Date;
 public class EfPointCloud {
     private int id;
     private String mark;
-    private int towerId;
     private String originType;
     private double originSize;
     private String originCloudUrl;
@@ -67,13 +66,6 @@ public class EfPointCloud {
         this.mark = mark;
     }
 
-    public int getTowerId() {
-        return towerId;
-    }
-
-    public void setTowerId(int towerId) {
-        this.towerId = towerId;
-    }
 
     public String getOriginType() {
         return originType;
@@ -144,7 +136,6 @@ public class EfPointCloud {
         return "EfPointCloud{" +
                 "id=" + id +
                 ", mark='" + mark + '\'' +
-                ", towerId=" + towerId +
                 ", originType='" + originType + '\'' +
                 ", originSize=" + originSize +
                 ", originCloudUrl='" + originCloudUrl + '\'' +

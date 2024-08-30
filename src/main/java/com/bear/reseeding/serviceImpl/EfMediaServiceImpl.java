@@ -29,6 +29,48 @@ public class EfMediaServiceImpl implements EfMediaService {
     @Resource
     private MinioService minioService;
 
+    public Integer deletepointCloudBytowermark(String towermark) {
+        return efMediaDao.deletepointCloudBytowermark(towermark);
+    }
+    public Integer deleteOrthoImgBytowermark(String towermark) {
+        return efMediaDao.deleteOrthoImgBytowermark(towermark);
+    }
+    public Integer deletePhotoBytowermark(String towermark) {
+        return efMediaDao.deletePhotoBytowermark(towermark);
+    }
+    public Integer deleteVideoBytowermark(String towermark) {
+        return efMediaDao.deleteVideoBytowermark(towermark);
+    }
+
+    public Integer delectphotoById(Integer id) {
+        return efMediaDao.delectphotoById(id);
+    }
+    public Integer deleteOrthoImgById(Integer id) {
+        return efMediaDao.deleteOrthoImgById(id);
+    }
+    public Integer deleteVideoById(Integer id) {
+        return efMediaDao.deleteVideoById(id);
+    }
+    public Integer deletePointCloudById(Integer id) {
+        return efMediaDao.deletePointCloudById(id);
+    }
+    public Integer deleteReportById(Integer id) {
+        return efMediaDao.deleteReportById(id);
+    }
+
+    public EfPhoto queryDistance(double lat, double lon){
+        return efMediaDao.queryDistance(lat,lon);
+    }
+
+
+    public EfPhoto queryDistanceWithDis(double lat, double lon,double dis){
+        return efMediaDao.queryDistanceWithDis(lat,lon,dis);
+    }
+
+//    public Integer deleteReportBytowermark(String towermark) {
+//        return efMediaDao.deleteReportBytowermark(towermark);
+//    }
+
     public List<EfPhoto> getPhotolist(String startDate, String endDate, String mark){
         return efMediaDao.getPhotolist(startDate, endDate, mark);
     }
@@ -193,7 +235,7 @@ public class EfMediaServiceImpl implements EfMediaService {
 
 
 
-    public EfVideo uploadVideoFile(MultipartFile multipartFile, EfUser user, Integer type, Date createTime, String url) {
+    public EfVideo uploadVideoFile(MultipartFile multipartFile, EfUser user, String towermark, Date createTime, String url) {
         // 获取文件名
         String fileName = multipartFile.getOriginalFilename();
         // 获取文件后缀
@@ -205,6 +247,7 @@ public class EfMediaServiceImpl implements EfMediaService {
         long fileSize = multipartFile.getSize();
         EfVideo video = new EfVideo();
         video.setCreateTime(createTime);
+        video.setTowerMark(towermark);
         video.setMark(name);
         video.setPath(url);
         video.setSize(fileSize);
@@ -215,7 +258,7 @@ public class EfMediaServiceImpl implements EfMediaService {
     }
 
 
-    public EfReport uploadReportFile(MultipartFile multipartFile, EfUser user, Integer type, Date createTime, String url) {
+    public EfReport uploadReportFile(MultipartFile multipartFile, EfUser user, Integer type, Date createTime, String url,String towerMark) {
         String fileName = multipartFile.getOriginalFilename();
         String suffix = fileName.substring(fileName.lastIndexOf(".")+1); // 获取文件后缀 去除.
         String name = fileName.substring(0, fileName.lastIndexOf("."));
@@ -227,6 +270,7 @@ public class EfMediaServiceImpl implements EfMediaService {
         report.setSize(fileSize);
         report.setType(type);
         report.setFormats(suffix);
+        report.setTowerMark(towerMark);
         efMediaDao.insertReport(report);
 
 
@@ -238,11 +282,15 @@ public class EfMediaServiceImpl implements EfMediaService {
         efMediaDao.insertPointCloud(pointCloud);
         return pointCloud;
     }
-
-    public  EfPointCloud insertOrUpdatePointCloud(EfPointCloud pointCloud) {
+    public EfPointCloud insertOrUpdatePointCloud (EfPointCloud pointCloud) {
         efMediaDao.insertOrUpdatePointCloud(pointCloud);
         return pointCloud;
     }
+    public EfPointCloud queryCloudByMark (String towerMark) {
+      EfPointCloud pointCloud = efMediaDao.queryCloudByMark(towerMark);
+        return pointCloud;
+    }
+
 
 
 }

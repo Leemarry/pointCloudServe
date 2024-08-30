@@ -10,7 +10,12 @@
         <result property="size" column="size" jdbcType="DOUBLE"/>
         <result property="type" column="type" jdbcType="INTEGER"/>
         <result property="formats" column="formats" jdbcType="VARCHAR"/>
+        <result property="towerMark" column="tower_mark" jdbcType="VARCHAR"/>
     </resultMap>
+
+    <delete id="deleteReportById">
+        delete from ef_report where id = #{id}
+    </delete>
 
     <select id="getReportlist" resultMap="EfReportMap">
         select * from ef_report
@@ -30,17 +35,9 @@
 
 
     <insert id="insertReport" keyProperty="id" useGeneratedKeys="true">
-        insert into ef_report (mark, create_time, path, size, type, formats)
-        values (#{mark}, #{createTime}, #{path}, #{size}, #{type}, #{formats})
+        insert into ef_report (mark, create_time, path, size, type, formats, tower_mark)
+        values (#{mark}, #{createTime}, #{path}, #{size}, #{type}, #{formats}, #{towerMark})
     </insert>
-
-<!--    insertReport-->
-
-
-
-
-
-
 
 
 

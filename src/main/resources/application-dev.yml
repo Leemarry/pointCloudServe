@@ -8,10 +8,9 @@ spring:
   datasource:
     username: root
     password: 123456
-#    url: jdbc:mysql://8.134.196.47:3306/pointcloud?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
-#    url: jdbc:mysql://8.148.10.90:3306/pointcloud?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
-    url: jdbc:mysql://localhost:3307/pointcloud?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
-#    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/pointcloud?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
+    #    url: jdbc:mysql://114.132.62.199:3308/pointcloud?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
+    #    driver-class-name: com.mysql.jdbc.Driver
     #druid连接池配置
     type: com.alibaba.druid.pool.DruidDataSource
     initialSize: 5
@@ -43,9 +42,21 @@ spring:
     rsaPublicKey_pro_guangfu: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArQmpjAneqZ64ujSqaoVhFnch/MemFB6x2WEZKgreB8Tic3/qXoThRF/FYcbXcWeAIMlO+7szId/Dk3xTYuY5BZSI+it1EZZUjgduI3LZk56xQkZsdsGRpok6xsBD1RDgTG7mhf6pUkHd/xaqZEAcDtbwTcD9ocdTIBKKz2Rg5xAApUz69Rqrn7PRZUg+6ejlPtcYnbhwm5YfQYddgU3m/7sCjAvWAEhDT/8XlRWB/SDmnxEsKflg55gJKEdI2MutD/m6Gm9bCBTnNib9J+v3XqPYEhCLlHvT4y1/9Yi1v2wxb4ymk4HUJSDnmGpgXfrb3B/BjykV2rqjrIYkCAGv6QIDAQAB
     rsaPrivateKey_pro_guangfu: MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCtCamMCd6pnri6NKpqhWEWdyH8x6YUHrHZYRkqCt4HxOJzf+pehOFEX8VhxtdxZ4AgyU77uzMh38OTfFNi5jkFlIj6K3URllSOB24jctmTnrFCRmx2wZGmiTrGwEPVEOBMbuaF/qlSQd3/FqpkQBwO1vBNwP2hx1MgEorPZGDnEAClTPr1Gqufs9FlSD7p6OU+1xiduHCblh9Bh12BTeb/uwKMC9YASENP/xeVFYH9IOafESwp+WDnmAkoR0jYy60P+boab1sIFOc2Jv0n6/deo9gSEIuUe9PjLX/1iLW/bDFvjKaTgdQlIOeYamBd+tvcH8GPKRXauqOshiQIAa/pAgMBAAECggEBAINjudT2zZbYSYZCZUA7BOyNC0aoxmeyovLfsr7kv5EAo751251norFLU1IaLQ8UOwsqMIoerAXFpfjAR4TqMVQWZCgphVwUXSH3bF8IX0OjFQ+w770A4DqnKvUtmpQXm2kOMIaAR0uJbiq6qCk1MNjnxlIT/8Ku2mSZD8PIgXgQveFGkzY6fHLL46NuR9GxpTTBAaEUhydqOvZayGE5OCCIJulASpaMTChySNSRctmQz99Slkdc9OwW93nd906OwDMrhopSV3uY4iYsIXYDH8w2/NX83zMcRSYltYpF4dmnJPdpWsZ7KBOqK640YuFAuTlXJSEfihAXNV4DHJzkuvECgYEA/9A395fm3oPtfrTizMl5rT7nB9zThKyK4JoUWWFabFrhHTC1YzDV95T0ZhoN4aYBcvu1Clj/SZKutNcdd69tDxQn9/3adN31NmJMjMOm8jo0KQdG0EKj05Cuv6S+m2vf8VC8Lh3AK6vx5TmKNiqajO0BquvebbTPVRav1xfUZfUCgYEArSn7j7WDLPJpgCnsJ8ZpFP7MvKsHn9qP6Uz0qo+goIC0jPF9ri1ncqTh9BdAxezU0eNAMzxG+5fJ/KMTOiaQy/RMuIdIK+2IBnnjCDOkUh8D41hgiySDoHrvlFi8QOa+gLXcsqIvCP5EgC9Utd9hd/CKZqmbAYnx93LWX96XdaUCgYEA85aMxInzf+z2CBIsaL5sy6g7DASdsRcvguGVAOsv1D/RXh9UiWgmRoOjGVoz36tYc+n0oS7PoHo5O+Aeoin8WkBiMsWZ8HCuH6QIqn1figYcRvkz1/ms0DdT/w7bpVlaPAoZtnwD0lH/m7tnvV5iHlFMpjnFaoeiaa6Zr+J0EMUCgYAXiiZ9YbJkUMvQtWI6AfnU9dJFL4bIz0BS+bgk24N9biGdK1Lnc5qldg6VTPfsMAa6RYc7r80CdJ7rrgt2EzoJz7sCNrmz5wVfw//95G9JDphLtn7hS2RtU2jwJKPqurNY8d//lJaKRW5wcn60fppUYKmfzRyaN/NhrQXBYJP8VQKBgFWWhwmip1QoBgDwIe0NxiXsS0Syl/WxpPoooxNJ+hSBUoJMm1bO+IEFPgZ+kIPDGY4VbyqZiB63sf+zD2ncJsiiRqAluYggrOqtilMGbTHBEwGaghbhD8xf236c88Ry7oXM9XM5FXhBIwAAcJ3X84qVf/E1VpSSnEebM9Rv3AMd
     HttpUrl: "http://192.168.137.110:5000/upload" #照片分析算法服务器HTTP URL
+  mqtt:
+      protocol: tcp
+      host: localhost
+      port: 1883
+      user: reseeding
+      pwd: 6LqQyMQ7!fP
+      subscribeTopicHive: efuav/HiveC/# #订阅机巢主题
+      subscribeTopicEfuav: efuav/uavappC/# #订阅翼飞无人机主题
+      subscribeTopicDjiUav: efuav/djiappC/# #订阅大疆无人机主题
+      publishTopicHive: efuav/HiveS/# #发布公共机巢主题
+      publishTopicEfuav: efuav/uavappS/# #发布公共翼飞无人机主题
+      publishTopicDjiUav: efuav/djiappS/# #发布公共大疆无人机主题
   redis:
     database: 3
-    host: 127.0.0.1
+    host: localhost
     port: 6379
     # Redis服务器链接密码（默认为空）
     password:
@@ -81,8 +92,9 @@ minio:
   BucketNameWord: efuavword
   BucketNameImage: efuavimage
   BucketNameModel: efuavmodel
-  Endpoint:  http://localhost:9090 # http://8.148.10.90:9000
-  EndpointExt: http://localhost:9090 #http://8.148.10.90:9000
+  Endpoint: http://localhost:9090 # http://8.148.10.90:9000
+  EndpointExt: http://localhost:9090 #http://8.148.10.90:9000 http://114.132.62.199:9000  #
+  MinioUrl: miniosource
 TxyTrtc:
   TxyTrtcSdkAppId: 1400739024
   TxyTrtcExpireTime: 604800

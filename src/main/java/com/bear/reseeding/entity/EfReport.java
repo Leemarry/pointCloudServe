@@ -10,6 +10,15 @@ public class EfReport {
     private  int type;
     private Date createTime;
     private String formats;
+    private String towerMark;
+
+    public String getTowerMark() {
+        return towerMark;
+    }
+
+    public void setTowerMark(String towerMark) {
+        this.towerMark = towerMark;
+    }
 
     public String getFormats() {
         return formats;
@@ -65,5 +74,19 @@ public class EfReport {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    @Override
+    public String toString() {
+        return "EfReport{" +
+                "id=" + id +
+                ", mark='" + mark + '\'' +
+                ", path='" + path + '\'' +
+                ", size=" + size +
+                ", type=" + type +
+                ", createTime=" + createTime +
+                ", formats='" + formats + '\'' +
+                ", towerMark='" + towerMark + '\'' +
+                '}';
     }
 }

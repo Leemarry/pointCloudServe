@@ -868,7 +868,7 @@ public class TaskAnsisPhoto {
                 }
             }
             //#endregion
-            String resourceUrl = minioService.getPresignedObjectUrl("efuav", "photo/" + pathBigImage); // pathMiniImage pathBigImage
+            String resourceUrl = minioService.getProxyObjectUrl("efuav", "photo/" + pathBigImage); // pathMiniImage pathBigImage
 
 
             //#region  存储ef_media_photo表

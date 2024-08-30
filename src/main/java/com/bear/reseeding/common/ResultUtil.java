@@ -91,6 +91,14 @@ public class ResultUtil {
         return result;
     }
 
+    public static Result success(String message, Object object ,int msgid) {
+        Result result = new Result();
+        result.setCode(msgid);
+        result.setMessage(message);
+        result.setData(object);
+        return result;
+    }
+
     public static Result success() {
         return ResultUtil.success(null);
     }

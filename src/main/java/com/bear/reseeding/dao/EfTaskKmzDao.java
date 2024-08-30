@@ -30,6 +30,8 @@ public interface EfTaskKmzDao {
      * @return 对象列表
      */
     List<EfTaskKmz> queryAllByLimit(@Param("offset") int offset, @Param("limit") int limit);
+
+    List<EfTaskKmz> queryAllByTime(@Param("startTime") String startTime, @Param("endTime") String endTime);
 //
 //    /**
 //     * 根据公司编号查询

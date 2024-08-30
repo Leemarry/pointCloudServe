@@ -7,16 +7,48 @@ import java.util.List;
 
 public interface EfMediaDao {
 
+    Integer deletepointCloudBytowermark(@Param("towerMark") String towerMark);
+
+    Integer deleteOrthoImgBytowermark(@Param("towerMark") String towerMark);
+
+
+    Integer deletePhotoBytowermark(@Param("towerMark") String towerMark);
+
+
+    Integer deleteVideoBytowermark(@Param("towerMark") String towerMark);
+
+    Integer delectphotoById(int id);
+
+    Integer deleteOrthoImgById(int id);
+
+    Integer deleteVideoById(int id);
+
+    Integer deleteReportById(int id);
+
+    Integer deletePointCloudById(int id);
+
+    EfPhoto queryDistance(@Param("lat") double lat, @Param("lng") double lng);
+
+    EfPhoto queryDistanceWithDis(@Param("lat") double lat, @Param("lng") double lng, @Param("dis") double dis);
+
+
+
 
     List<EfPhoto> getPhotosByTowerId(int towerId);
 
     List<EfPhoto> getPhotosByTowerMark(@Param("towerMark")   String towerMark);
 
+    List<EfPhoto> getPhotosByTowerMark2(@Param("towerMark")   String towerMark);
+
     List<EfPhoto> getPhotolist(@Param("startDate") String startDate, @Param("endDate") String endDate, @Param("mark") String mark);
 
     List<EfVideo> getVideolist(@Param("startDate") String startDate, @Param("endDate") String endDate, @Param("mark") String mark);
 
+    EfPointCloud getPointCloudByTowerMark(@Param("towerMark") String towerMark);
+
     List<EfPointCloud> getPointcloudlist(@Param("startDate") String startDate, @Param("endDate") String endDate, @Param("mark") String mark);
+
+    EfOrthoImg getOrthoImgByTowerMark(@Param("towerMark") String towerMark);
 
     List<EfOrthoImg> getOrthoImglist(@Param("startDate") String startDate, @Param("endDate") String endDate, @Param("mark") String mark);
 
@@ -31,6 +63,8 @@ public interface EfMediaDao {
     int insertReport(EfReport report);
 
     int insertPointCloud(EfPointCloud pointcloud);
+
+    EfPointCloud queryCloudByMark(@Param("towerMark") String towerMark);
 
     int insertOrUpdatePointCloud (EfPointCloud pointcloud);
 }

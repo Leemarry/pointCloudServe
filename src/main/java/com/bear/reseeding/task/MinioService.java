@@ -5,6 +5,7 @@ import com.bear.reseeding.utils.LogUtil;
 import io.minio.*;
 import io.minio.errors.MinioException;
 import io.minio.http.Method;
+import io.minio.messages.DeleteObject;
 import io.minio.messages.Item;
 import net.lingala.zip4j.ZipFile;
 import org.apache.commons.lang.StringUtils;
@@ -62,8 +63,8 @@ public class MinioService {
     private String BucketNameWord;
     @Value("${minio.EndpointExt}")
     private String EndpointExt;
-    @Value("${minio.BucketNameModel}")
-    private String BucketNameModel;
+    @Value("${minio.MinioUrl}")
+    private String MinioUrl;
 
     private final MinioClient minioClient;
 
@@ -112,13 +113,7 @@ public class MinioService {
                     if(!isExists){
                         minioClient.putObject(PutObjectArgs.builder().bucket(bucketName).object(path).stream(stream, stream.available(), -1).contentType(contentType).build());
 
-//                        String fileUrl = minioClient.getPresignedObjectUrl(
-//                                GetPresignedObjectUrlArgs.builder()
-//                                        .method(Method.PUT)
-//                                        .bucket(bucketName)
-//                                        .object(path)
-//                                        .build()
-//                        );
+
                     }
                     String name = System.currentTimeMillis()+""+new Random().nextInt(9999);        //随机文件名
                     result = true;
@@ -240,6 +235,33 @@ public class MinioService {
         }
         return urlString;
     }
+
+
+    public String getProxyObjectUrl(String bucketName, String fileNam) {
+        String urlString = null;
+        try {
+            MinioClient minioClient = MinioClient.builder()
+                    .endpoint(Endpoint)
+                    .credentials(AccessKey, SecretKey)
+                    .build();
+
+            String fileUrl = minioClient.getPresignedObjectUrl(
+                    GetPresignedObjectUrlArgs.builder()
+                            .method(Method.PUT)
+                            .bucket(bucketName)
+                            .object(fileNam)
+                            .build()
+            );
+            URL url = new URL(fileUrl);
+            String paths = url.getPath();
+            urlString = MinioUrl+"/"+paths;
+        } catch (Exception e) {
+            LogUtil.logError("Minio获取文件异常：" + e.toString());
+        }
+        return urlString;
+    }
+
+//    public MinioUrl
 
     /**
      * 获取 Minio中文件的下载地址，对外的真正下载地址
@@ -384,7 +406,32 @@ public class MinioService {
             LogUtil.logError("上传文件 " + path + " 到Minio异常：" + e.toString());
             return result;
         }
+    }
 
+    public boolean putObjectandHeader(String bucketName, String path,InputStream stream,String contentType,String header) {
+        boolean result = false;
+        try {
+            Map<String, String> metadata = new HashMap<>();
+            metadata.put("Content-Disposition",header); // 设置为 inline 使浏览器中打开
+            // 先判断是否连接 minioClient 是否存在
+            checkBucketExistsTOmakeBucket(bucketName);
+            PutObjectArgs putObjectArgs = PutObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(path)
+                    .stream(stream, stream.available(), -1)
+                    .contentType(contentType) // 根据文件类型设置 Content-Type
+                    .userMetadata(metadata) // 使用 HashMap 设置用户元数据
+                    .build();
+
+            ObjectWriteResponse response =   minioClient.putObject(putObjectArgs);
+            LogUtil.logInfo("上传成功：{}"+response.etag());
+            result = true;
+
+            return result;
+        } catch (Exception e) {
+            LogUtil.logError("上传文件 " + path + " 到Minio异常：" + e.toString());
+            return result;
+        }
     }
 
     /**
@@ -600,6 +647,46 @@ public class MinioService {
             }
             gold = true;
 
+        } catch (Exception e) {
+            gold = false;
+        }
+        return gold;
+    }
+
+
+    /**
+     * 删除文件夹内 对象文件
+     *
+     * @param bucketName
+     * @param objectName
+     * @return
+     * @throws Exception
+     */
+    public boolean removeObjectss(String bucketName, String objectName) {
+        boolean gold = false;
+        try {
+            // 列出文件夹下的所有对象
+            Iterable<Result<Item>> objects = minioClient.listObjects(ListObjectsArgs.builder()
+                    .bucket(bucketName)
+                    .prefix(objectName + "/")
+                    .recursive(true)
+                    .build());
+
+            // 收集要删除的对象
+            List<DeleteObject> objectsToDelete = new ArrayList<>();
+            for (Result<Item> result : objects) {
+                // 从Result中提取Item
+                Item item = result.get(); // 获取实际的Item对象
+                String objectNames = item.objectName();
+                System.out.println(objectNames);
+                minioClient.removeObject(
+                        RemoveObjectArgs.builder()
+                                .bucket(bucketName)
+                                .object(item.objectName())
+                                .build()
+                );
+            }
+            gold = true;
         } catch (Exception e) {
             gold = false;
         }
@@ -1026,5 +1113,21 @@ public class MinioService {
 
 
     // endregion
+
+    // 根据文件扩展名返回对应的 Content-Type
+    private static String getContentType(MultipartFile file) {
+        String mimeType = "application/octet-stream"; // 默认类型
+
+        try {
+            mimeType = file.getContentType();
+            if (mimeType == null || mimeType.isEmpty()) {
+                mimeType = "application/octet-stream"; // 如果无法确定类型，使用默认
+            }
+        } catch (Exception e) {
+            System.err.println("获取文件类型时出现异常: " + e.getMessage());
+        }
+
+        return mimeType;
+    }
 
 }
