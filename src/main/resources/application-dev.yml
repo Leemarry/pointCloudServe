@@ -1,4 +1,4 @@
-#
+ #
 #  yml的优先级会大于properties,所以如果同时存在这两种配置,
 #  因为properties是后加载的,所以此时yml就没有生效”
 #
@@ -44,7 +44,7 @@ spring:
     HttpUrl: "http://192.168.137.110:5000/upload" #照片分析算法服务器HTTP URL
   mqtt:
       protocol: tcp
-      host: localhost
+      host: 114.132.62.199
       port: 1883
       user: reseeding
       pwd: 6LqQyMQ7!fP
@@ -56,7 +56,7 @@ spring:
       publishTopicDjiUav: efuav/djiappS/# #发布公共大疆无人机主题
   redis:
     database: 3
-    host: localhost
+    host: 114.132.62.199
     port: 6379
     # Redis服务器链接密码（默认为空）
     password:

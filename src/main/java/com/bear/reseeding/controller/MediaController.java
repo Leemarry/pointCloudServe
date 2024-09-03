@@ -246,6 +246,8 @@ public class MediaController {
     public Result getOrthoimgLists(@PathVariable("uploadType") String uploadTypeStr, @RequestParam(value = "file", required = true) MultipartFile file, @RequestParam(value = "createTime", required = true) Date createTime, @RequestParam(value = "folder", required = false) String folder, @RequestParam(value = "fileNum", required = true) Long fileNum, @RequestParam("filemd5") String filemd5, @RequestParam("overallMD5") String overallMD5) {
         InputStream inputStream = null;
         try {
+//            System.out.println(folder);
+//            System.out.println("文件名："+file.getOriginalFilename());
             EfMediaType mediaType = EfMediaType.valueOf(uploadTypeStr.toUpperCase()); // 上传类型
             String bucketName = mediaType.toString();
             // 获取文件名
@@ -292,21 +294,22 @@ public class MediaController {
             RLock lock = redissonClient.getLock("filelist_upload_lock");
             lock.lock();
             try {
-                boolean flag = redisUtils.isHashExists("a_" + parentFolder + "_" + overallMD5, overallMD5, "0", 24, TimeUnit.HOURS); // 默认请求上传第一次
+                boolean flag = redisUtils.isHashExists("a_" + parentFolder + "_" + overallMD5, overallMD5, "0", 4, TimeUnit.MINUTES); // 默认请求上传第一次
                 // 是否存在
                 if (flag) {
                     Object currentFileNum = redisUtils.hmGet("a_" + parentFolder + "_" + overallMD5, overallMD5); // 获取当前上传文件序号
                     // 尝试将当前值转换为整数
                     value = Integer.parseInt(currentFileNum.toString()) + 1;
-                    redisUtils.hmSet("a_" + parentFolder + "_" + overallMD5, overallMD5, value + "", 24, TimeUnit.HOURS); // 上传文件序号+1
+                    redisUtils.hmSet("a_" + parentFolder + "_" + overallMD5, overallMD5, value + "", 4, TimeUnit.MINUTES); // 上传文件序号+1
                 }
                 if (exitObj == null) {
-                    redisUtils.hmSet("a_" + parentFolder + "_" + overallMD5, parentFolder2+filemd5, url, 24, TimeUnit.HOURS);
+                    redisUtils.hmSet("a_" + parentFolder + "_" + overallMD5, parentFolder2+filemd5, url, 5, TimeUnit.MINUTES);
                 }
                 if (value == fileNum) {
-                    redisUtils.hmSet("a_" + parentFolder + "_" + overallMD5, overallMD5, 0 + "", 20, TimeUnit.SECONDS); // 上传文件序号+1
+                    redisUtils.hmSet("a_" + parentFolder + "_" + overallMD5, overallMD5, 0 + "", 45, TimeUnit.SECONDS); // 上传文件序号+1
                     if (exitObj != null) {
                         url = (String) exitObj;
+                        System.out.println("上传完成exitObj:" + url);
                     }
                     System.out.println("上传完成:" + url);
                     finshed = true;
@@ -316,9 +319,10 @@ public class MediaController {
             }
             if (finshed) {
                 // http://localhost:9090/miniosourceefuav-ortho-img/pointcloud/zseimage_202408160833_001_B0041064/zseimage_202408160833_001_B004/map/{z}/{x}/{y}.png
-                String mapPath = SubstringUtil.processUrl(url, Endpoint, EndpointExt);
+                String mapPath = SubstringUtil.processUrl2(url);
+                System.out.println("上传完成mapPath:" + mapPath);
                 Location location = fileContentHolder.getFileContent(overallMD5);
-                EfOrthoImg efOrthoImg = efMediaService.uploadOrthoImgMap(overallMD5, location.getLatitude(), location.getLongitude(), towerMark, createTime, url, parentFolder);
+                EfOrthoImg efOrthoImg = efMediaService.uploadOrthoImgMap(overallMD5, location.getLatitude(), location.getLongitude(), towerMark, createTime, mapPath, parentFolder);
                 return ResultUtil.success("success", efOrthoImg);
             }
             return ResultUtil.success("success");
@@ -405,7 +409,7 @@ public class MediaController {
                     url = removeDuplicateSlashes(url);
                     if(getURL){
                         urlContentHoder.setFileContent("a_" + parentFolder + "_" + overallMD5, url);
-                        redisUtils.hmSet("a_" + parentFolder + "_" + overallMD5, "url", url + "", 24, TimeUnit.HOURS);
+                        redisUtils.hmSet("a_" + parentFolder + "_" + overallMD5, "url", url + "", 5, TimeUnit.MINUTES);
                     }
                 }
             }else{
@@ -416,19 +420,19 @@ public class MediaController {
             RLock lock = redissonClient.getLock("filelist_upload_lock");
             lock.lock();
             try {
-                boolean flag = redisUtils.isHashExists("a_" + parentFolder + "_" + overallMD5, overallMD5, "0", 24, TimeUnit.HOURS); // 默认请求上传第一次
+                boolean flag = redisUtils.isHashExists("a_" + parentFolder + "_" + overallMD5, overallMD5, "0", 5, TimeUnit.MINUTES); // 默认请求上传第一次
                 // 是否存在
                 if (flag) {
                     Object currentFileNum = redisUtils.hmGet("a_" + parentFolder + "_" + overallMD5, overallMD5); // 获取当前上传文件序号
                     // 尝试将当前值转换为整数
                     value = Integer.parseInt(currentFileNum.toString()) + 1;
-                    redisUtils.hmSet("a_" + parentFolder + "_" + overallMD5, overallMD5, value + "", 24, TimeUnit.HOURS); // 上传文件序号+1
+                    redisUtils.hmSet("a_" + parentFolder + "_" + overallMD5, overallMD5, value + "", 5, TimeUnit.MINUTES); // 上传文件序号+1
                 }
                 if (exitObj == null) {
-                    redisUtils.hmSet("a_" + parentFolder+ "_" + overallMD5, parentFolder2+filemd5, url, 24, TimeUnit.HOURS);
+                    redisUtils.hmSet("a_" + parentFolder+ "_" + overallMD5, parentFolder2+filemd5, url, 5, TimeUnit.MINUTES);
                 }
                 if (value == fileNum) {
-                    redisUtils.hmSet("a_" + parentFolder + "_" + overallMD5, overallMD5, 0 + "", 20, TimeUnit.SECONDS); // 上传文件序号+1
+                    redisUtils.hmSet("a_" + parentFolder + "_" + overallMD5, overallMD5, 0 + "", 45, TimeUnit.SECONDS); // 上传文件序号+1
                     if (exitObj != null) {
                         url = (String) exitObj;
                     }
@@ -512,7 +516,7 @@ public class MediaController {
                     url = removeDuplicateSlashes(url);
                     if(getURL){
                         urlContentHoder.setFileContent("a_" + parentFolder + "_" + overallMD5, url);
-                        redisUtils.hmSet("a_" + parentFolder + "_" + overallMD5, "url", url + "", 24, TimeUnit.HOURS);
+                        redisUtils.hmSet("a_" + parentFolder + "_" + overallMD5, "url", url + "", 5, TimeUnit.MINUTES);
                     }
                 }
             }
@@ -521,19 +525,19 @@ public class MediaController {
             RLock lock = redissonClient.getLock("filelist_upload_lock");
             lock.lock();
             try {
-                boolean flag = redisUtils.isHashExists("a_" + parentFolder + "_" + overallMD5, overallMD5, "0", 24, TimeUnit.HOURS); // 默认请求上传第一次
+                boolean flag = redisUtils.isHashExists("a_" + parentFolder + "_" + overallMD5, overallMD5, "0", 5, TimeUnit.MINUTES); // 默认请求上传第一次
                 // 是否存在
                 if (flag) {
                     Object currentFileNum = redisUtils.hmGet("a_" + parentFolder + "_" + overallMD5, overallMD5); // 获取当前上传文件序号
                     // 尝试将当前值转换为整数
                     value = Integer.parseInt(currentFileNum.toString()) + 1;
-                    redisUtils.hmSet("a_" + parentFolder + "_" + overallMD5, overallMD5, value + "", 24, TimeUnit.HOURS); // 上传文件序号+1
+                    redisUtils.hmSet("a_" + parentFolder + "_" + overallMD5, overallMD5, value + "", 5, TimeUnit.MINUTES); // 上传文件序号+1
                 }
                 if (exitObj == null) {
-                    redisUtils.hmSet("a_" + parentFolder + "_" + overallMD5, parentFolder2+filemd5, url, 24, TimeUnit.HOURS);
+                    redisUtils.hmSet("a_" + parentFolder + "_" + overallMD5, parentFolder2+filemd5, url, 5, TimeUnit.MINUTES);
                 }
                 if (value == fileNum) {
-                    redisUtils.hmSet("a_" + parentFolder + "_" + overallMD5, overallMD5, 0 + "", 2, TimeUnit.MINUTES); // 上传文件序号+1
+                    redisUtils.hmSet("a_" + parentFolder + "_" + overallMD5, overallMD5, 0 + "", 3, TimeUnit.MINUTES); // 上传文件序号+1
                     if (exitObj != null) {
                         url = (String) exitObj;
                     }

@@ -58,24 +58,28 @@ public class SubstringUtil {
 
     // miniosource/efuav-ortho-img/pointcloud/zseimage_202408160833_001_B0041064/zseimage_202408160833_001_B004/map/22/3430801/1724263.png
     public static String  processUrl2(String fullUrl){
-        // 首先，去除URL的协议部分（http:// 或 https://）
-//        String urlWithoutProtocol = fullUrl.replaceFirst("^"+ Endpoint, "");
-        // 使用/分割URL
-//        String[] parts = urlWithoutProtocol.split("/");
 
-        String[] parts = fullUrl.split("/");
-        // 构建EndpointExt，从startIndex开始到倒数第四个元素（因为要去掉最后三个）
-        StringBuilder endpointExt = new StringBuilder();
-        for (int i = 0; i < parts.length - 3; i++) {
-            if (i > 1) {
-                endpointExt.append("/");
-            }
-            endpointExt.append(parts[i]);
-        }
+//        String[] parts = fullUrl.split("/");
+//        // 构建EndpointExt，从startIndex开始到倒数第四个元素（因为要去掉最后三个）
+//        StringBuilder endpointExt = new StringBuilder();
+//        for (int i = 0; i < parts.length - 3; i++) {
+//            if (i > 1) {
+//                endpointExt.append("/");
+//            }
+//            endpointExt.append(parts[i]);
+//        }
+        // 获取倒数第三个/
+        int lastindex = fullUrl.lastIndexOf("/");
+        int lastindex2 = fullUrl.substring(0,lastindex).lastIndexOf("/");
+        int lastindex3 = fullUrl.substring(0,lastindex2).lastIndexOf("/");
+
+        String url =  fullUrl.substring(0,lastindex3);
 
         // 构建路径模板
         String pathTemplate = "/{z}/{x}/{y}.png";
-        String url = "/"+ endpointExt.toString() + pathTemplate;
+        url = url + pathTemplate;
+
+//        String url = "/"+ endpointExt.toString() + pathTemplate;
         return  url;
     }
 
