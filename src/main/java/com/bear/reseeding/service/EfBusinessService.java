@@ -21,13 +21,21 @@ public interface EfBusinessService {
 
     List<EfPerilPoint> getDangerPointList(String startDate, String endDate, String mark);
 
+    EfTower insertTower(EfTower tower);
+
     EfTower insertOrUpdate (EfTower tower);
 
     EfTowerLine addOrupdateLine(EfTowerLine towerLine);
 
     List<EfTower> batchInsertTower(List<EfTower> towerList);
 
+    List<EfTower> batchInsertOrUpdateTower(List<EfTower> towerList);
+
     List<EfTowerLine> batchInsertTowerLine(List<EfTowerLine> towerLineList);
 
     EfPerilPoint insertOrUpdate (EfPerilPoint perilPoint);
+
+    List<EfTower> queryTowerBymark(String mark);
+
+    List<EfTowerLine> queryTowerlineBymark(String mark);
 }

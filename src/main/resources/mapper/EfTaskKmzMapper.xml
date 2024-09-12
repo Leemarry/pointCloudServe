@@ -145,6 +145,8 @@
         </where>
     </select>
 
+
+
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
         insert into ef_task_kmz(kmz_name, kmz_path, kmz_type, kmz_version, kmz_size, kmz_distance, kmz_duration, kmz_create_time, kmz_create_by_user_id, kmz_update_time, kmz_update_by_user_id, kmz_company_id, kmz_des,kmz_create_user,kmz_update_user,kmz_current_wp_no,kmz_wp_count)

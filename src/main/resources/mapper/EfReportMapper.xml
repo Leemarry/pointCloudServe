@@ -21,7 +21,10 @@
         select * from ef_report
         <where>
             <if test="mark!=null">
-                mark LIKE CONCAT('%', #{mark}, '%')
+                tower_mark LIKE CONCAT('%', #{mark}, '%')
+            </if>
+            <if test="fileName!=null">
+                mark LIKE CONCAT('%', #{fileName}, '%')
             </if>
             <if test="1==1">
                 AND create_time BETWEEN #{startDate} AND #{endDate}

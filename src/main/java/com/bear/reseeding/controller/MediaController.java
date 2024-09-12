@@ -66,6 +66,8 @@ public class MediaController {
     private String EndpointExt;
     @Value("${minio.Endpoint}")
     private String Endpoint;
+    @Value("${minio.MinioUrl}")
+    private String MinioUrl;
 
     /**
      * redis 服务
@@ -84,24 +86,35 @@ public class MediaController {
 
     //TODO:
 
+    /**
+     *  fileName 报告
+     * @param mediaTypeStr
+     * @param startTime
+     * @param endTime
+     * @param mark
+     * @return
+     */
     @ResponseBody
     @PostMapping(value = "/{mediaType}/querylist")
     public Result getMediaList(@PathVariable("mediaType") String mediaTypeStr,
                                @RequestParam(value = "startTime", required = false) Date startTime,
                                @RequestParam(value = "endTime", required = false) Date endTime,
-                               @RequestParam(value = "mark", required = false) String mark) {
+                               @RequestParam(value = "mark", required = false) String mark,
+                               @RequestParam(value = "fileName", required = false) String fileName) {
         if (mark == null || mark.isEmpty() || mark.equals("undefined") || mark.equals("null")) {
             mark = null;
         }
+        if (fileName == null || fileName.isEmpty() || fileName.equals("undefined") || fileName.equals("null")) {
+            fileName = null;
+        }
         try {
-            // 15s 模仿网络延迟
-//            Thread.sleep(15000);
+
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String startTimeStr = sdf.format(startTime);
             String endTimeStr = sdf.format(endTime);
             EfMediaType mediaType = EfMediaType.valueOf(mediaTypeStr.toUpperCase());
             // 直接调用枚举中的方法获取媒体列表
-            Object mediaList = mediaType.getMediaList(efMediaService, startTimeStr, endTimeStr, mark);
+            Object mediaList = mediaType.getMediaList(efMediaService, startTimeStr, endTimeStr, mark,fileName);
             return ResultUtil.success("success", mediaList);
         } catch (Exception e) {
             e.printStackTrace();
@@ -124,7 +137,7 @@ public class MediaController {
 
 
     /**
-     * @param uploadTypeStr 媒体类型
+     * @param uploadTypeStr 媒体类型    视频 报告
      * @param user          当前登录用户
      * @param file          上传的文件
      * @return
@@ -132,6 +145,7 @@ public class MediaController {
     @ResponseBody
     @PostMapping(value = "/{uploadType}/upload")
     public Result getuploadList(@PathVariable("uploadType") String uploadTypeStr, @CurrentUser EfUser user, @RequestParam(value = "file") MultipartFile file, @RequestParam(value = "createTime", required = true) Date createTime, @RequestParam(value = "folder", required = false) String folder,  HttpServletRequest request) {
+        InputStream inputStream = null;
         try {
             Integer ucId = user.getId();
             EfMediaType mediaType = EfMediaType.valueOf(uploadTypeStr.toUpperCase()); // 上传类型
@@ -144,16 +158,9 @@ public class MediaController {
                 folder = "default";
             }
             String towerMark = SubstringUtil.substring1(folder);
-//            //folder = 202408160833_001_B001 截取获取 最后 B001 作为文件夹名
-//            String[] folderArr = folder.split("_");
-//            String folderName = "";
-//            if (folderArr.length > 0) {
-//                folderName = folderArr[folderArr.length - 1];
-//            }
             // 文件流
             String url = applicationName + "/" + ucId + "/" + folder + "/" + fileName;
-
-            InputStream inputStream = file.getInputStream();
+             inputStream = file.getInputStream();
             // File fileNew = FileUtil.getThumbnailInputStream(file , 800, 600);
             if (!minioService.putObject(bucketName, url, inputStream, "kmz")) {
                 return ResultUtil.error("保存文件失败(保存minio有误)！"); //生成kmzminio有误
@@ -169,6 +176,14 @@ public class MediaController {
         } catch (Exception e) {
             e.printStackTrace();
             return ResultUtil.error("上传媒体失败！");
+        }finally {
+            try {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+            } catch (IOException e) {
+                LogUtil.logError("关闭文件流失败：" + e.toString());
+            }
         }
     }
 
@@ -246,8 +261,6 @@ public class MediaController {
     public Result getOrthoimgLists(@PathVariable("uploadType") String uploadTypeStr, @RequestParam(value = "file", required = true) MultipartFile file, @RequestParam(value = "createTime", required = true) Date createTime, @RequestParam(value = "folder", required = false) String folder, @RequestParam(value = "fileNum", required = true) Long fileNum, @RequestParam("filemd5") String filemd5, @RequestParam("overallMD5") String overallMD5) {
         InputStream inputStream = null;
         try {
-//            System.out.println(folder);
-//            System.out.println("文件名："+file.getOriginalFilename());
             EfMediaType mediaType = EfMediaType.valueOf(uploadTypeStr.toUpperCase()); // 上传类型
             String bucketName = mediaType.toString();
             // 获取文件名
@@ -256,37 +269,37 @@ public class MediaController {
                 folder = "default";
             }
             //folder = /202408160833_001_B001 截取获取 最后 B001 作为文件夹名
-            String towerMark = SubstringUtil.substring1(folder);
-
-            String[] folderArr2 = folder.split("/");
-            String parentFolder = folderArr2[0];
-            // parentFolder 为空字符串 folderArr2.length>2 取 folderArr2[1]
-            if (parentFolder.isEmpty() && folderArr2.length > 1) {
-                parentFolder = folderArr2[1];
-            }
+            List<String> parts = SubstringUtil.verifyFormat(folder);
+            String parentFolder = parts.get(0);
             // 判断文件后缀是不是 tfw
             String fileName2 = fileName.toLowerCase();
+            boolean getURL = false;
             if (fileName2.endsWith(".tfw")) {
                Location location= readFile(file);
                if(location==null || location.getLatitude()==0.0 || location.getLongitude()==0.0){
                    LogUtil.logError("上传文件"+fileName2+"不是tfw类型！");
                }else{
                    fileContentHolder.setFileContent(overallMD5, location);
+                   getURL = true;
                }
             }
             // 文件流
             inputStream = file.getInputStream();
             String url = applicationName + "/" + parentFolder + overallMD5 + "/" + folder + "/" + fileName;
             url = removeDuplicateSlashes(url);
-            String parentFolder2 = removeDuplicateSlashes(url);
+            String parentFolder2 = url; // 文件夹
             //判断是否上传过  "a_" + parentFolder + "_" + overallMD5   filemd5
             Object exitObj = redisUtils.hmGet("a_" + parentFolder + "_" + overallMD5, filemd5);
             if (exitObj == null) {
                 if (minioService.putObject(bucketName, url, inputStream, "kmz")) {
-//                    return ResultUtil.error("保存文件失败(保存minio有误)！"); //生成kmzminio有误
-                    url = minioService.getProxyObjectUrl(bucketName, url);
+                 // url = minioService.getProxyObjectUrl(bucketName, url);
+                    url =MinioUrl+"/"+ bucketName + "/" + parentFolder2;
                     url = removeDuplicateSlashes(url);
-
+                    if(getURL){
+                        String newString = url.replace("gsddsm.tfw", "{z}/{x}/{y}.png");
+                         urlContentHoder.setFileContent("a_" + parentFolder + "_" + overallMD5, newString); // 保存url
+                        redisUtils.hmSet("a_" + parentFolder + "_" + overallMD5, "url", url + "", 5, TimeUnit.MINUTES);
+                    }
                 }
             }
             int value = 0;
@@ -318,12 +331,33 @@ public class MediaController {
                 lock.unlock(); // 释放锁
             }
             if (finshed) {
-                // http://localhost:9090/miniosourceefuav-ortho-img/pointcloud/zseimage_202408160833_001_B0041064/zseimage_202408160833_001_B004/map/{z}/{x}/{y}.png
-                String mapPath = SubstringUtil.processUrl2(url);
-                System.out.println("上传完成mapPath:" + mapPath);
+                String mark = parentFolder;
+                EfOrthoImg efOrthoImg = efMediaService.queryByMark(mark);
+                if(efOrthoImg==null){
+                    efOrthoImg = new EfOrthoImg();
+                }
+                if(parts.size()>1){
+                    efOrthoImg.setMarkTag(parts.get(1));
+                    efOrthoImg.setStartMarkNum(Integer.valueOf(parts.get(2)));
+                    efOrthoImg.setEndMarkNum(Integer.valueOf(parts.get(3)));
+                }
                 Location location = fileContentHolder.getFileContent(overallMD5);
-                EfOrthoImg efOrthoImg = efMediaService.uploadOrthoImgMap(overallMD5, location.getLatitude(), location.getLongitude(), towerMark, createTime, mapPath, parentFolder);
-                return ResultUtil.success("success", efOrthoImg);
+                efOrthoImg.setLat(location.getLatitude());
+                efOrthoImg.setLon(location.getLongitude());
+                fileContentHolder.deleteFileContent(overallMD5);
+                // miniosource/efuav-ortho-img/pointcloud/gs_map_B008_B0081065/gs_map_B008_B008/map/22/3430844/1724254.png
+                String mapPath = urlContentHoder.getFileContent("a_" + parentFolder + "_" + overallMD5);
+//                String mapPath = SubstringUtil.processUrl2(url);
+                efOrthoImg.setMapPath(mapPath);
+                urlContentHoder.removeFileContent("a_" + parentFolder + "_" + overallMD5);
+
+                efOrthoImg.setCreateTime(createTime);
+                efOrthoImg.setMapMd5(overallMD5);
+                efOrthoImg.setFormats("正射图级");
+                efOrthoImg.setMark(mark);
+                EfOrthoImg efOrthoImg2 =   efMediaService.insertOrUpdateOrthoImg(efOrthoImg);
+                System.out.println("上传完成mapPath:" + mapPath);
+                return ResultUtil.success("success",efOrthoImg2);
             }
             return ResultUtil.success("success");
         } catch (Exception e) {
@@ -340,24 +374,164 @@ public class MediaController {
         }
     }
 
-//    @ResponseBody
-//    @PostMapping(value = "/requestBody")
-//    public Result uploadweb( @RequestBody String data) {
-//
-//        try {
-//            System.out.println("jsonObject:" + data.toString());
-//
-//            return ResultUtil.success("success");
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return ResultUtil.error("失败！");
-//        }
-//    }
+    @ResponseBody
+    @PostMapping(value = "/orthoimg/insertOrUpdate")
+    public Result  addEfOrthoImg(@RequestBody EfOrthoImg orthoImg){
+        try {
+             // 查询是否存储过
+            String mark = orthoImg.getMark();
+             EfOrthoImg efOrthoImg = efMediaService.queryByMark(mark);
+             if (efOrthoImg!= null) {
+                 efOrthoImg.setPath(orthoImg.getPath());
+                 efOrthoImg.setLat(orthoImg.getLat());
+                 efOrthoImg.setLon(orthoImg.getLon());
+                 efOrthoImg.setMarkTag(orthoImg.getMarkTag());
+                 efOrthoImg.setStartMarkNum(orthoImg.getStartMarkNum());
+                 efOrthoImg.setEndMarkNum(orthoImg.getEndMarkNum());
+                 efOrthoImg.setMapPath(orthoImg.getMapPath());
+                 efOrthoImg.setCreateTime(new Date());
+                 efOrthoImg.setFormats("正射图级");
+                efOrthoImg = efMediaService.insertOrUpdateOrthoImg(efOrthoImg);
+                 return ResultUtil.success("success",efOrthoImg);
+             }else{
+                 orthoImg.setFormats("正射图级");
+                 orthoImg.setCreateTime(new Date());
+                 orthoImg= efMediaService.insertOrUpdateOrthoImg(orthoImg);
+                 return ResultUtil.success("success",orthoImg);
+             }
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.error("上传媒体失败！");
+        }
+    }
+
+    @ResponseBody
+    @PostMapping(value = "/cloud/insertOrUpdate")
+    public Result  addEfPointCloud(@RequestBody EfPointCloud efPointCloud){
+        try {
+            // 查询是否存储过
+            String mark = efPointCloud.getMark(); //
+            EfPointCloud efPointCloud1 = efMediaService.querycloudByMark(mark);
+            if (efPointCloud1!= null) {
+                String webUrl = efPointCloud1.getWebUrl();
+                if(efPointCloud.getWebUrl()!=null && !efPointCloud.getWebUrl().isEmpty()){
+                    webUrl = efPointCloud.getWebUrl();
+                    efPointCloud1.setWebUrl(webUrl);
+                }
+                efPointCloud1.setAmendCloudUrl(efPointCloud.getAmendCloudUrl());
+                efPointCloud1.setMarkTag(efPointCloud.getMarkTag());
+                efPointCloud1.setStartMarkNum(efPointCloud.getStartMarkNum());
+                efPointCloud1.setEndMarkNum(efPointCloud.getEndMarkNum());
+                efPointCloud1.setCreateTime(new Date());
+                efPointCloud1.setUpdateTime(new Date());
+                efPointCloud1 = efMediaService.insertOrUpdatePointCloud(efPointCloud1);
+                return ResultUtil.success("success",efPointCloud1);
+            }else{
+                efPointCloud.setCreateTime(new Date());
+                efPointCloud.setUpdateTime(new Date());
+                efPointCloud= efMediaService.insertOrUpdatePointCloud(efPointCloud);
+                return ResultUtil.success("success");
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.error("上传媒体失败！");
+        }
+    }
+
+
+    /**
+     * @param uploadTypeStr 媒体类型 正射图集
+     * @param file          上传的文件
+     * @param createTime    上传时间
+     * @param folder        文件夹名
+     * @return
+     */
+    @ResponseBody
+    @PostMapping(value = "/{uploadType}/csupload")
+    public Result csupload(@PathVariable("uploadType") String uploadTypeStr, @RequestParam(value = "file", required = true) MultipartFile file, @RequestParam(value = "createTime", required = true) Date createTime, @RequestParam(value = "folder", required = false) String folder, @RequestParam(value = "fileNum", required = true) Long fileNum, @RequestParam("filemd5") String filemd5, @RequestParam("overallMD5") String overallMD5) {
+        InputStream inputStream = null;
+        try {
+            EfMediaType mediaType = EfMediaType.valueOf(uploadTypeStr.toUpperCase()); // 上传类型
+            String bucketName = mediaType.toString();
+            // 获取文件名
+            String fileName = file.getOriginalFilename();
+            if (folder == null || folder.isEmpty() || folder.equals("undefined") || folder.equals("null")) {
+                folder = "default";
+            }
+            //folder = /202408160833_001_B001 截取获取 最后 B001 作为文件夹名
+            String towerMark = SubstringUtil.substring1(folder);
+
+            String[] folderArr2 = folder.split("/");
+            String parentFolder = folderArr2[0];
+            // parentFolder 为空字符串 folderArr2.length>2 取 folderArr2[1]
+            if (parentFolder.isEmpty() && folderArr2.length > 1) {
+                parentFolder = folderArr2[1];
+            }
+
+            // 文件流
+            inputStream = file.getInputStream();
+            String url = applicationName + "/" + parentFolder + overallMD5 + "/" + folder + "/" + fileName;
+            url = removeDuplicateSlashes(url);
+            String parentFolder2 = removeDuplicateSlashes(url);
+            //判断是否上传过  "a_" + parentFolder + "_" + overallMD5   filemd5
+            Object exitObj = redisUtils.hmGet("a_" + parentFolder + "_" + overallMD5, filemd5);
+            if (exitObj == null) {
+                url = "cs";
+            }
+            int value = 0;
+            boolean finshed = false;
+            RLock lock = redissonClient.getLock("filelist_upload_lock");
+            lock.lock();
+            try {
+                boolean flag = redisUtils.isHashExists("a_" + parentFolder + "_" + overallMD5, overallMD5, "0", 4, TimeUnit.MINUTES); // 默认请求上传第一次
+                // 是否存在
+                if (flag) {
+                    Object currentFileNum = redisUtils.hmGet("a_" + parentFolder + "_" + overallMD5, overallMD5); // 获取当前上传文件序号
+                    // 尝试将当前值转换为整数
+                    value = Integer.parseInt(currentFileNum.toString()) + 1;
+                    redisUtils.hmSet("a_" + parentFolder + "_" + overallMD5, overallMD5, value + "", 4, TimeUnit.MINUTES); // 上传文件序号+1
+                }
+                if (exitObj == null) {
+                    redisUtils.hmSet("a_" + parentFolder + "_" + overallMD5, parentFolder2+filemd5, url, 5, TimeUnit.MINUTES);
+                }
+                if (value == fileNum) {
+                    redisUtils.hmSet("a_" + parentFolder + "_" + overallMD5, overallMD5, 0 + "", 45, TimeUnit.SECONDS); // 上传文件序号+1
+                    if (exitObj != null) {
+                        url = (String) exitObj;
+                        System.out.println("上传完成exitObj:" + url);
+                    }
+                    System.out.println("上传完成:" + url);
+                    finshed = true;
+                }
+            } finally {
+                lock.unlock(); // 释放锁
+            }
+            if (finshed) {
+                 http://localhost:9090/miniosource/efuav-ortho-img/pointcloud/zseimage_202408160833_001_B0041064/zseimage_202408160833_001_B004/map/{z}/{x}/{y}.png
+                 url ="miniosource/efuav-ortho-img/pointcloud/zseimage_202408160833_001_B0041064/zseimage_202408160833_001_B004/map/{z}/{x}/{y}.png";
+                System.out.println("上传完成mapPath:" );
+                return ResultUtil.success("success");
+            }
+            return ResultUtil.success("success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultUtil.error("上传媒体失败1！");
+        } finally {
+            try {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+            } catch (IOException e) {
+                LogUtil.logError("关闭文件流失败：" + e.toString());
+            }
+        }
+    }
 
 
 
-      int o= 0;
-    private  Map map;
+
 
     /**
      * @param uploadTypeStr 媒体类型 点云数据 web
@@ -380,40 +554,35 @@ public class MediaController {
                 folder = "default";
             }
             //folder = /202408160833_001_B001 截取获取 最后 B001 作为文件夹名
-            String towerMark = SubstringUtil.substring1(folder);
+            List<String> parts = SubstringUtil.verifyFormat(folder);
+            String parentFolder = parts.get(0);
 
-            String[] folderArr2 = folder.split("/");
-            String parentFolder = folderArr2[0];
-            // parentFolder 为空字符串 folderArr2.length>2 取 folderArr2[1]
-            if (parentFolder.isEmpty() && folderArr2.length > 1) {
-                parentFolder = folderArr2[1];
-            }
             boolean getURL = false;
             if ("tileset.json".equals(fileName)) {
                 System.out.println("tileset.json");
                 getURL = true;
             }
-
+            String contentType = file.getContentType();
             // 文件流 a_ cloud_202408160833_001_B004    _42
             inputStream = file.getInputStream();
             String url = applicationName + "/" + parentFolder + overallMD5 + "/" + folder + "/" + fileName;
             url = removeDuplicateSlashes(url);
-            String parentFolder2 = removeDuplicateSlashes(url);
+            String parentFolder2 = url;
             //判断是否上传过  "a_" + parentFolder + "_" + overallMD5   filemd5
             Object exitObj = redisUtils.hmGet("a_" + parentFolder + "_" + overallMD5, parentFolder2+filemd5);
             if (exitObj == null) {
-                // 判断是否存在
+                // 判断是否存在 minioService.putObjectandHeader(bucketName, url, inputStream, contentType,"inline")
                 if (minioService.putObject(bucketName, url, inputStream, "kmz")) {
-//                    return ResultUtil.error("保存文件失败(保存minio有误)！"); //生成kmzminio有误
-                    url = minioService.getProxyObjectUrl(bucketName, url);
+                     // url = minioService.getProxyObjectUrl(bucketName, url);
+                    url = MinioUrl+"/"+ bucketName + "/" + parentFolder2;
                     url = removeDuplicateSlashes(url);
                     if(getURL){
-                        urlContentHoder.setFileContent("a_" + parentFolder + "_" + overallMD5, url);
+                        urlContentHoder.setFileContent("a_" + parentFolder + "_" + overallMD5, url); // 保存url
                         redisUtils.hmSet("a_" + parentFolder + "_" + overallMD5, "url", url + "", 5, TimeUnit.MINUTES);
                     }
                 }
             }else{
-//                System.out.println("判断是否存在"+"a_" + parentFolder + "_" + overallMD5); //a_    cloud_202408160833_001_B004   _42
+                // System.out.println("判断是否存在"+"a_" + parentFolder + "_" + overallMD5); //a_    cloud_202408160833_001_B004   _42
             }
             int value = 0;
             boolean finshed = false;
@@ -443,21 +612,24 @@ public class MediaController {
                 lock.unlock(); // 释放锁
             }
             if (finshed) {
-                EfPointCloud pointCloud = efMediaService.queryCloudByMark(towerMark);
+                String mark = parentFolder; //
+                EfPointCloud pointCloud = efMediaService.querycloudByMark(mark);// 通过文件夹查询是否存储过
                 if (pointCloud == null) {
                     pointCloud = new EfPointCloud();
                     pointCloud.setMark(parentFolder);
                     pointCloud.setCreateTime(createTime);
                 }
                 String amendCloudUrl = urlContentHoder.getFileContent("a_" + parentFolder + "_" + overallMD5);
-
                 pointCloud.setAmendCloudUrl(amendCloudUrl);
                 urlContentHoder.removeFileContent("a_" + parentFolder + "_" + overallMD5);
                 pointCloud.setUpdateTime(createTime);
                 pointCloud.setAmendType("json");
-                pointCloud.setTowerMark(towerMark);
+                if(parts.size()>1){
+                    pointCloud.setMarkTag(parts.get(1));
+                    pointCloud.setStartMarkNum(Integer.valueOf(parts.get(2)));
+                    pointCloud.setEndMarkNum(Integer.valueOf(parts.get(3)));
+                }
                 pointCloud = efMediaService.insertOrUpdatePointCloud(pointCloud);
-//                pointCloud = efMediaService.insertOrUpdatePointCloud(pointCloud);
                 return ResultUtil.success("success", pointCloud);
             }
             return ResultUtil.success("success");
@@ -476,6 +648,7 @@ public class MediaController {
     }
 
 
+    // formats
     @PostMapping(value = "/{uploadType}/uploadwebcloud")
     public Result uploadCloudLists(@PathVariable("uploadType") String uploadTypeStr, @RequestParam(value = "file", required = true) MultipartFile file, @RequestParam(value = "createTime", required = true) Date createTime, @RequestParam(value = "folder", required = false) String folder, @RequestParam(value = "fileNum", required = true) Long fileNum, @RequestParam("filemd5") String filemd5, @RequestParam("overallMD5") String overallMD5) {
         InputStream inputStream = null;
@@ -489,14 +662,10 @@ public class MediaController {
                 folder = "default";
             }
             //folder = /202408160833_001_B001 截取获取 最后 B001 作为文件夹名
-            String towerMark = SubstringUtil.substring1(folder);
+            // String towerMark = SubstringUtil.substring1(folder);
+            List<String> parts = SubstringUtil.verifyFormat(folder);
+            String parentFolder = parts.get(0);
 
-            String[] folderArr2 = folder.split("/");
-            String parentFolder = folderArr2[0];
-            // parentFolder 为空字符串 folderArr2.length>2 取 folderArr2[1]
-            if (parentFolder.isEmpty() && folderArr2.length > 1) {
-                parentFolder = folderArr2[1];
-            }
             boolean getURL = false;
             if (fileName.contains("web.html")) {
                 getURL = true;
@@ -506,13 +675,13 @@ public class MediaController {
             inputStream = file.getInputStream();
             String url = applicationName + "/" + parentFolder + overallMD5 + "/" + folder + "/" + fileName;
             url = removeDuplicateSlashes(url);
-            String parentFolder2 = removeDuplicateSlashes(url);
+            String parentFolder2 = url;
             //判断是否上传过  "a_" + parentFolder + "_" + overallMD5   filemd5
             Object exitObj = redisUtils.hmGet("a_" + parentFolder + "_" + overallMD5, filemd5);
             if (exitObj == null) {
                 if (minioService.putObjectandHeader(bucketName, url, inputStream, contentType,"inline")) {
-//                    return ResultUtil.error("保存文件失败(保存minio有误)！"); //生成kmzminio有误
-                    url = minioService.getProxyObjectUrl(bucketName, url);
+                    //  url = minioService.getProxyObjectUrl(bucketName, url);
+                    url = MinioUrl+"/"+ bucketName + "/" + parentFolder2;
                     url = removeDuplicateSlashes(url);
                     if(getURL){
                         urlContentHoder.setFileContent("a_" + parentFolder + "_" + overallMD5, url);
@@ -548,18 +717,22 @@ public class MediaController {
                 lock.unlock(); // 释放锁
             }
             if (finshed) {
-                EfPointCloud pointCloud = efMediaService.queryCloudByMark(towerMark);
+                EfPointCloud pointCloud = efMediaService.queryCloudByFormats(parentFolder);  // formats 查询是否存储过
                 if (pointCloud == null) {
                     pointCloud = new EfPointCloud();
-                    pointCloud.setMark(parentFolder);
                     pointCloud.setCreateTime(createTime);
                 }
+                pointCloud.setFormats(parentFolder);
                 String amendCloudUrl = urlContentHoder.getFileContent("a_" + parentFolder + "_" + overallMD5);
                 pointCloud.setWebUrl(amendCloudUrl);
                 urlContentHoder.removeFileContent("a_" + parentFolder + "_" + overallMD5);
                 pointCloud.setUpdateTime(createTime);
                 pointCloud.setAmendType("json");
-                pointCloud.setTowerMark(towerMark);
+                if(parts.size()>1){
+                    pointCloud.setMarkTag(parts.get(1));
+                    pointCloud.setStartMarkNum(Integer.valueOf(parts.get(2)));
+                    pointCloud.setEndMarkNum(Integer.valueOf(parts.get(3)));
+                }
                 pointCloud = efMediaService.insertOrUpdatePointCloud(pointCloud);
 
                 return ResultUtil.success("success", pointCloud);
@@ -672,7 +845,7 @@ public class MediaController {
             List<Integer> succeedIds = new ArrayList<>();
             if (ids != null && ids.length > 0) {
                 for (Integer id : ids) {
-//                    Integer photoId =  efMediaService.delectphotoById(id); // 假设Repository有一个deleteById方法
+
                     Integer res = mediaType.delectMediaList(efMediaService,id);
                    if (res != null && res > 0) {
                         succeedIds.add(id);
@@ -927,12 +1100,7 @@ public class MediaController {
         Matcher matcher = pattern.matcher(path);
         return matcher.replaceAll("/");
     }
-    public static String removeDuplicateSlashes2(String path) {
-        String regex = "(/{2,})";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(path);
-        return matcher.replaceAll("/").replace("/", "-");
-    }
+
 
 
 

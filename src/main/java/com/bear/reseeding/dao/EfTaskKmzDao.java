@@ -1,5 +1,6 @@
 package com.bear.reseeding.dao;
 
+import com.bear.reseeding.entity.EfKmz;
 import com.bear.reseeding.entity.EfTaskKmz;
 import org.apache.ibatis.annotations.Param;
 
@@ -31,7 +32,15 @@ public interface EfTaskKmzDao {
      */
     List<EfTaskKmz> queryAllByLimit(@Param("offset") int offset, @Param("limit") int limit);
 
+    List<EfKmz> queryAllByLimit2(@Param("offset") int offset, @Param("limit") int limit);
+
+
     List<EfTaskKmz> queryAllByTime(@Param("startTime") String startTime, @Param("endTime") String endTime);
+
+    List<EfKmz> queryAllByTime2(@Param("startTime") String startTime, @Param("endTime") String endTime);
+
+
+
 //
 //    /**
 //     * 根据公司编号查询
@@ -57,6 +66,10 @@ public interface EfTaskKmzDao {
      * @return 影响行数
      */
     int insert(EfTaskKmz efTaskKmz);
+
+    int insert2(EfKmz efKmz);
+
+    int delete(Integer id);
 
     /**
      * 通过公司id与时间段查询

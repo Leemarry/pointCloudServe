@@ -44,7 +44,7 @@ spring:
     HttpUrl: "http://192.168.137.110:5000/upload" #照片分析算法服务器HTTP URL
   redis:
     database: 3
-    host: redis_5_0 #myredis
+    host: myredis  # redis_5_0
     port: 6379
     # Redis服务器链接密码（默认为空）
     password:

@@ -5,10 +5,45 @@
 <resultMap type="com.bear.reseeding.entity.EfTower" id="EfTowerMap">
     <result property="id" column="id" jdbcType="INTEGER"/>
     <result property="name" column="name" jdbcType="VARCHAR"/>
+    <result property="markTag" column="mark_tag" jdbcType="VARCHAR"/>
+    <result property="markNum" column="mark_num" jdbcType="INTEGER"/>
     <result property="mark" column="mark" jdbcType="VARCHAR"/>
+    <result property="type" column="type" jdbcType="VARCHAR"/>
+    <result property="startTower" column="start_tower" jdbcType="VARCHAR"/>
+    <result property="endTower" column="end_tower" jdbcType="VARCHAR"/>
+    <result property="geo" column="geo" jdbcType="VARCHAR"/>
+    <result property="xian" column="xian" jdbcType="VARCHAR"/>
+    <result property="zheng" column="zheng" jdbcType="VARCHAR"/>
+    <result property="cun" column="cun" jdbcType="VARCHAR"/>
     <result property="lat" column="lat" jdbcType="DOUBLE"/>
-    <result property="lon" column="lng" jdbcType="DOUBLE"/>
+    <result property="latStr" column="lat_str" jdbcType="VARCHAR"/>
+    <result property="lon" column="lon" jdbcType="DOUBLE"/>
+    <result property="lonStr" column="lon_str" jdbcType="VARCHAR"/>
+    <result property="startSpan" column="start_span" jdbcType="VARCHAR"/>
+    <result property="endSpan" column="end_span" jdbcType="VARCHAR"/>
     <result property="absalt" column="absalt" jdbcType="DOUBLE"/>
+    <result property="absaltStr" column="absalt_str" jdbcType="VARCHAR"/>
+    <result property="ishard" column="ishard" jdbcType="VARCHAR"/>
+    <result property="terrain" column="terrain" jdbcType="VARCHAR"/>
+    <result property="topTel" column="top_tel" jdbcType="VARCHAR"/>
+    <result property="endTel" column="end_tel" jdbcType="VARCHAR"/>
+    <result property="patrolRoute" column="patrol_route" jdbcType="VARCHAR"/>
+    <result property="advise" column="advise" jdbcType="VARCHAR"/>
+    <result property="faultHazard" column="fault_hazard" jdbcType="VARCHAR"/>
+    <result property="faultType" column="fault_type" jdbcType="VARCHAR"/>
+    <result property="towerHazard" column="tower_hazard" jdbcType="VARCHAR"/>
+    <result property="lineHazard" column="line_hazard" jdbcType="VARCHAR"/>
+    <result property="insulatorHazard" column="insulator_hazard" jdbcType="VARCHAR"/>
+    <result property="glodHazard" column="glod_hazard" jdbcType="VARCHAR" />
+    <result property="groundingHazard" column="grounding_hazard" jdbcType="VARCHAR"/>
+    <result property="towerBasicHazard" column="tower_basic_hazard" jdbcType="VARCHAR"/>
+    <result property="isCross" column="is_cross" jdbcType="VARCHAR"/>
+    <result property="crossingSituation" column="crossing_situation" jdbcType="VARCHAR"/>
+    <result property="var1" column="var1" jdbcType="VARCHAR"/>
+    <result property="var2" column="var2" jdbcType="VARCHAR"/>
+    <result property="var3" column="var3" jdbcType="VARCHAR"/>
+    <result property="var4" column="var4" jdbcType="VARCHAR"/>
+    <result property="var5" column="var5" jdbcType="VARCHAR"/>
     <result property="alt" column="alt" jdbcType="DOUBLE"/>
     <result property="verticalLineArc" column="vertical_line_arc" jdbcType="DOUBLE"/>
     <result property="lineLineDis" column="line_line_dis" jdbcType="DOUBLE"/>
@@ -16,15 +51,51 @@
     <result property="towerRotationAngle" column="tower_rotation_angle" jdbcType="DOUBLE"/>
     <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
     <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    <result property="des" column="des" jdbcType="VARCHAR"/>
 </resultMap>
 
     <resultMap type="com.bear.reseeding.entity.EfTower" id="EfTowerAndPhotoMap">
         <result property="id" column="id" jdbcType="INTEGER"/>
         <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="markTag" column="mark_tag" jdbcType="VARCHAR"/>
+        <result property="markNum" column="mark_num" jdbcType="INTEGER"/>
         <result property="mark" column="mark" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="VARCHAR"/>
+        <result property="startTower" column="start_tower" jdbcType="VARCHAR"/>
+        <result property="endTower" column="end_tower" jdbcType="VARCHAR"/>
+        <result property="geo" column="geo" jdbcType="VARCHAR"/>
+        <result property="xian" column="xian" jdbcType="VARCHAR"/>
+        <result property="zheng" column="zheng" jdbcType="VARCHAR"/>
+        <result property="cun" column="cun" jdbcType="VARCHAR"/>
         <result property="lat" column="lat" jdbcType="DOUBLE"/>
-        <result property="lon" column="lng" jdbcType="DOUBLE"/>
+        <result property="latStr" column="lat_str" jdbcType="VARCHAR"/>
+        <result property="lon" column="lon" jdbcType="DOUBLE"/>
+        <result property="lonStr" column="lon_str" jdbcType="VARCHAR"/>
+        <result property="startSpan" column="start_span" jdbcType="VARCHAR"/>
+        <result property="endSpan" column="end_span" jdbcType="VARCHAR"/>
         <result property="absalt" column="absalt" jdbcType="DOUBLE"/>
+        <result property="absaltStr" column="absalt_str" jdbcType="VARCHAR"/>
+        <result property="ishard" column="ishard" jdbcType="VARCHAR"/>
+        <result property="terrain" column="terrain" jdbcType="VARCHAR"/>
+        <result property="topTel" column="top_tel" jdbcType="VARCHAR"/>
+        <result property="endTel" column="end_tel" jdbcType="VARCHAR"/>
+        <result property="patrolRoute" column="patrol_route" jdbcType="VARCHAR"/>
+        <result property="advise" column="advise" jdbcType="VARCHAR"/>
+        <result property="faultHazard" column="fault_hazard" jdbcType="VARCHAR"/>
+        <result property="faultType" column="fault_type" jdbcType="VARCHAR"/>
+        <result property="towerHazard" column="tower_hazard" jdbcType="VARCHAR"/>
+        <result property="lineHazard" column="line_hazard" jdbcType="VARCHAR"/>
+        <result property="insulatorHazard" column="insulator_hazard" jdbcType="VARCHAR"/>
+        <result property="glodHazard" column="glod_hazard" jdbcType="VARCHAR" />
+        <result property="groundingHazard" column="grounding_hazard" jdbcType="VARCHAR"/>
+        <result property="towerBasicHazard" column="tower_basic_hazard" jdbcType="VARCHAR"/>
+        <result property="isCross" column="is_cross" jdbcType="VARCHAR"/>
+        <result property="crossingSituation" column="crossing_situation" jdbcType="VARCHAR"/>
+        <result property="var1" column="var1" jdbcType="VARCHAR"/>
+        <result property="var2" column="var2" jdbcType="VARCHAR"/>
+        <result property="var3" column="var3" jdbcType="VARCHAR"/>
+        <result property="var4" column="var4" jdbcType="VARCHAR"/>
+        <result property="var5" column="var5" jdbcType="VARCHAR"/>
         <result property="alt" column="alt" jdbcType="DOUBLE"/>
         <result property="verticalLineArc" column="vertical_line_arc" jdbcType="DOUBLE"/>
         <result property="lineLineDis" column="line_line_dis" jdbcType="DOUBLE"/>
@@ -33,9 +104,7 @@
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
         <result property="des" column="des" jdbcType="VARCHAR"/>
-        <result property="type" column="type" jdbcType="VARCHAR"/>
-        <result property="span" column="span" jdbcType="DOUBLE"/>
-        <result property="terrain" column="terrain" jdbcType="VARCHAR"/>
+
         <!--  photos 的  tower_id 与 EfTower 的tower_id相等     -->
         <collection property="photos" column="mark"
                     select="com.bear.reseeding.dao.EfMediaDao.getPhotosByTowerMark"
@@ -44,10 +113,45 @@
     <resultMap type="com.bear.reseeding.entity.EfTower" id="EfTowerAndAllMap">
         <result property="id" column="id" jdbcType="INTEGER"/>
         <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="markTag" column="mark_tag" jdbcType="VARCHAR"/>
+        <result property="markNum" column="mark_num" jdbcType="INTEGER"/>
         <result property="mark" column="mark" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="VARCHAR"/>
+        <result property="startTower" column="start_tower" jdbcType="VARCHAR"/>
+        <result property="endTower" column="end_tower" jdbcType="VARCHAR"/>
+        <result property="geo" column="geo" jdbcType="VARCHAR"/>
+        <result property="xian" column="xian" jdbcType="VARCHAR"/>
+        <result property="zheng" column="zheng" jdbcType="VARCHAR"/>
+        <result property="cun" column="cun" jdbcType="VARCHAR"/>
         <result property="lat" column="lat" jdbcType="DOUBLE"/>
-        <result property="lon" column="lng" jdbcType="DOUBLE"/>
+        <result property="latStr" column="lat_str" jdbcType="VARCHAR"/>
+        <result property="lon" column="lon" jdbcType="DOUBLE"/>
+        <result property="lonStr" column="lon_str" jdbcType="VARCHAR"/>
+        <result property="startSpan" column="start_span" jdbcType="VARCHAR"/>
+        <result property="endSpan" column="end_span" jdbcType="VARCHAR"/>
         <result property="absalt" column="absalt" jdbcType="DOUBLE"/>
+        <result property="absaltStr" column="absalt_str" jdbcType="VARCHAR"/>
+        <result property="ishard" column="ishard" jdbcType="VARCHAR"/>
+        <result property="terrain" column="terrain" jdbcType="VARCHAR"/>
+        <result property="topTel" column="top_tel" jdbcType="VARCHAR"/>
+        <result property="endTel" column="end_tel" jdbcType="VARCHAR"/>
+        <result property="patrolRoute" column="patrol_route" jdbcType="VARCHAR"/>
+        <result property="advise" column="advise" jdbcType="VARCHAR"/>
+        <result property="faultHazard" column="fault_hazard" jdbcType="VARCHAR"/>
+        <result property="faultType" column="fault_type" jdbcType="VARCHAR"/>
+        <result property="towerHazard" column="tower_hazard" jdbcType="VARCHAR"/>
+        <result property="lineHazard" column="line_hazard" jdbcType="VARCHAR"/>
+        <result property="insulatorHazard" column="insulator_hazard" jdbcType="VARCHAR"/>
+        <result property="glodHazard" column="glod_hazard" jdbcType="VARCHAR" />
+        <result property="groundingHazard" column="grounding_hazard" jdbcType="VARCHAR"/>
+        <result property="towerBasicHazard" column="tower_basic_hazard" jdbcType="VARCHAR"/>
+        <result property="isCross" column="is_cross" jdbcType="VARCHAR"/>
+        <result property="crossingSituation" column="crossing_situation" jdbcType="VARCHAR"/>
+        <result property="var1" column="var1" jdbcType="VARCHAR"/>
+        <result property="var2" column="var2" jdbcType="VARCHAR"/>
+        <result property="var3" column="var3" jdbcType="VARCHAR"/>
+        <result property="var4" column="var4" jdbcType="VARCHAR"/>
+        <result property="var5" column="var5" jdbcType="VARCHAR"/>
         <result property="alt" column="alt" jdbcType="DOUBLE"/>
         <result property="verticalLineArc" column="vertical_line_arc" jdbcType="DOUBLE"/>
         <result property="lineLineDis" column="line_line_dis" jdbcType="DOUBLE"/>
@@ -56,10 +160,7 @@
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
         <result property="des" column="des" jdbcType="VARCHAR"/>
-        <result property="type" column="type" jdbcType="VARCHAR"/>
-        <result property="span" column="span" jdbcType="DOUBLE"/>
-        <result property="terrain" column="terrain" jdbcType="VARCHAR"/>
-        <result property="geo" column="geo" jdbcType="VARCHAR"/>
+
         <!--  photos 的  tower_id 与 EfTower 的tower_id相等     -->
         <collection property="photos" column="mark"
                     select="com.bear.reseeding.dao.EfMediaDao.getPhotosByTowerMark"
@@ -67,11 +168,13 @@
         <collection property="towerLines" column="mark"
                     select="com.bear.reseeding.dao.EfBusinessDao.getTowerLinesByTowerMark"
                     ofType="com.bear.reseeding.entity.EfPhoto"/>
-        <collection property="pointCloud" column="mark"
-                    select="com.bear.reseeding.dao.EfMediaDao.getPointCloudByTowerMark"
+        <collection property="pointCloud"
+                    column="{markTag=mark_tag, markNum=mark_num}"
+                    select="com.bear.reseeding.dao.EfMediaDao.getPointCloudByTagAndMark"
                     ofType="com.bear.reseeding.entity.EfPhoto"/>
-        <collection property="orthoImg" column="mark"
-                    select="com.bear.reseeding.dao.EfMediaDao.getOrthoImgByTowerMark"
+        <collection property="orthoImg"
+                    column="{markTag=mark_tag, markNum=mark_num}"
+                    select="com.bear.reseeding.dao.EfMediaDao.getOrthoImgByTagAndNum"
                     ofType="com.bear.reseeding.entity.EfPhoto"/>
     </resultMap>
 
@@ -110,29 +213,44 @@
         delete from ef_tower where id = #{id}
     </delete>
 
+
+    <insert id="insertTower" keyProperty="id" useGeneratedKeys="true" >
+       insert into ef_tower(name, mark_tag, mark_num, mark, type, start_tower, end_tower, geo, xian, zheng, cun, lat, lat_str, lon, lon_str, start_span, end_span, absalt, absalt_str, ishard, terrain, top_tel, end_tel, patrol_route, advise, fault_hazard, fault_type, tower_hazard, line_hazard, insulator_hazard, glod_hazard, grounding_hazard, tower_basic_hazard, is_cross, crossing_situation, var1, var2, var3, var4, var5, alt, vertical_line_arc, line_line_dis, line_tower_dis, tower_rotation_angle, create_time, update_time, des)
+        values(#{name}, #{markTag}, #{markNum}, #{mark}, #{type}, #{startTower}, #{endTower}, #{geo}, #{xian}, #{zheng}, #{cun}, #{lat}, #{latStr}, #{lon}, #{lonStr}, #{startSpan}, #{endSpan}, #{absalt}, #{absaltStr}, #{ishard}, #{terrain}, #{topTel}, #{endTel}, #{patrolRoute}, #{advise}, #{faultHazard}, #{faultType}, #{towerHazard}, #{lineHazard}, #{insulatorHazard}, #{glodHazard}, #{groundingHazard}, #{towerBasicHazard}, #{isCross}, #{crossingSituation}, #{var1}, #{var2}, #{var3}, #{var4}, #{var5}, #{alt}, #{verticalLineArc}, #{lineLineDis}, #{lineTowerDis}, #{towerRotationAngle}, #{createTime}, #{updateTime}, #{des})
+
+
+    </insert>
+
     <insert id="insertOrUpdateTower" keyProperty="id" useGeneratedKeys="true">
-    insert into ef_tower (id, name, mark, lat, lng, absalt, alt, vertical_line_arc, line_line_dis, line_tower_dis, tower_rotation_angle, create_time, update_time, des, type, span, terrain,geo)
-        values (#{id}, #{name}, #{mark}, #{lat}, #{lon}, #{absalt}, #{alt}, #{verticalLineArc}, #{lineLineDis}, #{lineTowerDis}, #{towerRotationAngle}, #{createTime}, #{updateTime}, #{des}, #{type}, #{span}, #{terrain},#{geo})
-        ON DUPLICATE KEY UPDATE name = #{name}, mark = #{mark}, lat = #{lat}, lng = #{lon}, absalt = #{absalt}, alt = #{alt}, vertical_line_arc = #{verticalLineArc}, line_line_dis = #{lineLineDis}, line_tower_dis = #{lineTowerDis}, tower_rotation_angle = #{towerRotationAngle}, create_time = #{createTime}, update_time = #{updateTime}, des = #{des}, type = #{type}, span = #{span}, terrain = #{terrain},geo = #{geo}
+        insert into ef_tower(id, name, mark_tag, mark_num, mark, type, start_tower, end_tower, geo, xian, zheng, cun, lat, lat_str, lon, lon_str, start_span, end_span, absalt, absalt_str, ishard, terrain, top_tel, end_tel, patrol_route, advise, fault_hazard, fault_type, tower_hazard, line_hazard, insulator_hazard, glod_hazard, grounding_hazard, tower_basic_hazard, is_cross, crossing_situation, var1, var2, var3, var4, var5, alt, vertical_line_arc, line_line_dis, line_tower_dis, tower_rotation_angle, create_time, update_time, des)
+        values(#{id}, #{name}, #{markTag}, #{markNum}, #{mark}, #{type}, #{startTower}, #{endTower}, #{geo}, #{xian}, #{zheng}, #{cun}, #{lat}, #{latStr}, #{lon}, #{lonStr}, #{startSpan}, #{endSpan}, #{absalt}, #{absaltStr}, #{ishard}, #{terrain}, #{topTel}, #{endTel}, #{patrolRoute}, #{advise}, #{faultHazard}, #{faultType}, #{towerHazard}, #{lineHazard}, #{insulatorHazard}, #{glodHazard}, #{groundingHazard}, #{towerBasicHazard}, #{isCross}, #{crossingSituation}, #{var1}, #{var2}, #{var3}, #{var4}, #{var5}, #{alt}, #{verticalLineArc}, #{lineLineDis}, #{lineTowerDis}, #{towerRotationAngle}, #{createTime}, #{updateTime}, #{des})
+        on duplicate key update name = #{name}, mark_tag = #{markTag}, mark_num = #{markNum}, mark = #{mark}, type = #{type}, start_tower = #{startTower}, end_tower = #{endTower}, geo = #{geo}, xian = #{xian}, zheng = #{zheng}, cun = #{cun}, lat = #{lat}, lat_str = #{latStr}, lon = #{lon}, lon_str = #{lonStr}, start_span = #{startSpan}, end_span = #{endSpan}, absalt = #{absalt}, absalt_str = #{absaltStr}, ishard = #{ishard}, terrain = #{terrain}, top_tel = #{topTel}, end_tel = #{endTel}, patrol_route = #{patrolRoute}, advise = #{advise}, fault_hazard = #{faultHazard}, fault_type = #{faultType}, tower_hazard = #{towerHazard}, line_hazard = #{lineHazard}, insulator_hazard = #{insulatorHazard}, glod_hazard = #{glodHazard}, grounding_hazard = #{groundingHazard}, tower_basic_hazard = #{towerBasicHazard}, is_cross = #{isCross}, crossing_situation = #{crossingSituation}, var1 = #{var1}, var2 = #{var2}, var3 = #{var3}, var4 = #{var4}, var5 = #{var5}, alt = #{alt}, vertical_line_arc = #{verticalLineArc}, line_line_dis = #{lineLineDis}, line_tower_dis = #{lineTowerDis}, tower_rotation_angle = #{towerRotationAngle}, update_time = #{updateTime}, des = #{des}
     </insert>
 
 
     <insert id="batchInsertTower" keyProperty="id" useGeneratedKeys="true">
-        insert into ef_tower (id, name, mark, lat, lng, absalt, alt, vertical_line_arc, line_line_dis, line_tower_dis, tower_rotation_angle, create_time, update_time, des, type, span, terrain,geo)
+        insert into ef_tower(name, mark_tag, mark_num, mark, type, start_tower, end_tower, geo, xian, zheng, cun, lat, lat_str, lon, lon_str, start_span, end_span, absalt, absalt_str, ishard, terrain, top_tel, end_tel, patrol_route, advise, fault_hazard, fault_type, tower_hazard, line_hazard, insulator_hazard, glod_hazard, grounding_hazard, tower_basic_hazard, is_cross, crossing_situation, var1, var2, var3, var4, var5, alt, vertical_line_arc, line_line_dis, line_tower_dis, tower_rotation_angle, create_time, update_time, des)
         values
-        <foreach collection="towerList" item="entity" separator=",">
-            (#{entity.id}, #{entity.name}, #{entity.mark}, #{entity.lat}, #{entity.lon}, #{entity.absalt}, #{entity.alt}, #{entity.verticalLineArc}, #{entity.lineLineDis}, #{entity.lineTowerDis}, #{entity.towerRotationAngle}, #{entity.createTime}, #{entity.updateTime}, #{entity.des}, #{entity.type}, #{entity.span}, #{entity.terrain},#{entity.geo})
-        </foreach>
-    </insert>
-
-    <insert id="insertBatchByList" keyProperty="id" useGeneratedKeys="true">
-        INSERT INTO ef_handle_waypoint (id,lat,lng,alt,seed_num,handle_id,fly_times) VALUES
-        <foreach collection="entities" item="entity" separator=",">
-            (#{entity.id},#{entity.lat},#{entity.lng},#{entity.alt},#{entity.seedNum},#{entity.handleId},#{entity.flyTimes})
+        <foreach collection="towerList" item="tower" separator=",">
+            (#{tower.name}, #{tower.markTag}, #{tower.markNum}, #{tower.mark}, #{tower.type}, #{tower.startTower}, #{tower.endTower}, #{tower.geo}, #{tower.xian}, #{tower.zheng}, #{tower.cun}, #{tower.lat}, #{tower.latStr}, #{tower.lon}, #{tower.lonStr}, #{tower.startSpan}, #{tower.endSpan}, #{tower.absalt}, #{tower.absaltStr}, #{tower.ishard}, #{tower.terrain}, #{tower.topTel}, #{tower.endTel}, #{tower.patrolRoute}, #{tower.advise}, #{tower.faultHazard}, #{tower.faultType}, #{tower.towerHazard}, #{tower.lineHazard}, #{tower.insulatorHazard}, #{tower.glodHazard}, #{tower.groundingHazard}, #{tower.towerBasicHazard}, #{tower.isCross}, #{tower.crossingSituation}, #{tower.var1}, #{tower.var2}, #{tower.var3}, #{tower.var4}, #{tower.var5}, #{tower.alt}, #{tower.verticalLineArc}, #{tower.lineLineDis}, #{tower.lineTowerDis}, #{tower.towerRotationAngle}, #{tower.createTime}, #{tower.updateTime}, #{tower.des})
         </foreach>
 
     </insert>
+
+    <insert id="batchInsertOrUpdateTower" keyProperty="id" useGeneratedKeys="true">
+        insert into ef_tower(id, name, mark_tag, mark_num, mark, type, start_tower, end_tower, geo, xian, zheng, cun, lat, lat_str, lon, lon_str, start_span, end_span, absalt, absalt_str, ishard, terrain, top_tel, end_tel, patrol_route, advise, fault_hazard, fault_type, tower_hazard, line_hazard, insulator_hazard, glod_hazard, grounding_hazard, tower_basic_hazard, is_cross, crossing_situation, var1, var2, var3, var4, var5, alt, vertical_line_arc, line_line_dis, line_tower_dis, tower_rotation_angle, create_time, update_time, des)
+        values
+        <foreach collection="towerList" item="tower" separator=",">
+            (#{tower.id}, #{tower.name}, #{tower.markTag}, #{tower.markNum}, #{tower.mark}, #{tower.type}, #{tower.startTower}, #{tower.endTower}, #{tower.geo}, #{tower.xian}, #{tower.zheng}, #{tower.cun}, #{tower.lat}, #{tower.latStr}, #{tower.lon}, #{tower.lonStr}, #{tower.startSpan}, #{tower.endSpan}, #{tower.absalt}, #{tower.absaltStr}, #{tower.ishard}, #{tower.terrain}, #{tower.topTel}, #{tower.endTel}, #{tower.patrolRoute}, #{tower.advise}, #{tower.faultHazard}, #{tower.faultType}, #{tower.towerHazard}, #{tower.lineHazard}, #{tower.insulatorHazard}, #{tower.glodHazard}, #{tower.groundingHazard}, #{tower.towerBasicHazard}, #{tower.isCross}, #{tower.crossingSituation}, #{tower.var1}, #{tower.var2}, #{tower.var3}, #{tower.var4}, #{tower.var5}, #{tower.alt}, #{tower.verticalLineArc}, #{tower.lineLineDis}, #{tower.lineTowerDis}, #{tower.towerRotationAngle}, #{tower.createTime}, #{tower.updateTime}, #{tower.des})
+        </foreach>
+        on duplicate key update name = values(name), mark_tag = values(mark_tag), mark_num = values(mark_num), mark = values(mark), type = values(type), start_tower = values(start_tower), end_tower = values(end_tower), geo = values(geo), xian = values(xian), zheng = values(zheng), cun = values(cun), lat = values(lat), lat_str = values(lat_str), lon = values(lon), lon_str = values(lon_str), start_span = values(start_span), end_span = values(end_span), absalt = values(absalt), absalt_str = values(absalt_str), ishard = values(ishard), terrain = values(terrain), top_tel = values(top_tel), end_tel = values(end_tel), patrol_route = values(patrol_route), advise = values(advise), fault_hazard = values(fault_hazard), fault_type = values(fault_type), tower_hazard = values(tower_hazard), line_hazard = values(line_hazard), insulator_hazard = values(insulator_hazard), glod_hazard = values(glod_hazard), grounding_hazard = values(grounding_hazard), tower_basic_hazard = values(tower_basic_hazard), is_cross = values(is_cross), crossing_situation = values(crossing_situation), var1 = values(var1), var2 = values(var2), var3 = values(var3), var4 = values(var4), var5 = values(var5), alt = values(alt), vertical_line_arc = values(vertical_line_arc), line_line_dis = values(line_line_dis), line_tower_dis = values(line_tower_dis), tower_rotation_angle = values(tower_rotation_angle), update_time = values(update_time), des = values(des)
+    </insert>
+
+
+
+    <select id="queryTowerBymark" resultMap="EfTowerMap">
+        select * from ef_tower where  mark = #{mark} order by update_time desc
+    </select>
 
 
 </mapper>
-

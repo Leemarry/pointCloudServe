@@ -19,6 +19,11 @@ public class FileContentHolder {
         return fileContents.get(fileName);
     }
 
+    public void deleteFileContent(String fileName) {
+        fileContents.remove(fileName);
+    }
+
+
     // 清除内容，如果需要的话
     public void clear() {
         fileContents.clear();

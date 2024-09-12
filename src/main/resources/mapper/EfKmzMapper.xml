@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bear.reseeding.dao.EfTaskKmzDao">
+
+    <resultMap type="com.bear.reseeding.entity.EfKmz" id="EfKmzMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="kmzName" column="kmz_name" jdbcType="VARCHAR"/>
+        <result property="kmzPath" column="kmz_path" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="kmzSize" column="kmz_size" jdbcType="NUMERIC"/>
+
+    </resultMap>
+
+    <insert id="insert2" keyProperty="id" useGeneratedKeys="true">
+        insert into ef_kmz(kmz_name, kmz_path, create_time, kmz_size)
+        values(#{kmzName}, #{kmzPath}, #{createTime}, #{kmzSize})
+    </insert>
+
+
+    <select id="queryAllByLimit2" resultMap="EfKmzMap">
+        select
+            id, kmz_name, kmz_path, create_time, kmz_size
+        from ef_kmz  order by create_time desc
+            limit #{offset}, #{limit}
+    </select>
+
+
+    <select id="queryAllByTime2" resultMap="EfKmzMap">
+        select * from ef_kmz where create_time BETWEEN #{startTime} AND #{endTime} order by create_time desc
+    </select>
+
+    <delete id="delete">
+        delete
+        from ef_kmz
+        where id = #{id};
+    </delete>
+
+
+
+
+</mapper>
+

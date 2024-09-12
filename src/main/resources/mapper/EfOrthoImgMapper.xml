@@ -17,7 +17,14 @@
         <result property="lon" column="lng" jdbcType="DOUBLE"/>
         <result property="mapMd5" column="map_md5" jdbcType="VARCHAR"/>
         <result property="mapPath" column="map_path" jdbcType="VARCHAR"/>
+        <result property="markTag" column="mark_tag" jdbcType="VARCHAR"/>
+        <result property="startMarkNum" column="start_mark_num" jdbcType="INTEGER"/>
+        <result property="endMarkNum" column="end_mark_num" jdbcType="INTEGER"/>
     </resultMap>
+
+    <select id="queryByMark" resultMap="EfOrthoImgMap">
+        select * from ef_orthoimg where mark = #{mark} order by create_time desc limit 1
+    </select>
 
     <delete id="deleteOrthoImgById">
         delete from ef_orthoimg where id = #{id}
@@ -31,6 +38,21 @@
         select * from ef_orthoimg
         where tower_mark = #{towerMark} order by create_time desc limit 1
     </select>
+
+
+    <select id="getOrthoImgByTagAndNum" resultMap="EfOrthoImgMap">
+        SELECT *
+        FROM ef_orthoimg
+        WHERE mark_tag = #{markTag}
+          AND #{markNum} BETWEEN LEAST(start_mark_num, end_mark_num) AND GREATEST(start_mark_num, end_mark_num)
+        ORDER BY create_time DESC
+            LIMIT 1;
+    </select>
+
+<!--    <select id="getOrthoImgByTagAndNum" resultMap="EfOrthoImgMap">-->
+<!--        select * from ef_orthoimg-->
+<!--       where mark_tag = #{markTag} and start_mark_num &lt;= #{markNum} and end_mark_num &gt;= #{markNum}  order by create_time desc limit 1-->
+<!--    </select>-->
 
     <select id="getOrthoImglist" resultMap="EfOrthoImgMap">
         select * from ef_orthoimg
@@ -46,8 +68,14 @@
     </select>
 
     <insert id="insertOrthoImg" keyProperty="id" parameterType="com.bear.reseeding.entity.EfOrthoImg">
-        insert into ef_orthoimg (mark, create_time, path, size, scale_path, scale_size, formats, des, tower_mark, lat, lng, map_md5, map_path)
-        values (#{mark}, #{createTime}, #{path}, #{size}, #{scalePath}, #{scaleSize}, #{formats}, #{des}, #{towerMark}, #{lat}, #{lon}, #{mapMd5}, #{mapPath})
+        insert into ef_orthoimg (mark, create_time, path, size, scale_path, scale_size, formats, des, tower_mark, lat, lng, map_md5, map_path, mark_tag, start_mark_num, end_mark_num)
+        values (#{mark}, #{createTime}, #{path}, #{size}, #{scalePath}, #{scaleSize}, #{formats}, #{des}, #{towerMark}, #{lat}, #{lon}, #{mapMd5}, #{mapPath}, #{markTag}, #{startMarkNum}, #{endMarkNum})
+    </insert>
+
+    <insert id="insertOrUpdateOrthoImg" keyProperty="id" useGeneratedKeys="true">
+        insert into ef_orthoimg (id, mark, create_time, path, size, scale_path, scale_size, formats, des, tower_mark, lat, lng, map_md5, map_path, mark_tag, start_mark_num, end_mark_num)
+        values (#{id}, #{mark}, #{createTime}, #{path}, #{size}, #{scalePath}, #{scaleSize}, #{formats}, #{des}, #{towerMark}, #{lat}, #{lon}, #{mapMd5}, #{mapPath}, #{markTag}, #{startMarkNum}, #{endMarkNum})
+        on duplicate key update mark = #{mark}, create_time = #{createTime}, path = #{path}, size = #{size}, scale_path = #{scalePath}, scale_size = #{scaleSize}, formats = #{formats}, des = #{des}, tower_mark = #{towerMark}, lat = #{lat}, lng = #{lon}, map_md5 = #{mapMd5}, map_path = #{mapPath}, mark_tag = #{markTag}, start_mark_num = #{startMarkNum}, end_mark_num = #{endMarkNum}
     </insert>
 
 

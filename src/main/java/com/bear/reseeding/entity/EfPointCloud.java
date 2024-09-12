@@ -17,6 +17,33 @@ public class EfPointCloud {
     private Date createTime;
     private Date updateTime;
     private String towerMark;
+    private String markTag;
+    private Integer startMarkNum;
+    private Integer endMarkNum;
+
+    public Integer getEndMarkNum() {
+        return endMarkNum;
+    }
+
+    public void setEndMarkNum(Integer endMarkNum) {
+        this.endMarkNum = endMarkNum;
+    }
+
+    public Integer getStartMarkNum() {
+        return startMarkNum;
+    }
+
+    public void setStartMarkNum(Integer startMarkNum) {
+        this.startMarkNum = startMarkNum;
+    }
+
+    public String getMarkTag() {
+        return markTag;
+    }
+
+    public void setMarkTag(String markTag) {
+        this.markTag = markTag;
+    }
 
     public String getTowerMark() {
         return towerMark;

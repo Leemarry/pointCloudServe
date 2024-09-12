@@ -9,12 +9,20 @@ public class EfTowerLine {
     private String startTowerMark;
     private String endTowerMark;
     private double lineLength;
+    private String lineLengthStr;
     private Date createTime;
     private String des;
     private List<EfPhoto> startphotos;
     private List<EfPhoto> endphotos;
     private List<EfPhoto> photos;
 
+    public String getLineLengthStr() {
+        return lineLengthStr;
+    }
+
+    public void setLineLengthStr(String lineLengthStr) {
+        this.lineLengthStr = lineLengthStr;
+    }
 
     public List<EfPhoto> getPhotos() {
         return photos;

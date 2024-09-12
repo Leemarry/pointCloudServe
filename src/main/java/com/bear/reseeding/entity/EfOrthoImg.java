@@ -17,6 +17,33 @@ public class EfOrthoImg {
     private double lat;
     private double lon;
     private String towerMark;
+    private String markTag;
+    private Integer startMarkNum;
+    private Integer endMarkNum;
+
+    public String getMarkTag() {
+        return markTag;
+    }
+
+    public void setMarkTag(String markTag) {
+        this.markTag = markTag;
+    }
+
+    public Integer getStartMarkNum() {
+        return startMarkNum;
+    }
+
+    public void setStartMarkNum(Integer startMarkNum) {
+        this.startMarkNum = startMarkNum;
+    }
+
+    public Integer getEndMarkNum() {
+        return endMarkNum;
+    }
+
+    public void setEndMarkNum(Integer endMarkNum) {
+        this.endMarkNum = endMarkNum;
+    }
 
     public String getTowerMark() {
         return towerMark;

@@ -8,7 +8,7 @@ spring:
   datasource:
     username: root
     password: 123456
-    url: jdbc:mysql://localhost:3306/pointcloud?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
+    url: jdbc:mysql://localhost:3307/pointcloud?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
     #    url: jdbc:mysql://114.132.62.199:3308/pointcloud?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
     #    driver-class-name: com.mysql.jdbc.Driver
     #druid连接池配置
@@ -44,7 +44,7 @@ spring:
     HttpUrl: "http://192.168.137.110:5000/upload" #照片分析算法服务器HTTP URL
   mqtt:
       protocol: tcp
-      host: 114.132.62.199
+      host: localhost
       port: 1883
       user: reseeding
       pwd: 6LqQyMQ7!fP
@@ -56,8 +56,8 @@ spring:
       publishTopicDjiUav: efuav/djiappS/# #发布公共大疆无人机主题
   redis:
     database: 3
-    host: 114.132.62.199
-    port: 6379
+    host: localhost
+    port: 6380
     # Redis服务器链接密码（默认为空）
     password:
     timeout: 30000
@@ -92,8 +92,8 @@ minio:
   BucketNameWord: efuavword
   BucketNameImage: efuavimage
   BucketNameModel: efuavmodel
-  Endpoint: http://localhost:9090 # http://8.148.10.90:9000
-  EndpointExt: http://localhost:9090 #http://8.148.10.90:9000 http://114.132.62.199:9000  #
+  Endpoint: http://localhost:9000 # http://8.148.10.90:9000
+  EndpointExt: http://localhost:9000 #http://8.148.10.90:9000 http://114.132.62.199:9000  #
   MinioUrl: miniosource
 TxyTrtc:
   TxyTrtcSdkAppId: 1400739024

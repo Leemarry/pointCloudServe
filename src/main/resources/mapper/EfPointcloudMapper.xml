@@ -17,6 +17,9 @@
         <result property="webSize" column="web_size" jdbcType="DOUBLE"/>
         <result property="webUrl" column="web_url" jdbcType="VARCHAR"/>
         <result property="towerMark" column="tower_mark" jdbcType="VARCHAR"/>
+        <result property="markTag" column="mark_tag" jdbcType="VARCHAR"/>
+        <result property="startMarkNum" column="start_mark_num" jdbcType="INTEGER"/>
+        <result property="endMarkNum" column="end_mark_num" jdbcType="INTEGER"/>
     </resultMap>
 
     <delete id="deletePointCloudById">
@@ -31,6 +34,14 @@
         select * from ef_cloud where tower_mark = #{towerMark} ORDER BY update_time DESC LIMIT 1
     </select>
 
+    <select id="getPointCloudByTagAndMark" resultMap="EfCloudMap">
+        SELECT *
+        FROM ef_cloud
+        WHERE mark_tag = #{markTag}
+          AND #{markNum} BETWEEN LEAST(start_mark_num, end_mark_num) AND GREATEST(start_mark_num, end_mark_num)
+        ORDER BY create_time DESC
+            LIMIT 1;
+    </select>
 
     <select id="getPointcloudlist" resultMap="EfCloudMap">
         select * from ef_cloud
@@ -45,39 +56,31 @@
         ORDER BY update_time DESC
     </select>
 
-<!--    insertOrUpdatePointCloud-->
+
     <insert id="insertOrUpdatePointCloud"  keyProperty="id" useGeneratedKeys="true">
-        insert into ef_cloud(id, mark, update_time, create_time, origin_type, origin_size, origin_cloud_url, amend_type, amend_cloud_url, amend_size, formats, web_size, web_url ,tower_mark)
-
-        values(#{id}, #{mark}, #{updateTime}, #{createTime}, #{originType}, #{originSize}, #{originCloudUrl}, #{amendType}, #{amendCloudUrl}, #{amendSize}, #{formats}, #{webSize}, #{webUrl}, #{towerMark})
-
-        on duplicate key update
-
-        mark = #{mark},
-        update_time = #{updateTime},
-        create_time = #{createTime},
-        origin_type = #{originType},
-        origin_size = #{originSize},
-        origin_cloud_url = #{originCloudUrl},
-        amend_type = #{amendType},
-        amend_cloud_url = #{amendCloudUrl},
-        amend_size = #{amendSize},
-        formats = #{formats},
-        web_size = #{webSize},
-        web_url = #{webUrl},
-        tower_mark = #{towerMark}
+        insert into ef_cloud(id, mark, update_time, create_time, origin_type, origin_size, origin_cloud_url, amend_type, amend_cloud_url, amend_size, formats, web_size, web_url, tower_mark, mark_tag, start_mark_num, end_mark_num)
+        values(#{id}, #{mark}, #{updateTime}, #{createTime}, #{originType}, #{originSize}, #{originCloudUrl}, #{amendType}, #{amendCloudUrl}, #{amendSize}, #{formats}, #{webSize}, #{webUrl}, #{towerMark}, #{markTag}, #{startMarkNum}, #{endMarkNum})
+        on duplicate key update update_time = #{updateTime}, origin_type = #{originType}, origin_size = #{originSize}, origin_cloud_url = #{originCloudUrl}, amend_type = #{amendType}, amend_cloud_url = #{amendCloudUrl}, amend_size = #{amendSize}, formats = #{formats}, web_size = #{webSize}, web_url = #{webUrl}, tower_mark = #{towerMark}, mark_tag = #{markTag}, start_mark_num = #{startMarkNum}, end_mark_num = #{endMarkNum}
     </insert>
 
 
     <insert id="insertPointCloud" keyProperty="id" useGeneratedKeys="true">
-        insert into ef_cloud(id, mark, update_time, create_time, origin_type, origin_size, origin_cloud_url, amend_type, amend_cloud_url, amend_size, formats, web_size, web_url, tower_mark)
-        values(#{id}, #{mark}, #{updateTime}, #{createTime}, #{originType}, #{originSize}, #{originCloudUrl}, #{amendType}, #{amendCloudUrl}, #{amendSize}, #{formats}, #{webSize}, #{webUrl}, #{towerMark})
+        insert into ef_cloud(id, mark, update_time, create_time, origin_type, origin_size, origin_cloud_url, amend_type, amend_cloud_url, amend_size, formats, web_size, web_url, tower_mark, mark_tag, start_mark_num, end_mark_num)
+
+        values(#{id}, #{mark}, #{updateTime}, #{createTime}, #{originType}, #{originSize}, #{originCloudUrl}, #{amendType}, #{amendCloudUrl}, #{amendSize}, #{formats}, #{webSize}, #{webUrl}, #{towerMark}, #{markTag}, #{startMarkNum}, #{endMarkNum})
     </insert>
 
     <select id="queryCloudByMark" resultMap="EfCloudMap">
         select * from ef_cloud where  tower_mark = #{towerMark}
     </select>
 
+    <select id="querycloudByMark" resultMap="EfCloudMap">
+        select * from ef_cloud where  mark = #{mark}
+    </select>
+
+    <select id="queryCloudByFormats" resultMap="EfCloudMap">
+        select * from ef_cloud where  formats = #{formats}
+    </select>
 
 </mapper>
 

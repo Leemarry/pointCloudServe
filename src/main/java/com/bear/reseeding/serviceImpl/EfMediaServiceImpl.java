@@ -75,8 +75,8 @@ public class EfMediaServiceImpl implements EfMediaService {
         return efMediaDao.getPhotolist(startDate, endDate, mark);
     }
 
-    public List<EfVideo> getVideolist(String startDate, String endDate, String mark){
-        return efMediaDao.getVideolist(startDate, endDate, mark);
+    public List<EfVideo> getVideolist(String startDate, String endDate, String mark,String fileName){
+        return efMediaDao.getVideolist(startDate, endDate, mark,fileName);
     }
 
     public List<EfPointCloud> getCloudlist(String startDate, String endDate, String mark){
@@ -85,11 +85,11 @@ public class EfMediaServiceImpl implements EfMediaService {
     public List<EfOrthoImg> getOrthoImglist(String startDate, String endDate, String mark){
         return efMediaDao.getOrthoImglist(startDate, endDate, mark);
     }
-    public List<EfReport> getReportlist(String startDate, String endDate, String mark) {
-        return efMediaDao.getReportlist(startDate, endDate, mark,null);
+    public List<EfReport> getReportlist(String startDate, String endDate, String mark,String fileName) {
+        return efMediaDao.getReportlist(startDate, endDate, mark,null,fileName);
     }
-    public List<EfReport> getReportlistByType(String startDate, String endDate, String mark,Integer type) {
-        return efMediaDao.getReportlist(startDate, endDate, mark,type);
+    public List<EfReport> getReportlistByType(String startDate, String endDate, String mark,Integer type,String fileName) {
+        return efMediaDao.getReportlist(startDate, endDate, mark,type,fileName);
     }
 //    public Result beforeUploadFile(MultipartFile file, EfUser user, String  type, Date createTime) {
 //        Integer ucId = user.getId();
@@ -215,13 +215,7 @@ public class EfMediaServiceImpl implements EfMediaService {
         EfPhoto photo = new EfPhoto();
         photo.setCreateTime(createTime);
         photo.setMark(name);
-        photo.setPath(url); //  http://localhost:9090/efuav-image/pointcloud/2/202408160833_001_B001/DJI_20231223122844_0059_D.JPG
-        // 截取 url 中的B001
-//        int index = url.lastIndexOf("/");
-//        String towerMark = null;
-//        if (index > 0) {
-//            towerMark = url.substring(url.lastIndexOf("_", index)+1 ,index);
-//        }
+        photo.setPath(url);
         photo.setTowerMark(towermark);
         photo.setSize(fileSize);
         photo.setImageTag(fileName);
@@ -248,7 +242,7 @@ public class EfMediaServiceImpl implements EfMediaService {
         EfVideo video = new EfVideo();
         video.setCreateTime(createTime);
         video.setTowerMark(towermark);
-        video.setMark(name);
+        video.setMark(fileName);
         video.setPath(url);
         video.setSize(fileSize);
         video.setFormats("video");
@@ -265,7 +259,7 @@ public class EfMediaServiceImpl implements EfMediaService {
         long fileSize = multipartFile.getSize();
         EfReport report = new EfReport();
         report.setCreateTime(createTime);
-        report.setMark(name);
+        report.setMark(fileName);
         report.setPath(url);
         report.setSize(fileSize);
         report.setType(type);
@@ -286,9 +280,23 @@ public class EfMediaServiceImpl implements EfMediaService {
         efMediaDao.insertOrUpdatePointCloud(pointCloud);
         return pointCloud;
     }
+    public EfOrthoImg insertOrUpdateOrthoImg(EfOrthoImg orthoImg) {
+        efMediaDao.insertOrUpdateOrthoImg(orthoImg);
+        return orthoImg;
+    }
     public EfPointCloud queryCloudByMark (String towerMark) {
       EfPointCloud pointCloud = efMediaDao.queryCloudByMark(towerMark);
         return pointCloud;
+    }
+
+    public EfOrthoImg queryByMark(String mark){
+        return efMediaDao.queryByMark(mark);
+    }
+    public EfPointCloud querycloudByMark(String mark){
+        return efMediaDao.querycloudByMark(mark);
+    }
+    public EfPointCloud queryCloudByFormats(String formats){
+        return efMediaDao.queryCloudByFormats(formats);
     }
 
 

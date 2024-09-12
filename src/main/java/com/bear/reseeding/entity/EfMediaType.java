@@ -7,7 +7,7 @@ import java.util.Date;
 public enum EfMediaType {
     PHOTO {
         @Override
-        public Object getMediaList(EfMediaService efMediaService, String startTime, String endTime, String mark) {
+        public Object getMediaList(EfMediaService efMediaService, String startTime, String endTime, String mark,String fileName) {
             return efMediaService.getPhotolist(startTime, endTime, mark);
         }
         @Override
@@ -25,8 +25,8 @@ public enum EfMediaType {
     },
     VIDEO {
         @Override
-        public Object getMediaList(EfMediaService efMediaService, String startTime, String endTime, String mark) {
-            return efMediaService.getVideolist(startTime, endTime, mark);
+        public Object getMediaList(EfMediaService efMediaService, String startTime, String endTime, String mark,String fileName) {
+            return efMediaService.getVideolist(startTime, endTime, mark,fileName);
         }
         @Override
         public Object uploadMediaList(EfMediaService efMediaService , MultipartFile file, EfUser user, String  towerMark, Date createTime, String url) {
@@ -43,7 +43,7 @@ public enum EfMediaType {
     },
     CLOUD {
         @Override
-        public Object getMediaList(EfMediaService efMediaService, String startTime, String endTime, String mark) {
+        public Object getMediaList(EfMediaService efMediaService, String startTime, String endTime, String mark,String fileName) {
             return efMediaService.getCloudlist(startTime, endTime, mark);
         }
         @Override
@@ -61,7 +61,7 @@ public enum EfMediaType {
     },
     ORTHOIMG {
         @Override
-        public Object getMediaList(EfMediaService efMediaService, String startTime, String endTime, String mark) {
+        public Object getMediaList(EfMediaService efMediaService, String startTime, String endTime, String mark,String fileName) {
             return efMediaService.getOrthoImglist(startTime, endTime, mark);
         }
         @Override
@@ -80,13 +80,12 @@ public enum EfMediaType {
     },
     REPORTS {
         @Override
-        public Object getMediaList(EfMediaService efMediaService, String startTime, String endTime, String mark) {
-            return efMediaService.getReportlist(startTime, endTime, mark);
+        public Object getMediaList(EfMediaService efMediaService, String startTime, String endTime, String mark,String fileName) {
+            return efMediaService.getReportlist(startTime, endTime, mark,fileName);
         }
         @Override
         public Object uploadMediaList(EfMediaService efMediaService , MultipartFile file, EfUser user, String  towerMark, Date createTime, String url) {
-            // 返回空
-            return "";
+            return efMediaService.uploadReportFile(file,  user, 0,createTime,url,towerMark);
         }
         @Override
         public Integer delectMediaList(EfMediaService efMediaService, Integer id) {
@@ -100,8 +99,8 @@ public enum EfMediaType {
     // perilPointReport
     PERIL_POINT_REPORT {
         @Override
-        public Object getMediaList(EfMediaService efMediaService, String startTime, String endTime, String mark) {
-            return efMediaService.getReportlistByType(startTime, endTime, mark,1);
+        public Object getMediaList(EfMediaService efMediaService, String startTime, String endTime, String mark,String fileName) {
+            return efMediaService.getReportlistByType(startTime, endTime, mark,1,fileName);
         }
         @Override
         public Object uploadMediaList(EfMediaService efMediaService , MultipartFile file, EfUser user, String  towerMark, Date createTime, String url) {
@@ -120,8 +119,8 @@ public enum EfMediaType {
     // crossBorderReport
     CROSS_BORDER_REPORT {
         @Override
-        public Object getMediaList(EfMediaService efMediaService, String startTime, String endTime, String mark){
-            return efMediaService.getReportlistByType(startTime, endTime, mark,2);
+        public Object getMediaList(EfMediaService efMediaService, String startTime, String endTime, String mark,String fileName){
+            return efMediaService.getReportlistByType(startTime, endTime, mark,2,fileName);
         }
         @Override
         public Object uploadMediaList(EfMediaService efMediaService , MultipartFile file, EfUser user,String  towerMark, Date createTime, String url) {
@@ -139,8 +138,8 @@ public enum EfMediaType {
     // lineTowersAnalysisReport
     LINE_TOWERS_ANALYSIS_REPORT {
         @Override
-        public Object getMediaList(EfMediaService efMediaService, String startTime, String endTime, String mark){
-            return efMediaService.getReportlistByType(startTime, endTime, mark,3);
+        public Object getMediaList(EfMediaService efMediaService, String startTime, String endTime, String mark,String fileName){
+            return efMediaService.getReportlistByType(startTime, endTime, mark,3,fileName);
         }
         @Override
         public Object uploadMediaList(EfMediaService efMediaService , MultipartFile file, EfUser user,String  towerMark, Date createTime, String url) {
@@ -154,9 +153,29 @@ public enum EfMediaType {
         public  String toString(){
             return "efuav-reports";
         }
+    },
+
+    // line_analysis_report
+    LINE_ANALYSIS_REPORT {
+        @Override
+        public Object getMediaList(EfMediaService efMediaService, String startTime, String endTime, String mark,String fileName){
+            return efMediaService.getReportlistByType(startTime, endTime, mark,4,fileName);
+        }
+        @Override
+        public Object uploadMediaList(EfMediaService efMediaService , MultipartFile file, EfUser user,String  towerMark, Date createTime, String url) {
+            return efMediaService.uploadReportFile(file,  user, 4,createTime,url,towerMark);
+        }
+        @Override
+        public Integer delectMediaList(EfMediaService efMediaService, Integer id) {
+            return efMediaService.deleteReportById(id);
+        }
+        @Override
+        public  String toString(){
+            return "efuav-reports";
+        }
     };
 
-    public abstract Object getMediaList(EfMediaService efMediaService, String startTime, String endTime, String mark);
+    public abstract Object getMediaList(EfMediaService efMediaService, String startTime, String endTime, String mark,String fileName);
     public abstract Integer delectMediaList(EfMediaService efMediaService,Integer id);
     public abstract Object uploadMediaList(EfMediaService efMediaService , MultipartFile file, EfUser user, String  towerMark, Date createTime, String url);
 }

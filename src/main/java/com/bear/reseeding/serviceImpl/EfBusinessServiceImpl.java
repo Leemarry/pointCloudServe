@@ -57,6 +57,12 @@ public class EfBusinessServiceImpl implements EfBusinessService {
     }
 
     @Override
+    public EfTower insertTower(EfTower efTower) {
+        efBusinessDao.insertTower(efTower);
+        return efTower;
+    }
+
+    @Override
     public EfTower insertOrUpdate(EfTower efTower) {
         efBusinessDao.insertOrUpdateTower(efTower);
         return efTower;
@@ -73,6 +79,12 @@ public class EfBusinessServiceImpl implements EfBusinessService {
     }
 
     @Override
+    public List<EfTower> batchInsertOrUpdateTower(List<EfTower> efTowerList) {
+        efBusinessDao.batchInsertOrUpdateTower(efTowerList);
+        return efTowerList;
+    }
+
+    @Override
     public List<EfTowerLine> batchInsertTowerLine(List<EfTowerLine> efTowerLineList) {
         int res =  efBusinessDao.batchInsertLine(efTowerLineList);
         return efTowerLineList;
@@ -82,6 +94,16 @@ public class EfBusinessServiceImpl implements EfBusinessService {
     public EfPerilPoint insertOrUpdate(EfPerilPoint efPerilPoint) {
         efBusinessDao.insertOrUpdatePerilPoint(efPerilPoint);
         return efPerilPoint;
+    }
+
+    @Override
+    public List<EfTower> queryTowerBymark(String mark) {
+        return efBusinessDao.queryTowerBymark(mark);
+    }
+
+    @Override
+    public List<EfTowerLine> queryTowerlineBymark(String mark) {
+        return efBusinessDao.queryTowerlineBymark(mark);
     }
 
 }

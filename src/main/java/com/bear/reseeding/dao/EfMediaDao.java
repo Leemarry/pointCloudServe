@@ -42,17 +42,21 @@ public interface EfMediaDao {
 
     List<EfPhoto> getPhotolist(@Param("startDate") String startDate, @Param("endDate") String endDate, @Param("mark") String mark);
 
-    List<EfVideo> getVideolist(@Param("startDate") String startDate, @Param("endDate") String endDate, @Param("mark") String mark);
+    List<EfVideo> getVideolist(@Param("startDate") String startDate, @Param("endDate") String endDate, @Param("mark") String mark,@Param("fileName") String fileName);
 
     EfPointCloud getPointCloudByTowerMark(@Param("towerMark") String towerMark);
+
+    EfPointCloud getPointCloudByTagAndMark(@Param("markTag") String markTag, @Param("markNum") int markNum);
 
     List<EfPointCloud> getPointcloudlist(@Param("startDate") String startDate, @Param("endDate") String endDate, @Param("mark") String mark);
 
     EfOrthoImg getOrthoImgByTowerMark(@Param("towerMark") String towerMark);
 
+    EfOrthoImg getOrthoImgByTagAndNum(@Param("markTag") String markTag, @Param("markNum") int markNum);
+
     List<EfOrthoImg> getOrthoImglist(@Param("startDate") String startDate, @Param("endDate") String endDate, @Param("mark") String mark);
 
-    List<EfReport> getReportlist(@Param("startDate") String startDate, @Param("endDate") String endDate, @Param("mark") String mark,@Param("type") Integer type);
+    List<EfReport> getReportlist(@Param("startDate") String startDate, @Param("endDate") String endDate, @Param("mark") String mark,@Param("type") Integer type,@Param("fileName") String fileName);
 
     int insertOrthoImg(EfOrthoImg orthoImg);
 
@@ -67,4 +71,12 @@ public interface EfMediaDao {
     EfPointCloud queryCloudByMark(@Param("towerMark") String towerMark);
 
     int insertOrUpdatePointCloud (EfPointCloud pointcloud);
+
+    int insertOrUpdateOrthoImg (EfOrthoImg orthoImg);
+
+    EfOrthoImg queryByMark(@Param("mark") String mark);
+
+    EfPointCloud querycloudByMark(@Param("mark") String mark);
+
+    EfPointCloud queryCloudByFormats(@Param("formats") String formats);
 }

@@ -31,15 +31,15 @@ public interface EfMediaService {
     EfPhoto queryDistanceWithDis( double lat, double lng, double distance);
 
     List<EfPhoto> getPhotolist(String startDate, String endDate, String mark);
-    List<EfVideo> getVideolist(String startDate, String endDate, String mark);
+    List<EfVideo> getVideolist(String startDate, String endDate, String mark,String fileName);
 
     List<EfPointCloud> getCloudlist(String startDate, String endDate, String mark);
 
     List<EfOrthoImg> getOrthoImglist(String startDate, String endDate, String mark);
 
-    List<EfReport> getReportlist(String startDate, String endDate, String mark);
+    List<EfReport> getReportlist(String startDate, String endDate, String mark,String fileName);
 
-    List<EfReport> getReportlistByType(String startDate, String endDate, String mark,Integer type);
+    List<EfReport> getReportlistByType(String startDate, String endDate, String mark,Integer type,String fileName);
 
     EfPhoto uploadPhotoFile(MultipartFile file, EfUser user , Integer type, Date createTime,String url);
     EfPhoto uploadExifPhotoFile(MultipartFile file, EfUser user , Integer type, Date createTime,String url , double lat, double lng , String towermark);
@@ -57,6 +57,14 @@ public interface EfMediaService {
     EfPointCloud insertPointCloud (EfPointCloud pointCloud);
     EfPointCloud insertOrUpdatePointCloud (EfPointCloud pointCloud);
 
+    EfOrthoImg insertOrUpdateOrthoImg (EfOrthoImg orthoImg);
+
     EfPointCloud queryCloudByMark(String towermark);
+
+    EfPointCloud queryCloudByFormats(String formats);
+
+    EfOrthoImg queryByMark(String mark);
+
+    EfPointCloud querycloudByMark(String mark);
 
     }

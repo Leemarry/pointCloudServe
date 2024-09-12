@@ -15,6 +15,7 @@ public interface EfBusinessDao {
     List<EfTower> getTowerList(@Param("startDate") String startDate, @Param("endDate") String endDate ,@Param("mark") String mark) ;
 
     int delectTower(@Param("id") int id);
+
     int delectTowerLine(@Param("id") int id);
 
     List<EfTowerLine> getTowerLinesByTowerMark(@Param("towerMark") String towerMark) ;
@@ -23,15 +24,24 @@ public interface EfBusinessDao {
 
     List<EfPerilPoint> getDangerPointList(@Param("startDate") String startDate, @Param("endDate") String endDate, @Param("mark") String mark) ;
 
+
+    int insertTower(EfTower tower);
+
     int insertOrUpdateTower(EfTower tower);
 
     int addOrupdateLine(EfTowerLine towerLine);
 
     int batchInsertTower(@Param("towerList") List<EfTower> towerList);
 
+    int batchInsertOrUpdateTower(@Param("towerList") List<EfTower> towerList);
+
     int batchInsertLine(@Param("lineList") List<EfTowerLine> lineList);
 
     int insertOrUpdatePerilPoint(EfPerilPoint perilPoint);
+
+    List<EfTower> queryTowerBymark(@Param("mark") String mark);
+
+    List<EfTowerLine> queryTowerlineBymark(@Param("mark") String mark);
 }
 
 
