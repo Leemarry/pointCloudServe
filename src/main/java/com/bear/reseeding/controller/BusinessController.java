@@ -372,7 +372,7 @@ public class BusinessController {
      */
     @ResponseBody
     @PostMapping(value = "/{operationType}/batchInsertToweLine")
-    public Result batchInsertTower2( @RequestParam("file") MultipartFile file){
+    public Result batchInsertToweLine( @RequestParam("file") MultipartFile file){
         try {
             // 读取文件内容
             try (InputStream inputStream = file.getInputStream();

@@ -340,6 +340,9 @@ public class MediaController {
                     efOrthoImg.setMarkTag(parts.get(1));
                     efOrthoImg.setStartMarkNum(Integer.valueOf(parts.get(2)));
                     efOrthoImg.setEndMarkNum(Integer.valueOf(parts.get(3)));
+                    if(Integer.valueOf(parts.get(2)).equals(Integer.valueOf(parts.get(3)))){
+                        efOrthoImg.setTowerMark(parts.get(1)+parts.get(2));
+                    }
                 }
                 Location location = fileContentHolder.getFileContent(overallMD5);
                 efOrthoImg.setLat(location.getLatitude());
@@ -628,6 +631,9 @@ public class MediaController {
                     pointCloud.setMarkTag(parts.get(1));
                     pointCloud.setStartMarkNum(Integer.valueOf(parts.get(2)));
                     pointCloud.setEndMarkNum(Integer.valueOf(parts.get(3)));
+                    if(Integer.valueOf(parts.get(2)).equals(Integer.valueOf(parts.get(3)))){
+                        pointCloud.setTowerMark(parts.get(1)+parts.get(2));
+                    }
                 }
                 pointCloud = efMediaService.insertOrUpdatePointCloud(pointCloud);
                 return ResultUtil.success("success", pointCloud);
@@ -749,85 +755,6 @@ public class MediaController {
             } catch (IOException e) {
                 LogUtil.logError("关闭文件流失败：" + e.toString());
             }
-        }
-    }
-
-    /**
-     * @param uploadTypeStr 媒体类型 点云
-     * @param user          当前登录用户
-     * @param file          上传的文件
-     * @return
-     */
-    @ResponseBody
-    @PostMapping(value = "/{uploadType}/uploads2")
-    public Result getCloud(@PathVariable("uploadType") String uploadTypeStr, @CurrentUser EfUser user, @RequestParam(value = "file", required = true) MultipartFile file, @RequestParam(value = "createTime", required = true) Date createTime) {
-        InputStream inputStream = null;
-
-        boolean isZIP = isCompressedFile(file.getOriginalFilename());
-        if (!isZIP) {
-            return ResultUtil.error("请发送数据压缩包");
-        }
-        String url = null;
-        long fileSize = file.getSize();
-        long amendSize = 0;
-        //压缩包文件名除去后缀
-        String zipName = file.getOriginalFilename().substring(0, file.getOriginalFilename().lastIndexOf("."));
-        Integer ucId = user.getId();
-        // 将 MultipartFile 转换为字节数组输入流
-        try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(file.getBytes());
-             ZipInputStream zipInputStream = new ZipInputStream(byteArrayInputStream, Charset.forName("GBK"))) {
-            EfMediaType mediaType = EfMediaType.valueOf(uploadTypeStr.toUpperCase()); // 上传类型
-            String bucketName = mediaType.toString();
-            ZipEntry zipEntry;
-            while ((zipEntry = zipInputStream.getNextEntry()) != null) {
-                if (zipEntry.isDirectory()) {
-                    System.out.println("This is a directory");
-                    continue;
-                }
-                boolean getURL = false;
-                // 获取压缩包内每一个文件的文件流 存储minio
-                String fileName = zipEntry.getName(); // tileset.json
-                // 文件名是否含有 tileset.json
-                if (fileName.contains("tileset.json")) {
-                    getURL = true;
-                }
-                // 获取文件后缀
-                String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);
-                // 加时间为文件夹名
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-                String folderName = sdf.format(new Date());
-                // 文件夹名
-                url = applicationName + "/" + ucId + "/" + folderName + "/" + fileName;
-                url = removeDuplicateSlashes(url);
-                //获取压缩包内文件流
-                inputStream = zipInputStream;
-                // 文件大小
-                amendSize = inputStream.available();
-                if (!minioService.putObject(bucketName, url, inputStream, suffix)) {
-                    return ResultUtil.error("保存文件失败(保存minio有误)！"); //生成kmzminio有误
-                }
-                if (getURL) {
-                    url = minioService.getProxyObjectUrl(bucketName, url);
-                    url = removeDuplicateSlashes(url);
-                    if ("".equals(url)) {
-                        return ResultUtil.error("保存文件失败(错误码 4)！");
-                    }
-                }
-            }
-            EfPointCloud pointCloud = new EfPointCloud();
-            pointCloud.setMark(zipName);
-            pointCloud.setAmendCloudUrl(url);
-            pointCloud.setCreateTime(createTime);
-            pointCloud.setAmendSize(amendSize);
-            pointCloud.setAmendType("json");
-            pointCloud.setCreateTime(createTime);
-            pointCloud.setOriginSize(fileSize);
-            pointCloud = efMediaService.insertPointCloud(pointCloud);
-
-            return ResultUtil.success("success", pointCloud);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResultUtil.error("压缩包上传失败！");
         }
     }
 

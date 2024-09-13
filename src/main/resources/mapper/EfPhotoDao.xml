@@ -53,7 +53,7 @@
     </select>
 
     <select id="getPhotosByTowerMark2" resultMap="EfPhotoMap">
-        SELECT * FROM ef_photo WHERE tower_mark = #{towerMark} Order By create_time DESC limit 20
+        SELECT * FROM ef_photo WHERE tower_mark LIKE CONCAT('%', #{towerMark}, '%')  Order By create_time DESC limit 20
     </select>
 
     <select id="getPhotolist" resultMap="EfPhotoMap">
