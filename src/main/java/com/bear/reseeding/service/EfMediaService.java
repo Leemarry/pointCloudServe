@@ -22,9 +22,15 @@ public interface EfMediaService {
 
     Integer deleteOrthoImgById(Integer id);
 
+    EfOrthoImg getOrthoImgById(Integer id);
+
     Integer deletePointCloudById(Integer id);
 
+    EfPointCloud getCloudById(Integer id);
+
     Integer deleteReportById(Integer id);
+
+   EfReport getReportById(Integer id);
 
     EfPhoto queryDistance( double lat, double lng);
 
@@ -40,6 +46,8 @@ public interface EfMediaService {
     List<EfReport> getReportlist(String startDate, String endDate, String mark,String fileName);
 
     List<EfReport> getReportlistByType(String startDate, String endDate, String mark,Integer type,String fileName);
+
+
 
     EfPhoto uploadPhotoFile(MultipartFile file, EfUser user , Integer type, Date createTime,String url);
     EfPhoto uploadExifPhotoFile(MultipartFile file, EfUser user , Integer type, Date createTime,String url , double lat, double lng , String towermark);

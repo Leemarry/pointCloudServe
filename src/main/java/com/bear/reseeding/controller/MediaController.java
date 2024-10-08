@@ -35,6 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -250,6 +252,32 @@ public class MediaController {
 
 
     /**
+     * @param folder        文件夹名
+     * @return
+     */
+    @ResponseBody
+    @PostMapping(value = "/upload/boforeupload")
+    public Result boforeupload( @RequestParam(value = "folder", required = false) String folder,  @RequestParam("overallMD5") String overallMD5) {
+        InputStream inputStream = null;
+        try {
+            if (folder == null || folder.isEmpty() || folder.equals("undefined") || folder.equals("null")) {
+                folder = "default";
+            }
+            //folder = /202408160833_001_B001 截取获取 最后 B001 作为文件夹名
+            List<String> parts = SubstringUtil.verifyFormat(folder);
+            String parentFolder = parts.get(0);
+
+            redisUtils.hmSet("a_" + parentFolder + "_" + overallMD5, overallMD5, 0 + "", 30, TimeUnit.SECONDS); // 上传文件序号+1
+
+            return ResultUtil.success("success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultUtil.error("上传媒体失败1！");
+        }
+    }
+
+
+    /**
      * @param uploadTypeStr 媒体类型 正射图集
      * @param file          上传的文件
      * @param createTime    上传时间
@@ -298,7 +326,7 @@ public class MediaController {
                     if(getURL){
                         String newString = url.replace("gsddsm.tfw", "{z}/{x}/{y}.png");
                          urlContentHoder.setFileContent("a_" + parentFolder + "_" + overallMD5, newString); // 保存url
-                        redisUtils.hmSet("a_" + parentFolder + "_" + overallMD5, "url", url + "", 5, TimeUnit.MINUTES);
+                        redisUtils.hmSet("a_" + parentFolder + "_" + overallMD5, "url", newString + "", 5, TimeUnit.MINUTES);
                     }
                 }
             }
@@ -319,7 +347,7 @@ public class MediaController {
                     redisUtils.hmSet("a_" + parentFolder + "_" + overallMD5, parentFolder2+filemd5, url, 5, TimeUnit.MINUTES);
                 }
                 if (value == fileNum) {
-                    redisUtils.hmSet("a_" + parentFolder + "_" + overallMD5, overallMD5, 0 + "", 45, TimeUnit.SECONDS); // 上传文件序号+1
+                    redisUtils.hmSet("a_" + parentFolder + "_" + overallMD5, overallMD5, 0 + "", 5, TimeUnit.SECONDS); // 上传文件序号+1
                     if (exitObj != null) {
                         url = (String) exitObj;
                         System.out.println("上传完成exitObj:" + url);
@@ -345,14 +373,23 @@ public class MediaController {
                     }
                 }
                 Location location = fileContentHolder.getFileContent(overallMD5);
-                efOrthoImg.setLat(location.getLatitude());
-                efOrthoImg.setLon(location.getLongitude());
-                fileContentHolder.deleteFileContent(overallMD5);
+                // 空指针···
+                if(location!=null){
+                    efOrthoImg.setLat(location.getLatitude());
+                    efOrthoImg.setLon(location.getLongitude());
+                    System.out.println("上传完成location:" + location.getLatitude() + "  " + location.getLongitude());
+                    fileContentHolder.deleteFileContent(overallMD5);
+                }
+
                 // miniosource/efuav-ortho-img/pointcloud/gs_map_B008_B0081065/gs_map_B008_B008/map/22/3430844/1724254.png
                 String mapPath = urlContentHoder.getFileContent("a_" + parentFolder + "_" + overallMD5);
+                if(mapPath==null){
+                    mapPath = (String) redisUtils.hmGet("a_" + parentFolder + "_" + overallMD5, "url");
+                }else{
+                    urlContentHoder.removeFileContent("a_" + parentFolder + "_" + overallMD5);
+                }
 //                String mapPath = SubstringUtil.processUrl2(url);
                 efOrthoImg.setMapPath(mapPath);
-                urlContentHoder.removeFileContent("a_" + parentFolder + "_" + overallMD5);
 
                 efOrthoImg.setCreateTime(createTime);
                 efOrthoImg.setMapMd5(overallMD5);
@@ -796,19 +833,33 @@ public class MediaController {
             Integer ucId = user.getId();
             EfMediaType mediaType = EfMediaType.valueOf(uploadTypeStr.toUpperCase()); // 上传类型
             String bucketName = mediaType.toString();
-             // url = http://localhost:9090/efuav-ortho-img/pointcloud/202408160833_001_B001eaf67c99859a8e2ccacb38df049f201d/202408160833_001_B001/{z}/{x}/{y}.png
+
              // miniosource/efuav-ortho-img/pointcloud/zseimage_202408160833_001_B0041064/zseimage_202408160833_001_B004/map/{z}/{x}/{y}.png
+             // Object efPointCloud = mediaType.getMediaListById(efMediaService,id);
             Integer res = mediaType.delectMediaList(efMediaService,id);
+            // 先查询存不存在
+            // 创建一个线程池，大小为 2（因为有两个任务）
+            ExecutorService executorService = Executors.newFixedThreadPool(2);
             if (res > 0){
-                if (url != null && !url.isEmpty()){
-                    String str1=  SubstringUtil.extractPointcloud(url,applicationName);
-                    boolean removeRes =  minioService.removeObjectss(bucketName, str1);
-                }
-                if(url2 != null && !url2.isEmpty()){
-                    String str2=  SubstringUtil.extractPointcloud(url2,applicationName);
-                    boolean removeRes2 =  minioService.removeObjectss(bucketName, str2);
-                }
+                // 第一个删除任务
+                executorService.submit(() -> {
+                    if (url!= null &&!url.isEmpty()) {
+                        String str1 = SubstringUtil.extractPointcloud(url, applicationName);
+                        boolean removeRes = minioService.removeObjectss(bucketName, str1);
+                    }
+                });
+
+                // 第二个删除任务
+                executorService.submit(() -> {
+                    if (url2!= null &&!url2.isEmpty()) {
+                        String str2 = SubstringUtil.extractPointcloud(url2, applicationName);
+                        boolean removeRes2 = minioService.removeObjectss(bucketName, str2);
+                    }
+                });
+
             }
+            // 关闭线程池，等待所有任务完成
+            executorService.shutdown();
 
             return ResultUtil.success("success");
         } catch (Exception e) {

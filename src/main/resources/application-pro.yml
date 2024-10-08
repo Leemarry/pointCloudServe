@@ -81,7 +81,7 @@ minio:
   BucketNameImage: efuavimage
   BucketNameModel: efuavmodel
   Endpoint: http://minio:9000 # http://8.148.10.90:9000
-  EndpointExt:  http://minio:9090 #http://8.148.10.90:9000 http://114.132.62.199:9000  #
+  EndpointExt: http://minio:9090 #http://8.148.10.90:9000 http://114.132.62.199:9000  #
   MinioUrl: miniosource
 TxyTrtc:
   TxyTrtcSdkAppId: 1400739024

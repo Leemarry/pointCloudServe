@@ -26,6 +26,10 @@
         delete from ef_cloud where id = #{id}
     </delete>
 
+    <select id="getCloudById" resultMap="EfCloudMap">
+        select * from ef_cloud where id = #{id}
+    </select>
+
     <delete id="deletepointCloudBytowermark" >
         delete from ef_cloud where tower_mark = #{towerMark}
     </delete>

@@ -48,14 +48,23 @@ public class EfMediaServiceImpl implements EfMediaService {
     public Integer deleteOrthoImgById(Integer id) {
         return efMediaDao.deleteOrthoImgById(id);
     }
+    public EfOrthoImg getOrthoImgById(Integer id){
+        return  efMediaDao.getOrthoImgById(id);
+    }
     public Integer deleteVideoById(Integer id) {
         return efMediaDao.deleteVideoById(id);
     }
     public Integer deletePointCloudById(Integer id) {
         return efMediaDao.deletePointCloudById(id);
     }
+    public EfPointCloud getCloudById(Integer id){
+        return efMediaDao.getCloudById(id);
+    }
     public Integer deleteReportById(Integer id) {
         return efMediaDao.deleteReportById(id);
+    }
+    public EfReport getReportById(Integer id) {
+        return efMediaDao.getReportById(id);
     }
 
     public EfPhoto queryDistance(double lat, double lon){

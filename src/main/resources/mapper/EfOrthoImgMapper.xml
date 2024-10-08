@@ -30,6 +30,10 @@
         delete from ef_orthoimg where id = #{id}
     </delete>
 
+    <select id="getOrthoImgById" resultMap="EfOrthoImgMap">
+     select  * from ef_orthoimg where id = #{id}
+    </select>
+
     <delete id="deleteOrthoImgBytowermark">
         delete from ef_orthoimg where tower_mark = #{towerMark}
     </delete>

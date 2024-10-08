@@ -17,6 +17,10 @@
         delete from ef_report where id = #{id}
     </delete>
 
+    <select id="getReportById" resultMap="EfReportMap">
+        select * from ef_report where id = #{id}
+    </select>
+
     <select id="getReportlist" resultMap="EfReportMap">
         select * from ef_report
         <where>

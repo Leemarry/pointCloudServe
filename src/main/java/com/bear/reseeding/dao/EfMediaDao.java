@@ -21,11 +21,17 @@ public interface EfMediaDao {
 
     Integer deleteOrthoImgById(int id);
 
+    EfOrthoImg getOrthoImgById(int id);
+
     Integer deleteVideoById(int id);
 
     Integer deleteReportById(int id);
 
+    EfReport getReportById(int id);
+
     Integer deletePointCloudById(int id);
+
+    EfPointCloud getCloudById(int id);
 
     EfPhoto queryDistance(@Param("lat") double lat, @Param("lng") double lng);
 

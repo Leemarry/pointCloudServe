@@ -40,7 +40,7 @@ public class CrossDomainFilter implements Filter {
         response.setHeader("Access-Control-Allow-Methods", "POST, GET");
         response.setHeader("Access-Control-Max-Age", "3600");
         response.setHeader("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With,ClientId,token,Encryption");
-        chain.doFilter(req, response);
+        chain. doFilter(req, response);
     }
 
     @Override
