@@ -36,6 +36,31 @@ public class SubstringUtil {
         return folderName;
     }
 
+    public static String substring3(String folder) {
+        int firstSlashIndex = folder.indexOf("/");
+        if (firstSlashIndex == -1) {
+            System.out.println("未找到第一个 '/'");
+            return folder;
+        }
+        // 找到第二个 '/' 的位置，从第一个 '/' 之后的位置开始搜索
+        int secondSlashIndex = folder.indexOf("/", firstSlashIndex + 1);
+        if (secondSlashIndex == -1) {
+            secondSlashIndex = folder.length();
+        }
+        // 找到第三个 '/' 的位置，从第二个 '/' 之后的位置开始搜索
+        int thirdSlashIndex = folder.indexOf("/", secondSlashIndex + 1);
+        if (thirdSlashIndex == -1) {
+            thirdSlashIndex = folder.length();
+        }
+        String newFolder = folder.substring(secondSlashIndex + 1, thirdSlashIndex);
+        String[] folderArr = newFolder.split("_");
+        String folderName = "";
+        if (folderArr.length > 0) {
+            folderName = folderArr[folderArr.length - 1];
+        }
+        return folderName;
+    }
+
 
     public static List<String> verifyFormat(String folder){
         // String folder = "/B002_B009/user/Documents/Java";

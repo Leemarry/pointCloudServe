@@ -24,10 +24,10 @@
         <result property="des" column="des" jdbcType="VARCHAR"/>
         <!--  photos 的  tower_id 与 EfTower 的tower_id相等     -->
         <collection property="startphotos" column="start_tower_mark"
-                    select="com.bear.reseeding.dao.EfMediaDao.getPhotosByTowerMark2"
+                    select="com.bear.reseeding.dao.EfMediaDao.getPhotosByTowerMark3"
                     ofType="com.bear.reseeding.entity.EfPhoto"/>
         <collection property="endphotos" column="end_tower_mark"
-                    select="com.bear.reseeding.dao.EfMediaDao.getPhotosByTowerMark2"
+                    select="com.bear.reseeding.dao.EfMediaDao.getPhotosByTowerMark3"
                     ofType="com.bear.reseeding.entity.EfPhoto"/>
         <collection property="photos" column="mark"
                     select="com.bear.reseeding.dao.EfMediaDao.getPhotosByTowerMark2"
@@ -39,11 +39,32 @@
         select * from tower_line where start_tower_mark = #{towerMark} or end_tower_mark = #{towerMark}
     </select>
 
+
+    <select id="gettowerCount2" resultType="int">
+        select count(*) from tower_line
+    </select>
+
+<!--     tower_mark LIKE CONCAT('%', #{mark}, '%')   -->
+<!--       mark = #{mark}  -->
     <select id="getTowerLineList" resultMap="EfTowerLineAndPhotoMap">
         select * from tower_line
         <where>
             <if test="mark!=null">
                 mark = #{mark}
+            </if>
+            <if test="1==1">
+                AND create_time BETWEEN #{startDate} AND #{endDate}
+            </if>
+        </where>
+        ORDER BY create_time DESC
+        LIMIT 30
+    </select>
+
+    <select id="getTowerLineList2" resultMap="EfTowerLineAndPhotoMap">
+        select * from tower_line
+        <where>
+            <if test="mark!=null">
+                mark LIKE CONCAT('%', #{mark}, '%')
             </if>
             <if test="1==1">
                 AND create_time BETWEEN #{startDate} AND #{endDate}

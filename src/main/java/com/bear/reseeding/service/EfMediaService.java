@@ -36,6 +36,8 @@ public interface EfMediaService {
 
     EfPhoto queryDistanceWithDis( double lat, double lng, double distance);
 
+    List<EfPhoto> getPhotosByTowerMark(String towermark);
+
     List<EfPhoto> getPhotolist(String startDate, String endDate, String mark);
     List<EfVideo> getVideolist(String startDate, String endDate, String mark,String fileName);
 
@@ -74,5 +76,7 @@ public interface EfMediaService {
     EfOrthoImg queryByMark(String mark);
 
     EfPointCloud querycloudByMark(String mark);
+
+
 
     }

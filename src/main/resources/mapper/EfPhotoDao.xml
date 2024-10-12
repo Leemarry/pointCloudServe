@@ -56,6 +56,12 @@
         SELECT * FROM ef_photo WHERE tower_mark LIKE CONCAT('%', #{towerMark}, '%')  Order By create_time DESC limit 20
     </select>
 
+    <select id="getPhotosByTowerMark3" resultMap="EfPhotoMap">
+        SELECT * FROM ef_photo WHERE tower_mark = #{towerMark}  Order By create_time DESC limit 20
+    </select>
+
+
+
     <select id="getPhotolist" resultMap="EfPhotoMap">
         select * from ef_photo
         <where>
@@ -71,7 +77,6 @@
 
 
 
-<!--    getPhotosByTowerMark2-->
 
     <!--新增所有列 返回的通常是新插入数据行的主键值，并将其赋值给在 keyProperty 中指定的属性-->
     <insert id="insertPhoto" keyProperty="id" useGeneratedKeys="true">

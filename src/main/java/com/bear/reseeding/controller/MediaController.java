@@ -214,7 +214,7 @@ public class MediaController {
             if (folder == null || folder.isEmpty() || folder.equals("undefined") || folder.equals("null")) {
                 folder = "default";
             }
-            String towerMark = SubstringUtil.substring1(folder);
+            String towerMark = SubstringUtil.substring3(folder);
 
             ExifUtil exifUtil = new ExifUtil();
             Map exifMap = exifUtil.readPicExifInfo(file);

@@ -10,9 +10,15 @@ import java.util.List;
 public interface EfBusinessDao {
     int gettowerCount();
 
+
+    int gettowerCount2();
     List<EfTower> getTowerAllInfoList(@Param("startDate") String startDate, @Param("endDate") String endDate ,@Param("mark") String mark) ;
 
     List<EfTower> getTowerList(@Param("startDate") String startDate, @Param("endDate") String endDate ,@Param("mark") String mark) ;
+
+
+    List<EfTower> getTowerList2(@Param("startDate") String startDate, @Param("endDate") String endDate ,@Param("mark") String mark) ;
+
 
     int delectTower(@Param("id") int id);
 
@@ -21,6 +27,10 @@ public interface EfBusinessDao {
     List<EfTowerLine> getTowerLinesByTowerMark(@Param("towerMark") String towerMark) ;
 
     List<EfTowerLine> getTowerLineList(@Param("startDate") String startDate, @Param("endDate") String endDate, @Param("mark") String mark) ;
+
+
+    List<EfTowerLine> getTowerLineList2(@Param("startDate") String startDate, @Param("endDate") String endDate, @Param("mark") String mark) ;
+
 
     List<EfPerilPoint> getDangerPointList(@Param("startDate") String startDate, @Param("endDate") String endDate, @Param("mark") String mark) ;
 

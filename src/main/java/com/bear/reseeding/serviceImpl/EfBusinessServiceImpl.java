@@ -21,6 +21,12 @@ public class EfBusinessServiceImpl implements EfBusinessService {
         return efBusinessDao.gettowerCount();
     }
 
+    @Override
+    public int gettowerCount2(){
+        return efBusinessDao.gettowerCount2();
+    }
+
+
 
     @Override
     public List<EfTower> getTowerAllInfoList(String startDate, String endDate, String mark) {
@@ -33,6 +39,14 @@ public class EfBusinessServiceImpl implements EfBusinessService {
       List<EfTower> efTowers=  efBusinessDao.getTowerList(startDate, endDate, mark);
         return efTowers;
     }
+    @Override
+    public List<EfTower> getTowerList2(String startDate, String endDate, String mark) {
+        List<EfTower> efTowers=  efBusinessDao.getTowerList2(startDate, endDate, mark);
+        return efTowers;
+    }
+
+
+
 
     @Override
     public int delectTower(int id){
@@ -49,6 +63,15 @@ public class EfBusinessServiceImpl implements EfBusinessService {
         List<EfTowerLine> efTowerLines=  efBusinessDao.getTowerLineList(startDate, endDate, mark);
         return efTowerLines;
     }
+
+    @Override
+    public List<EfTowerLine> getTowerLineList2(String startDate, String endDate, String mark) {
+        List<EfTowerLine> efTowerLines=  efBusinessDao.getTowerLineList2(startDate, endDate, mark);
+        return efTowerLines;
+    }
+
+
+
 
     @Override
     public List<EfPerilPoint> getDangerPointList(String startDate, String endDate, String mark) {

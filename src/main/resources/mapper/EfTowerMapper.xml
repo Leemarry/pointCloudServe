@@ -110,6 +110,7 @@
                     select="com.bear.reseeding.dao.EfMediaDao.getPhotosByTowerMark"
                     ofType="com.bear.reseeding.entity.EfPhoto"/>
     </resultMap>
+
     <resultMap type="com.bear.reseeding.entity.EfTower" id="EfTowerAndAllMap">
         <result property="id" column="id" jdbcType="INTEGER"/>
         <result property="name" column="name" jdbcType="VARCHAR"/>
@@ -177,13 +178,81 @@
                     select="com.bear.reseeding.dao.EfMediaDao.getOrthoImgByTagAndNum"
                     ofType="com.bear.reseeding.entity.EfPhoto"/>
     </resultMap>
+    <resultMap type="com.bear.reseeding.entity.EfTower" id="EfTowerAndAllNoPhotosMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="markTag" column="mark_tag" jdbcType="VARCHAR"/>
+        <result property="markNum" column="mark_num" jdbcType="INTEGER"/>
+        <result property="mark" column="mark" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="VARCHAR"/>
+        <result property="startTower" column="start_tower" jdbcType="VARCHAR"/>
+        <result property="endTower" column="end_tower" jdbcType="VARCHAR"/>
+        <result property="geo" column="geo" jdbcType="VARCHAR"/>
+        <result property="xian" column="xian" jdbcType="VARCHAR"/>
+        <result property="zheng" column="zheng" jdbcType="VARCHAR"/>
+        <result property="cun" column="cun" jdbcType="VARCHAR"/>
+        <result property="lat" column="lat" jdbcType="DOUBLE"/>
+        <result property="latStr" column="lat_str" jdbcType="VARCHAR"/>
+        <result property="lon" column="lon" jdbcType="DOUBLE"/>
+        <result property="lonStr" column="lon_str" jdbcType="VARCHAR"/>
+        <result property="startSpan" column="start_span" jdbcType="VARCHAR"/>
+        <result property="endSpan" column="end_span" jdbcType="VARCHAR"/>
+        <result property="absalt" column="absalt" jdbcType="DOUBLE"/>
+        <result property="absaltStr" column="absalt_str" jdbcType="VARCHAR"/>
+        <result property="ishard" column="ishard" jdbcType="VARCHAR"/>
+        <result property="terrain" column="terrain" jdbcType="VARCHAR"/>
+        <result property="topTel" column="top_tel" jdbcType="VARCHAR"/>
+        <result property="endTel" column="end_tel" jdbcType="VARCHAR"/>
+        <result property="patrolRoute" column="patrol_route" jdbcType="VARCHAR"/>
+        <result property="advise" column="advise" jdbcType="VARCHAR"/>
+        <result property="faultHazard" column="fault_hazard" jdbcType="VARCHAR"/>
+        <result property="faultType" column="fault_type" jdbcType="VARCHAR"/>
+        <result property="towerHazard" column="tower_hazard" jdbcType="VARCHAR"/>
+        <result property="lineHazard" column="line_hazard" jdbcType="VARCHAR"/>
+        <result property="insulatorHazard" column="insulator_hazard" jdbcType="VARCHAR"/>
+        <result property="glodHazard" column="glod_hazard" jdbcType="VARCHAR" />
+        <result property="groundingHazard" column="grounding_hazard" jdbcType="VARCHAR"/>
+        <result property="towerBasicHazard" column="tower_basic_hazard" jdbcType="VARCHAR"/>
+        <result property="isCross" column="is_cross" jdbcType="VARCHAR"/>
+        <result property="crossingSituation" column="crossing_situation" jdbcType="VARCHAR"/>
+        <result property="var1" column="var1" jdbcType="VARCHAR"/>
+        <result property="var2" column="var2" jdbcType="VARCHAR"/>
+        <result property="var3" column="var3" jdbcType="VARCHAR"/>
+        <result property="var4" column="var4" jdbcType="VARCHAR"/>
+        <result property="var5" column="var5" jdbcType="VARCHAR"/>
+        <result property="alt" column="alt" jdbcType="DOUBLE"/>
+        <result property="verticalLineArc" column="vertical_line_arc" jdbcType="DOUBLE"/>
+        <result property="lineLineDis" column="line_line_dis" jdbcType="DOUBLE"/>
+        <result property="lineTowerDis" column="line_tower_dis" jdbcType="DOUBLE"/>
+        <result property="towerRotationAngle" column="tower_rotation_angle" jdbcType="DOUBLE"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="des" column="des" jdbcType="VARCHAR"/>
+
+        <!--  photos 的  tower_id 与 EfTower 的tower_id相等     -->
+<!--        <collection property="photos" column="mark"-->
+<!--                    select="com.bear.reseeding.dao.EfMediaDao.getPhotosByTowerMark"-->
+<!--                    ofType="com.bear.reseeding.entity.EfPhoto"/>-->
+<!--        <collection property="towerLines" column="mark"-->
+<!--                    select="com.bear.reseeding.dao.EfBusinessDao.getTowerLinesByTowerMark"-->
+<!--                    ofType="com.bear.reseeding.entity.EfPhoto"/>-->
+        <collection property="pointCloud"
+                    column="{markTag=mark_tag, markNum=mark_num}"
+                    select="com.bear.reseeding.dao.EfMediaDao.getPointCloudByTagAndMark"
+                    ofType="com.bear.reseeding.entity.EfPhoto"/>
+        <collection property="orthoImg"
+                    column="{markTag=mark_tag, markNum=mark_num}"
+                    select="com.bear.reseeding.dao.EfMediaDao.getOrthoImgByTagAndNum"
+                    ofType="com.bear.reseeding.entity.EfPhoto"/>
+    </resultMap>
+
 
     <select id="gettowerCount" resultType="int">
         select count(*) from ef_tower
     </select>
 
 
-    <select id="getTowerAllInfoList" resultMap="EfTowerAndAllMap">
+    <select id="getTowerAllInfoList" resultMap="EfTowerAndAllNoPhotosMap">
         select * from ef_tower
         <where>
             <if test="mark!=null">
@@ -196,6 +265,8 @@
         ORDER BY update_time DESC
     </select>
 
+<!--    mark LIKE CONCAT('%', #{mark}, '%') -->
+<!--    mark = #{mark}  -->
     <select id="getTowerList" resultMap="EfTowerAndPhotoMap">
         select * from ef_tower
         <where>
@@ -207,7 +278,23 @@
             </if>
         </where>
         ORDER BY update_time DESC
+        LIMIT 35
     </select>
+
+    <select id="getTowerList2" resultMap="EfTowerAndPhotoMap">
+        select * from ef_tower
+        <where>
+            <if test="mark!=null">
+                mark LIKE CONCAT('%', #{mark}, '%')
+            </if>
+            <if test="1==1">
+                AND create_time BETWEEN #{startDate} AND #{endDate}
+            </if>
+        </where>
+        ORDER BY update_time DESC
+    </select>
+
+
 
     <delete id="delectTower">
         delete from ef_tower where id = #{id}

@@ -1,10 +1,7 @@
 package com.bear.reseeding.controller;
 
 import com.bear.reseeding.common.ResultUtil;
-import com.bear.reseeding.entity.EfPerilPoint;
-import com.bear.reseeding.entity.EfTower;
-import com.bear.reseeding.entity.EfTowerLine;
-import com.bear.reseeding.entity.EfUser;
+import com.bear.reseeding.entity.*;
 import com.bear.reseeding.model.CurrentUser;
 import com.bear.reseeding.model.Result;
 import com.bear.reseeding.service.EfBusinessService;
@@ -38,7 +35,6 @@ public class BusinessController {
     @Resource
     private EfMediaService efMediaService;
 
-
     //#endregion
 
     //#region 杆塔业务相关接口
@@ -62,6 +58,8 @@ public class BusinessController {
         // mark 为空字符串 或者 null 或者“” 或者 undefined 或 字符串null 则 设置成 null
         if (mark == null || mark.isEmpty() || mark.equals("undefined") || mark.equals("null")) {
             mark = null;
+        }else{
+            mark = mark.trim();
         }
         // 如果endTime未提供或为0（作为特殊标记），则设置为当前时间的时间戳
         if (endTime == null || endTime == 0) {
@@ -94,13 +92,81 @@ public class BusinessController {
     }
 
 
+    // 分页朝向
+    @RequestMapping(value = "/tower/queryTowerPhotos", method = RequestMethod.POST)
+    public Result getTowerData( @RequestParam(value = "mark", required = false) String mark) throws ParseException {
+        // mark 为空字符串 或者 null 或者“” 或者 undefined 或 字符串null 则 设置成 null
+        if (mark == null || mark.isEmpty() || mark.equals("undefined") || mark.equals("null")) {
+            mark = null;
+            return ResultUtil.error("获取杆塔列表失败！");
+        }else{
+            mark = mark.trim();
+        }
+
+        String markStr = mark.trim();
+        try {
+            List<EfPhoto> photos =  efMediaService.getPhotosByTowerMark(markStr);
+            // 返回结果
+            return ResultUtil.success("success", photos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultUtil.error("获取杆塔列表失败！");
+        }
+    }
+
 
     @RequestMapping(value = "/tower/querylist", method = RequestMethod.POST)
     public Result getBusinessData(@RequestParam(value = "startTime", required = false) Long startTime, @RequestParam(value = "endTime", required = false) Long endTime, @RequestParam(value = "mark", required = false) String mark) throws ParseException {
         // mark 为空字符串 或者 null 或者“” 或者 undefined 或 字符串null 则 设置成 null
         if (mark == null || mark.isEmpty() || mark.equals("undefined") || mark.equals("null")) {
             mark = null;
+        }else{
+            mark = mark.trim();
         }
+
+        // 如果endTime未提供或为0（作为特殊标记），则设置为当前时间的时间戳
+        if (endTime == null || endTime == 0) {
+            endTime = Instant.now().toEpochMilli();
+        }
+        // 如果startTime未提供，则计算为当前时间前三个月的时间戳
+        if (startTime == null) {
+            startTime = Instant.now().minus(3, ChronoUnit.MONTHS).toEpochMilli();
+        }
+        if (startTime > endTime) {
+            return ResultUtil.error("开始时间不能大于结束时间！");
+        }
+
+        int totalCount = efBusinessService.gettowerCount();
+        if(totalCount>0){
+//            List<EfTower> towerList = efBusinessService.getTowerAllInfoList(startTimeStr, endTimeStr, mark);
+//            return ResultUtil.success("success", towerList,totalCount);
+            try {
+                Date startTimeDate = new Date(startTime);
+                Date endTimeDate = new Date(endTime);
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String startTimeStr = sdf.format(startTimeDate);
+                String endTimeStr = sdf.format(endTimeDate);
+                List<EfTower> towerList = efBusinessService.getTowerList(startTimeStr, endTimeStr, mark);
+                // 返回结果
+                return ResultUtil.success("success", towerList,totalCount);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResultUtil.error("获取杆塔列表失败！");
+            }
+        }
+        // 返回结果
+        return ResultUtil.success("success", null,0);
+    }
+
+    @RequestMapping(value = "/tower/querylist2", method = RequestMethod.POST)
+    public Result getBusinessData2(@RequestParam(value = "startTime", required = false) Long startTime, @RequestParam(value = "endTime", required = false) Long endTime, @RequestParam(value = "mark", required = false) String mark) throws ParseException {
+        // mark 为空字符串 或者 null 或者“” 或者 undefined 或 字符串null 则 设置成 null
+        if (mark == null || mark.isEmpty() || mark.equals("undefined") || mark.equals("null")) {
+            mark = null;
+        }else{
+            mark = mark.trim();
+        }
+
         // 如果endTime未提供或为0（作为特殊标记），则设置为当前时间的时间戳
         if (endTime == null || endTime == 0) {
             endTime = Instant.now().toEpochMilli();
@@ -118,7 +184,7 @@ public class BusinessController {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String startTimeStr = sdf.format(startTimeDate);
             String endTimeStr = sdf.format(endTimeDate);
-            List<EfTower> towerList = efBusinessService.getTowerList(startTimeStr, endTimeStr, mark);
+            List<EfTower> towerList = efBusinessService.getTowerList2(startTimeStr, endTimeStr, mark);
             // 返回结果
             return ResultUtil.success("success", towerList);
         } catch (Exception e) {
@@ -128,6 +194,37 @@ public class BusinessController {
     }
 
 
+//    @RequestMapping(value = "/line/querylist", method = RequestMethod.POST)
+//    public Result getLineData(@RequestParam(value = "startTime", required = false) Long startTime, @RequestParam(value = "endTime", required = false) Long endTime, @RequestParam(value = "mark", required = false) String mark) throws ParseException {
+//        // mark 为空字符串 或者 null 或者“” 或者 undefined 或 字符串null 则 设置成 null
+//        if (mark == null || mark.isEmpty() || mark.equals("undefined") || mark.equals("null")) {
+//            mark = null;
+//        }
+//        // 如果endTime未提供或为0（作为特殊标记），则设置为当前时间的时间戳
+//        if (endTime == null || endTime == 0) {
+//            endTime = Instant.now().toEpochMilli();
+//        }
+//        // 如果startTime未提供，则计算为当前时间前三个月的时间戳
+//        if (startTime == null) {
+//            startTime = Instant.now().minus(3, ChronoUnit.MONTHS).toEpochMilli();
+//        }
+//        if (startTime > endTime) {
+//            return ResultUtil.error("开始时间不能大于结束时间！");
+//        }
+//        try {
+//            Date startTimeDate = new Date(startTime);
+//            Date endTimeDate = new Date(endTime);
+//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//            String startTimeStr = sdf.format(startTimeDate);
+//            String endTimeStr = sdf.format(endTimeDate);
+//            List<EfTowerLine> towerList = efBusinessService.getTowerLineList(startTimeStr, endTimeStr, mark);
+//            // 返回结果
+//            return ResultUtil.success("success", towerList);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return ResultUtil.error("获取杆塔列表失败！");
+//        }
+//    }
 
     @RequestMapping(value = "/line/querylist", method = RequestMethod.POST)
     public Result getLineData(@RequestParam(value = "startTime", required = false) Long startTime, @RequestParam(value = "endTime", required = false) Long endTime, @RequestParam(value = "mark", required = false) String mark) throws ParseException {
@@ -146,13 +243,54 @@ public class BusinessController {
         if (startTime > endTime) {
             return ResultUtil.error("开始时间不能大于结束时间！");
         }
+        int totalCount = efBusinessService.gettowerCount2();
+        if(totalCount>0){
+            try {
+                Date startTimeDate = new Date(startTime);
+                Date endTimeDate = new Date(endTime);
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String startTimeStr = sdf.format(startTimeDate);
+                String endTimeStr = sdf.format(endTimeDate);
+                List<EfTowerLine> towerList = efBusinessService.getTowerLineList(startTimeStr, endTimeStr, mark);
+                // 返回结果
+                return ResultUtil.success("success", towerList,totalCount);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResultUtil.error("获取杆塔列表失败！");
+            }
+//            List<EfTower> towerList = efBusinessService.getTowerAllInfoList(startTimeStr, endTimeStr, mark);
+//            return ResultUtil.success("success", towerList,totalCount);
+        }
+        // 返回结果
+         return ResultUtil.success("success", null,0);
+
+
+    }
+
+    @RequestMapping(value = "/line/querylist2", method = RequestMethod.POST)
+    public Result getLineData2(@RequestParam(value = "startTime", required = false) Long startTime, @RequestParam(value = "endTime", required = false) Long endTime, @RequestParam(value = "mark", required = false) String mark) throws ParseException {
+        // mark 为空字符串 或者 null 或者“” 或者 undefined 或 字符串null 则 设置成 null
+        if (mark == null || mark.isEmpty() || mark.equals("undefined") || mark.equals("null")) {
+            mark = null;
+        }
+        // 如果endTime未提供或为0（作为特殊标记），则设置为当前时间的时间戳
+        if (endTime == null || endTime == 0) {
+            endTime = Instant.now().toEpochMilli();
+        }
+        // 如果startTime未提供，则计算为当前时间前三个月的时间戳
+        if (startTime == null) {
+            startTime = Instant.now().minus(3, ChronoUnit.MONTHS).toEpochMilli();
+        }
+        if (startTime > endTime) {
+            return ResultUtil.error("开始时间不能大于结束时间！");
+        }
         try {
             Date startTimeDate = new Date(startTime);
             Date endTimeDate = new Date(endTime);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String startTimeStr = sdf.format(startTimeDate);
             String endTimeStr = sdf.format(endTimeDate);
-            List<EfTowerLine> towerList = efBusinessService.getTowerLineList(startTimeStr, endTimeStr, mark);
+            List<EfTowerLine> towerList = efBusinessService.getTowerLineList2(startTimeStr, endTimeStr, mark);
             // 返回结果
             return ResultUtil.success("success", towerList);
         } catch (Exception e) {

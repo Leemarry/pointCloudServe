@@ -46,6 +46,8 @@ public interface EfMediaDao {
 
     List<EfPhoto> getPhotosByTowerMark2(@Param("towerMark")   String towerMark);
 
+    List<EfPhoto> getPhotosByTowerMark3(@Param("towerMark")   String towerMark);
+
     List<EfPhoto> getPhotolist(@Param("startDate") String startDate, @Param("endDate") String endDate, @Param("mark") String mark);
 
     List<EfVideo> getVideolist(@Param("startDate") String startDate, @Param("endDate") String endDate, @Param("mark") String mark,@Param("fileName") String fileName);

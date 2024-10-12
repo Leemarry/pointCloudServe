@@ -80,6 +80,12 @@ public class EfMediaServiceImpl implements EfMediaService {
 //        return efMediaDao.deleteReportBytowermark(towermark);
 //    }
 
+
+
+    public List<EfPhoto> getPhotosByTowerMark(String mark){
+        return efMediaDao.getPhotosByTowerMark(mark);
+    }
+
     public List<EfPhoto> getPhotolist(String startDate, String endDate, String mark){
         return efMediaDao.getPhotolist(startDate, endDate, mark);
     }
