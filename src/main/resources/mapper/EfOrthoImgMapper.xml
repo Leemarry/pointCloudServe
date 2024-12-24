@@ -22,6 +22,11 @@
         <result property="endMarkNum" column="end_mark_num" jdbcType="INTEGER"/>
     </resultMap>
 
+    <select id="queryZs" resultMap="EfOrthoImgMap">
+        select * from ef_orthoimg
+    </select>
+
+
     <select id="queryByMark" resultMap="EfOrthoImgMap">
         select * from ef_orthoimg where mark = #{mark} order by create_time desc limit 1
     </select>

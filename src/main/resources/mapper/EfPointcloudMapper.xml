@@ -22,6 +22,10 @@
         <result property="endMarkNum" column="end_mark_num" jdbcType="INTEGER"/>
     </resultMap>
 
+    <select id="queryDy" resultMap="EfCloudMap">
+        select * from ef_cloud
+    </select>
+
     <delete id="deletePointCloudById">
         delete from ef_cloud where id = #{id}
     </delete>

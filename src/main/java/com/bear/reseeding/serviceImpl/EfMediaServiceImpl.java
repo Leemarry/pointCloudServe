@@ -277,6 +277,7 @@ public class EfMediaServiceImpl implements EfMediaService {
         report.setMark(fileName);
         report.setPath(url);
         report.setSize(fileSize);
+
         report.setType(type);
         report.setFormats(suffix);
         report.setTowerMark(towerMark);
@@ -314,6 +315,12 @@ public class EfMediaServiceImpl implements EfMediaService {
         return efMediaDao.queryCloudByFormats(formats);
     }
 
+    public List<EfOrthoImg> queryZs(){
+        return efMediaDao.queryZs();
+    };
+    public List<EfPointCloud> queryDy(){
+        return efMediaDao.queryDy();
+    };
 
 
 }

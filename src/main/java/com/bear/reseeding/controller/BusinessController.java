@@ -52,6 +52,30 @@ public class BusinessController {
         calendar.add(Calendar.MONTH, -3);
         return calendar.getTimeInMillis();
     }
+    // 重新写
+    @RequestMapping(value = "/tower/queryAlllist2", method = RequestMethod.POST)
+    public Result getTowerAllData2( @RequestParam(value = "mark", required = false) String mark) throws ParseException {
+        // mark 为空字符串 或者 null 或者“” 或者 undefined 或 字符串null 则 设置成 null
+        if (mark == null || mark.isEmpty() || mark.equals("undefined") || mark.equals("null")) {
+            mark = null;
+        }else{
+            mark = mark.trim();
+        }
+        try {
+            int totalCount = efBusinessService.gettowerCount();
+            if(totalCount>0){
+                List<EfTower> towerList = efBusinessService.getTowerAllInfoListNotTime(mark);
+                return ResultUtil.success("success",towerList,totalCount);
+            }
+            // 返回结果
+            return ResultUtil.success("success", null,0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultUtil.error("获取杆塔列表失败！");
+        }
+    }
+
+
     // 分页朝向
     @RequestMapping(value = "/tower/queryAlllist", method = RequestMethod.POST)
     public Result getTowerAllData(@RequestParam(value = "startTime", required = false) Long startTime, @RequestParam(value = "endTime", required = false) Long endTime, @RequestParam(value = "mark", required = false) String mark) throws ParseException {

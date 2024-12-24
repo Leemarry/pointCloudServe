@@ -20,6 +20,8 @@ public interface EfBusinessService {
 
 
 
+    List<EfTower> getTowerAllInfoListNotTime(String mark);
+
     List<EfTower> getTowerAllInfoList(String startDate, String endDate, String mark);
 
     int delectTower(int id);

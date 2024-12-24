@@ -77,6 +77,10 @@ public interface EfMediaService {
 
     EfPointCloud querycloudByMark(String mark);
 
+    List<EfPointCloud> queryDy();
+
+    List<EfOrthoImg> queryZs();
+
 
 
     }

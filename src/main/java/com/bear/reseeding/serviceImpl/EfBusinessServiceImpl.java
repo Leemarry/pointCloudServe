@@ -29,6 +29,13 @@ public class EfBusinessServiceImpl implements EfBusinessService {
 
 
     @Override
+    public List<EfTower> getTowerAllInfoListNotTime(String mark) {
+        List<EfTower> efTowers=  efBusinessDao.getTowerAllInfoListNotTime(mark);
+        return efTowers;
+    }
+
+
+    @Override
     public List<EfTower> getTowerAllInfoList(String startDate, String endDate, String mark) {
         List<EfTower> efTowers=  efBusinessDao.getTowerAllInfoList(startDate, endDate, mark);
         return efTowers;

@@ -228,7 +228,6 @@
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
         <result property="des" column="des" jdbcType="VARCHAR"/>
-
         <!--  photos 的  tower_id 与 EfTower 的tower_id相等     -->
 <!--        <collection property="photos" column="mark"-->
 <!--                    select="com.bear.reseeding.dao.EfMediaDao.getPhotosByTowerMark"-->
@@ -251,6 +250,16 @@
         select count(*) from ef_tower
     </select>
 
+
+    <select id="getTowerAllInfoListNotTime" resultMap="EfTowerAndAllNoPhotosMap">
+        select * from ef_tower
+        <where>
+            <if test="mark!=null">
+                mark = #{mark}
+            </if>
+        </where>
+        ORDER BY update_time DESC
+    </select>
 
     <select id="getTowerAllInfoList" resultMap="EfTowerAndAllNoPhotosMap">
         select * from ef_tower

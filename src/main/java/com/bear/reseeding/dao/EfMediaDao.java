@@ -87,4 +87,8 @@ public interface EfMediaDao {
     EfPointCloud querycloudByMark(@Param("mark") String mark);
 
     EfPointCloud queryCloudByFormats(@Param("formats") String formats);
+
+    List<EfPointCloud> queryDy();
+
+    List<EfOrthoImg> queryZs();
 }

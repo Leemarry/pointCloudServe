@@ -30,6 +30,7 @@ import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -85,6 +86,32 @@ public class MediaController {
 
     @Autowired
     private UrlContentHoder urlContentHoder;
+
+
+    @RequestMapping(value = "/queryorthoImgList", method = RequestMethod.POST)
+    public Result queryorthoImgList() {
+        try {
+            List<EfOrthoImg> orthoImgList = efMediaService.queryZs();
+            // 返回结果
+            return ResultUtil.success("success",orthoImgList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultUtil.error("获取杆塔列表失败！");
+        }
+    }
+
+    @RequestMapping(value = "/qusrypointCloudList", method = RequestMethod.POST)
+    public Result qusrypointCloudList()  {
+        try {
+            List<EfPointCloud> pointCloudList= efMediaService.queryDy();
+            // 返回结果
+            return ResultUtil.success("success",pointCloudList );
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultUtil.error("获取杆塔列表失败！");
+        }
+    }
+
 
     //TODO:
 
@@ -162,12 +189,14 @@ public class MediaController {
             String towerMark = SubstringUtil.substring1(folder);
             // 文件流
             String url = applicationName + "/" + ucId + "/" + folder + "/" + fileName;
+            url = removeDuplicateSlashes(url);
              inputStream = file.getInputStream();
             // File fileNew = FileUtil.getThumbnailInputStream(file , 800, 600);
             if (!minioService.putObject(bucketName, url, inputStream, "kmz")) {
                 return ResultUtil.error("保存文件失败(保存minio有误)！"); //生成kmzminio有误
             }
             url = minioService.getProxyObjectUrl(bucketName, url);
+            url = removeDuplicateSlashes(url);
             if ("".equals(url)) {
                 return ResultUtil.error("保存文件失败(错误码 4)！");
             }

@@ -12,6 +12,9 @@ public interface EfBusinessDao {
 
 
     int gettowerCount2();
+
+    List<EfTower> getTowerAllInfoListNotTime(@Param("mark") String mark);
+
     List<EfTower> getTowerAllInfoList(@Param("startDate") String startDate, @Param("endDate") String endDate ,@Param("mark") String mark) ;
 
     List<EfTower> getTowerList(@Param("startDate") String startDate, @Param("endDate") String endDate ,@Param("mark") String mark) ;
